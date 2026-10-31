@@ -1,7 +1,7 @@
 import type { WildlifeReport } from "@/types/report";
 
 // DUMMY DATA — bukan data aktual. Ganti dengan data backend nanti.
-export const dummyStats = { dead: 260, affected: 752, rescued: 116 };
+export const dummyStats = { dead: 137, inCare: 290, rescued: 232 };
 
 export const dummyReports: WildlifeReport[] = [
   { id: "r1", animal: "Gajah Sumatera", emoji: "🐘", reportType: "Satwa terdampak", location: "Riau", lng: 101.7, lat: 0.5, date: "12 Okt 2026", status: "Terverifikasi", description: "Kawanan gajah terlihat keluar dari area hutan yang terbakar." },

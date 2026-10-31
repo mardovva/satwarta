@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { CheckCircle2, Copy } from "lucide-react";
 import type { StoredReport } from "@/types/report";
+import { TRACK_EVENT } from "@/lib/tracking";
 
 interface Props { report: StoredReport; persisted: boolean; onClose: () => void }
 
@@ -24,6 +25,7 @@ export default function SubmissionSuccess({ report, persisted, onClose }: Props)
     onClose();
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     document.getElementById("track")?.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+    window.dispatchEvent(new CustomEvent(TRACK_EVENT, { detail: report.id }));
   };
 
   const { animal, location, reporter } = report;

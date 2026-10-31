@@ -83,3 +83,22 @@ export function ReportDetailDialog({ report, onClose }: { report: WildlifeReport
     </div>
   );
 }
+
+/** Popup untuk satu titik hotspot (data NASA FIRMS atau simulasi). */
+export function createHotspotPopupContent(p: Record<string, unknown>): HTMLElement {
+  const root = el("div", "min-width:170px;font-size:13px;line-height:1.5;color:#171717");
+  const live = typeof p.date === "string" && p.date !== "";
+  root.append(el("strong", "font-size:14px;display:block;margin-bottom:4px", live ? "Hotspot NASA FIRMS" : "Hotspot simulasi"));
+  if (live) {
+    root.append(
+      row("Terdeteksi", `${p.date} ${p.time} UTC`),
+      row("Satelit", String(p.satellite)),
+      row("Keyakinan", String(p.confidence)),
+      row("FRP", `${Number(p.frp).toFixed(1)} MW`),
+      el("p", "margin:6px 0 0;font-size:11px;color:#666", "Indikasi panas dari satelit, belum tentu kebakaran.")
+    );
+  } else {
+    root.append(el("p", "margin:0;font-size:12px;color:#666", "Data simulasi, bukan data aktual."));
+  }
+  return root;
+}
