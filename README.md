@@ -1,6 +1,6 @@
 # 🐾 Satwarta (Satwa Warta)
 
-**Satwarta** adalah platform pelaporan masyarakat untuk membantu penanganan satwa liar yang terdampak kebakaran hutan dan lahan (karhutla), khususnya satwa yang kehilangan habitat dan memasuki kawasan permukiman.
+**Satwarta** adalah platform pelaporan masyarakat untuk membantu penanganan satwa liar yang terdampak kebakaran hutan dan lahan (karhutla), khususnya satwa yang kehilangan habitat dan mulai memasuki kawasan permukiman manusia.
 
 Melalui Satwarta, masyarakat dapat mengirimkan laporan berupa lokasi, kondisi, dan dokumentasi satwa yang ditemukan. Laporan tersebut kemudian dapat diverifikasi dan ditindaklanjuti oleh instansi terkait untuk proses penyelamatan.
 
@@ -27,7 +27,7 @@ Teknologi yang digunakan dalam pengembangan Satwarta:
 
 ---
 
-## ⚙️ Getting Started
+## Getting Started (Sementara)
 
 Ikuti langkah-langkah berikut untuk menjalankan proyek Satwarta secara lokal.
 
@@ -44,7 +44,7 @@ Pastikan perangkat sudah memiliki:
 **1. Clone repository**
 
 ```bash
-git clone <repository-url>
+git clone <[repository-url](https://github.com/mardovva/satwarta.git)>
 ```
 
 **2. Masuk ke direktori proyek**
