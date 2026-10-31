@@ -44,7 +44,7 @@ Pastikan perangkat sudah memiliki:
 **1. Clone repository**
 
 ```bash
-git clone <[repository-url](https://github.com/mardovva/satwarta.git)>
+git clone <https://github.com/mardovva/satwarta.git)>
 ```
 
 **2. Masuk ke direktori proyek**
