@@ -24,19 +24,16 @@ Teknologi yang digunakan dalam pengembangan Satwarta:
 | [PostGIS](https://postgis.net/) | Ekstensi PostgreSQL untuk data geospasial |
 | [MapLibre GL JS](https://maplibre.org/) | Visualisasi peta interaktif |
 | [Recharts](https://recharts.org/) | Visualisasi data dan statistik |
-| [Gemini](https://aistudio.google.com/) | Chat bot pertolongan pertama satwa |
 
 ---
 
-## Kunjungi Website
+## Link Website
 
 Akses dapat melalui link [satwarta.vercel.app](https://satwarta.vercel.app)
 
 ---
 
 ## Development Progress
-
-Berikut merupakan perkembangan pengembangan platform Satwarta.
 
 ### Completed
 
@@ -53,8 +50,6 @@ Berikut merupakan perkembangan pengembangan platform Satwarta.
 ---
 
 ## Main Features
-
-Fitur utama yang direncanakan dalam platform Satwarta:
 
 - **Wildlife Reporting** — Masyarakat dapat melaporkan penemuan satwa liar yang terdampak karhutla.
 - **Location Mapping** — Menampilkan lokasi penemuan satwa melalui peta interaktif.
