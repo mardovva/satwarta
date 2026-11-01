@@ -1,8 +1,8 @@
 # 🐾 Satwarta (Satwa Warta)
 
-**Satwarta** adalah platform pelaporan masyarakat untuk membantu penanganan satwa liar yang terdampak kebakaran hutan dan lahan (karhutla), khususnya satwa yang kehilangan habitat dan mulai memasuki kawasan permukiman manusia.
+**Satwarta** adalah platform pelaporan masyarakat untuk membantu penanganan satwa liar yang terdampak kebakaran hutan dan lahan (karhutla).
 
-Melalui Satwarta, masyarakat dapat mengirimkan laporan berupa lokasi, kondisi, dan dokumentasi satwa yang ditemukan. Laporan tersebut kemudian dapat diverifikasi dan ditindaklanjuti oleh instansi terkait untuk proses penyelamatan.
+Melalui Satwarta, masyarakat dapat mengirimkan **laporan** berupa jenis satwa, kondisi, lokasi, dan dokumentasi satwa yang ditemukan. Berdasarkan isi laporan tersebut, AI akan memberikan saran kepada pelapor tentang cara pertolongan pertama pada satwa tersebut. Laporan kemudian dapat diverifikasi dan ditindaklanjuti oleh instansi terkait untuk proses penyelamatan.
 
 Satwarta juga menyediakan fitur **tracking** agar masyarakat dapat memantau perkembangan proses penanganan laporan secara transparan.
 
@@ -24,6 +24,7 @@ Teknologi yang digunakan dalam pengembangan Satwarta:
 | [PostGIS](https://postgis.net/) | Ekstensi PostgreSQL untuk data geospasial |
 | [MapLibre GL JS](https://maplibre.org/) | Visualisasi peta interaktif |
 | [Recharts](https://recharts.org/) | Visualisasi data dan statistik |
+| [Gemini](https://aistudio.google.com/) | Chat bot pertolongan pertama satwa |
 
 ---
 
@@ -41,13 +42,13 @@ Berikut merupakan perkembangan pengembangan platform Satwarta.
 
 - [x] Landing Page
 - [x] Report Form Page
+- [x] Tracking Page
+- [x] Instansi Role & Dashboard
 
-### In Progress / Upcoming
+### In Progress
 
-- [ ] Tracking Page
-- [ ] Instansi Role & Dashboard
 - [ ] News Page
-- [ ] Dan fitur lainnya
+- [ ] Chat bot
 
 ---
 
@@ -57,6 +58,7 @@ Fitur utama yang direncanakan dalam platform Satwarta:
 
 - **Wildlife Reporting** — Masyarakat dapat melaporkan penemuan satwa liar yang terdampak karhutla.
 - **Location Mapping** — Menampilkan lokasi penemuan satwa melalui peta interaktif.
+- **AI First-aid Chat Bot** – Memberikan saran kepada pelapor pertolongan pertama satwa selagi menunggu bantuan petugas.
 - **Report Verification** — Instansi terkait dapat memverifikasi laporan masyarakat.
 - **Rescue Tracking** — Masyarakat dapat memantau perkembangan proses penyelamatan satwa.
 - **Wildlife News** — Menyediakan informasi dan berita terkait satwa liar serta dampak karhutla.
