@@ -23,7 +23,8 @@ export interface LatLng {
 // ---------- Phase 2: formulir & simulasi penyimpanan ----------
 export type TrackingStatus = "Submitted" | "Under Review" | "Verified" | "In Progress" | "Resolved" | "Rejected";
 
-export interface StatusHistoryEntry { status: TrackingStatus; at: string; note: string }
+export interface HistoryPhoto { url: string; caption: string }
+export interface StatusHistoryEntry { status: TrackingStatus; at: string; note: string; photos?: HistoryPhoto[] }
 export interface StoredPhoto { name: string; size: number; type: string }
 
 /** Bentuk data yang disimpan ke localStorage. Dirancang agar mudah dipetakan ke tabel Supabase nanti. */
@@ -43,6 +44,7 @@ export interface ReportFormValues {
   animalName: string;
   count: string;
   condition: string;
+  conditionOther: string;
   province: string;
   city: string;
   location: LatLng | null;

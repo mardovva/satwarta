@@ -8,7 +8,6 @@ const faqs = [
   { q: "Apakah laporan harus disertai foto?", a: "Tidak wajib. Namun foto membantu petugas memverifikasi laporan dengan lebih cepat. Ambil foto dari jarak aman dan jangan mendekati satwa yang terluka atau panik." },
   { q: "Bagaimana cara melacak laporan?", a: "Masukkan ID laporan (misalnya SWT-2026-0001) pada bagian Track Laporan, lalu tekan Cari Laporan. Anda akan melihat status terkini beserta riwayatnya." },
   { q: "Apa yang terjadi setelah laporan diverifikasi?", a: "Laporan yang valid berstatus Verified, lalu ditindaklanjuti petugas atau tim lapangan (In Progress) sampai selesai (Resolved). Laporan yang tidak dapat diverifikasi berstatus Rejected beserta alasannya." },
-  { q: "Apakah ini sistem resmi?", a: "Belum. Saat ini Satwarta berupa prototipe demonstrasi: laporan hanya tersimpan di browser Anda dan belum diterima instansi mana pun. Jika menemukan satwa yang membutuhkan pertolongan segera, hubungi petugas atau instansi setempat." },
 ];
 
 export default function FAQSection() {

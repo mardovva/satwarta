@@ -1,11 +1,31 @@
-import type { TrackingLookup } from "@/lib/tracking";
-import { formatDate } from "@/lib/tracking";
+"use client";
+import { useEffect, useState } from "react";
+import type { HistoryPhoto } from "@/types/report";
+import { formatDate, type TrackingLookup } from "@/lib/tracking";
+import { loadPhotos } from "@/lib/photoStore";
 import { statusMeta } from "@/data/trackingStatuses";
 import TrackingTimeline from "./TrackingTimeline";
 
 export default function TrackingResult({ lookup }: { lookup: TrackingLookup }) {
   const { report, source } = lookup;
   const meta = statusMeta[report.status];
+  const [reporterPhotos, setReporterPhotos] = useState<HistoryPhoto[]>([]);
+
+  // Foto yang dikirim pengguna dimuat dari browser (IndexedDB)
+  useEffect(() => {
+    let cancelled = false;
+    let urls: string[] = [];
+    setReporterPhotos([]);
+    if (source === "local" && report.photos.length > 0) {
+      loadPhotos(report.id, report.photos.length).then((ps) => {
+        urls = ps.map((p) => p.url);
+        if (cancelled) urls.forEach((u) => URL.revokeObjectURL(u));
+        else setReporterPhotos(ps);
+      });
+    }
+    return () => { cancelled = true; urls.forEach((u) => URL.revokeObjectURL(u)); };
+  }, [report.id, report.photos.length, source]);
+
   const rows: [string, string][] = [
     ["Nama satwa", report.animal.name ? `${report.animal.name} (${report.animal.type})` : `Tidak disebutkan (${report.animal.type})`],
     ["Jumlah / kondisi", `${report.animal.count} ekor · ${report.animal.condition}`],
@@ -29,14 +49,9 @@ export default function TrackingResult({ lookup }: { lookup: TrackingLookup }) {
         {rows.map(([k, v]) => (<div key={k} className="contents"><dt className="font-semibold">{k}</dt><dd>{v}</dd></div>))}
       </dl>
 
-      <h4 className="mb-4 mt-7 text-lg font-bold text-primary">Riwayat laporan</h4>
-      <TrackingTimeline history={report.history} />
-
-      <p className="mt-6 rounded-xl bg-cream px-3 py-2 text-xs leading-relaxed text-ink/65">
-        {source === "demo"
-          ? "Ini laporan contoh (data dummy) untuk demonstrasi fitur pelacakan."
-          : "Ini laporan yang Anda buat di browser ini (mode demo). Belum ada petugas yang memproses laporan ini, jadi statusnya tetap Submitted sampai sistem petugas tersedia."}
-      </p>
+      <h4 className="mb-1 mt-7 text-lg font-bold text-primary">Riwayat laporan</h4>
+      <p className="mb-4 text-xs text-ink/55">Klik langkah yang memiliki foto untuk melihat dokumentasinya.</p>
+      <TrackingTimeline history={report.history} reporterPhotos={reporterPhotos} />
     </article>
   );
 }

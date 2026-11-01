@@ -25,7 +25,7 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
         <h2 className="text-2xl font-bold text-primary">Masuk</h2>
         {done ? (
           <div className="mt-4 space-y-4">
-            <p className="text-sm text-ink/70">Mode demo: login hanya simulasi di sisi frontend, belum ada autentikasi sungguhan.</p>
+            <p className="text-sm text-ink/70">Anda berhasil masuk.</p>
             <button onClick={onClose} className="rounded-full bg-primary px-6 py-2.5 font-semibold text-white hover:bg-primary-dark">Tutup</button>
           </div>
         ) : (

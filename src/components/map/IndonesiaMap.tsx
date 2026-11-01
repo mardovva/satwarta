@@ -3,12 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import type { FeatureCollection } from "geojson";
 import { Maximize2, X } from "lucide-react";
-import { dummyReports } from "@/data/dummyReports";
-import { dummyHotspots } from "@/data/dummyHotspots";
 import type { HotspotFeed } from "@/lib/firms";
-import type { LatLng, MapMode, WildlifeReport } from "@/types/report";
+import { REPORTS_UPDATED_EVENT } from "@/lib/reports";
+import { getAllReports } from "@/lib/tracking";
+import type { LatLng, MapMode } from "@/types/report";
 import { createMarkerElement } from "./MapMarker";
-import { createHotspotPopupContent, createPopupContent, ReportDetailDialog } from "./MapPopup";
+import { createHotspotPopupContent, createReportPopupContent } from "./MapPopup";
 import MapLegend, { type Basemap, type HotspotStatus } from "./MapLegend";
 
 interface IndonesiaMapProps {
@@ -16,14 +16,15 @@ interface IndonesiaMapProps {
   /** Hanya mode monitoring */
   fullscreen?: boolean;
   onToggleFullscreen?: () => void;
+  /** Dipanggil saat "Lihat Detail" pada popup laporan diklik (mode monitoring). */
+  onViewDetail?: (reportId: string) => void;
   /** Hanya mode location-picker. Simpan nilai persis seperti yang diberikan onPick (jangan dibulatkan). */
   pickedLocation?: LatLng | null;
   onPick?: (p: LatLng) => void;
 }
 
-const INDONESIA_BOUNDS: maplibregl.LngLatBoundsLike = [[94.5, -11.5], [141.5, 6.5]];
-// Tampilan awal monitoring difokuskan ke Sumatera-Kalimantan agar marker tidak bertumpuk
-const FOCUS_BOUNDS: maplibregl.LngLatBoundsLike = [[94, -10], [126, 6]];
+// Seluruh Indonesia, tepat di tengah peta
+const INDONESIA_BOUNDS: maplibregl.LngLatBoundsLike = [[95, -11.5], [141, 6.5]];
 
 const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services";
 
@@ -59,50 +60,77 @@ const locale = {
 
 const emptyFC: FeatureCollection = { type: "FeatureCollection", features: [] };
 
-export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, onToggleFullscreen, pickedLocation = null, onPick }: IndonesiaMapProps) {
+export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, onToggleFullscreen, onViewDetail, pickedLocation = null, onPick }: IndonesiaMapProps) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
-  const reportEls = useRef<HTMLElement[]>([]);
+  const markers = useRef<maplibregl.Marker[]>([]);
+  const onViewDetailRef = useRef(onViewDetail);
   const pickMarker = useRef<maplibregl.Marker | null>(null);
   const ownPick = useRef<LatLng | null>(null);
   const onPickRef = useRef(onPick);
-  const [selected, setSelected] = useState<WildlifeReport | null>(null);
-  const [showReports, setShowReports] = useState(true);
-  const [showHotspots, setShowHotspots] = useState(true);
   const [basemap, setBasemap] = useState<Basemap>("satelit");
   const [hotspot, setHotspot] = useState<HotspotStatus>({ state: "loading" });
   const [ready, setReady] = useState(false);
   const monitoring = mode === "monitoring";
 
   useEffect(() => { onPickRef.current = onPick; }, [onPick]);
+  useEffect(() => { onViewDetailRef.current = onViewDetail; }, [onViewDetail]);
 
   // Inisialisasi peta (sekali per mode) + cleanup.
   useEffect(() => {
     if (!container.current) return;
     let cancelled = false;
+    let removeReportListeners = () => {};
     const coarse = window.matchMedia("(pointer: coarse)").matches;
     const map = new maplibregl.Map({
       container: container.current,
       style,
-      bounds: mode === "monitoring" ? FOCUS_BOUNDS : INDONESIA_BOUNDS,
+      bounds: INDONESIA_BOUNDS,
       fitBoundsOptions: { padding: 8 },
       minZoom: 2,
       maxZoom: 18,
       cooperativeGestures: mode === "location-picker" || coarse,
       locale,
-      attributionControl: { compact: true },
+      attributionControl: false,
     });
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "bottom-left");
+
+    // Atribusi tetap ada (tombol "i"), tetapi tertutup secara default sampai pengguna membukanya.
+    map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
+    const host = container.current;
+    const attrib = host.querySelector<HTMLElement>(".maplibregl-ctrl-attrib");
+    let attribTouched = false;
+    const collapseAttribution = () => {
+      if (attribTouched || !attrib) return;
+      // Hanya ubah bila perlu: classList.remove pada class yang tidak ada tetap memicu mutation record,
+      // yang akan memanggil observer ini lagi tanpa henti dan membekukan halaman.
+      if (attrib.hasAttribute("open")) attrib.removeAttribute("open");
+      if (attrib.classList.contains("maplibregl-compact-show")) attrib.classList.remove("maplibregl-compact-show");
+    };
+    attrib?.querySelector(".maplibregl-ctrl-attrib-button")?.addEventListener("click", () => { attribTouched = true; });
+    const attribObserver = new MutationObserver(collapseAttribution);
+    if (attrib) attribObserver.observe(attrib, { attributes: true, attributeFilter: ["open", "class"] });
+    collapseAttribution();
     mapRef.current = map;
 
     if (mode === "monitoring") {
       setHotspot({ state: "loading" });
-      dummyReports.forEach((r) => {
-        const el = createMarkerElement(r);
-        reportEls.current.push(el);
-        const popup = new maplibregl.Popup({ offset: 30, maxWidth: "270px" }).setDOMContent(createPopupContent(r, () => setSelected(r)));
-        new maplibregl.Marker({ element: el }).setLngLat([r.lng, r.lat]).setPopup(popup).addTo(map);
-      });
+      // Marker = laporan dari formulir (disimpan di browser) + laporan yang sudah ada
+      const renderReports = () => {
+        markers.current.forEach((m) => m.remove());
+        markers.current = getAllReports().map((r) => {
+          const popup = new maplibregl.Popup({ offset: 30, maxWidth: "270px" });
+          popup.setDOMContent(createReportPopupContent(r, () => { popup.remove(); onViewDetailRef.current?.(r.id); }));
+          return new maplibregl.Marker({ element: createMarkerElement(r) }).setLngLat([r.location.lng, r.location.lat]).setPopup(popup).addTo(map);
+        });
+      };
+      renderReports();
+      window.addEventListener(REPORTS_UPDATED_EVENT, renderReports);
+      window.addEventListener("storage", renderReports);
+      removeReportListeners = () => {
+        window.removeEventListener(REPORTS_UPDATED_EVENT, renderReports);
+        window.removeEventListener("storage", renderReports);
+      };
 
       map.on("load", () => {
         map.addSource("hotspots", { type: "geojson", data: emptyFC });
@@ -132,19 +160,18 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
         });
         setReady(true);
 
-        // Data hotspot nyata dari NASA FIRMS lewat route server; jatuh ke data simulasi bila gagal.
+        // Data hotspot dari NASA FIRMS lewat route server (/api/hotspots).
         const source = map.getSource("hotspots") as maplibregl.GeoJSONSource;
         fetch("/api/hotspots")
           .then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json() as Promise<HotspotFeed>; })
           .then((feed) => {
             if (cancelled || mapRef.current !== map) return;
             source.setData(feed.data);
-            setHotspot({ state: "live", count: feed.meta.count, dayRange: feed.meta.dayRange, source: feed.meta.source });
+            setHotspot({ state: "live", count: feed.meta.count, dayRange: feed.meta.dayRange });
           })
           .catch(() => {
             if (cancelled || mapRef.current !== map) return;
-            source.setData(dummyHotspots);
-            setHotspot({ state: "simulated" });
+            setHotspot({ state: "unavailable" });
           });
       });
     } else {
@@ -170,8 +197,11 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
 
     return () => {
       cancelled = true;
+      attribObserver.disconnect();
       ro.disconnect();
-      reportEls.current = [];
+      removeReportListeners();
+      markers.current.forEach((m) => m.remove());
+      markers.current = [];
       pickMarker.current = null;
       map.remove();
       mapRef.current = null;
@@ -179,17 +209,7 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
     };
   }, [mode]);
 
-  // Toggle legenda: marker laporan, layer hotspot, jenis peta
-  useEffect(() => {
-    reportEls.current.forEach((el) => { el.style.display = showReports ? "" : "none"; });
-  }, [showReports, mode]);
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map || !ready) return;
-    ["hotspot-glow", "hotspot-core"].forEach((id) => {
-      if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", showHotspots ? "visible" : "none");
-    });
-  }, [showHotspots, ready]);
+  // Jenis peta: satelit (+label) atau peta jalan
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !ready) return;
@@ -217,12 +237,7 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
       <div ref={container} className="h-full w-full" />
       {monitoring && (
         <>
-          <MapLegend
-            showReports={showReports} showHotspots={showHotspots} hotspot={hotspot} basemap={basemap}
-            onToggleReports={() => setShowReports((v) => !v)}
-            onToggleHotspots={() => setShowHotspots((v) => !v)}
-            onBasemap={setBasemap}
-          />
+          <MapLegend hotspot={hotspot} basemap={basemap} onBasemap={setBasemap} />
           {onToggleFullscreen && (
             <button
               onClick={onToggleFullscreen}
@@ -232,7 +247,6 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
               {fullscreen ? <X size={18} /> : <Maximize2 size={18} />}
             </button>
           )}
-          {selected && <ReportDetailDialog report={selected} onClose={() => setSelected(null)} />}
         </>
       )}
     </div>

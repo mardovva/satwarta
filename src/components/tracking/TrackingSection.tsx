@@ -1,8 +1,10 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { Search } from "lucide-react";
-import { statusMeta, statusOrder } from "@/data/trackingStatuses";
-import { TRACK_EVENT, findReport, type TrackingLookup } from "@/lib/tracking";
+import { statusMeta } from "@/data/trackingStatuses";
+import { REPORTS_UPDATED_EVENT, getStoredReports } from "@/lib/reports";
+import { TRACK_EVENT, findReport, formatDate, type TrackingLookup } from "@/lib/tracking";
+import type { StoredReport } from "@/types/report";
 import TrackingResult from "./TrackingResult";
 
 type Result =
@@ -11,11 +13,10 @@ type Result =
   | { state: "notfound"; id: string }
   | { state: "found"; lookup: TrackingLookup };
 
-const exampleIds = ["SWT-2026-0901", "SWT-2026-0902", "SWT-2026-0903", "SWT-2026-0904"];
-
 export default function TrackingSection() {
   const [input, setInput] = useState("");
   const [result, setResult] = useState<Result>({ state: "idle" });
+  const [recent, setRecent] = useState<StoredReport[]>([]);
 
   const runSearch = useCallback((raw: string) => {
     if (!raw.trim()) { setResult({ state: "error", message: "Masukkan ID laporan terlebih dahulu." }); return; }
@@ -23,7 +24,19 @@ export default function TrackingSection() {
     setResult(lookup ? { state: "found", lookup } : { state: "notfound", id: raw.trim() });
   }, []);
 
-  // Dipicu dari modal sukses ("Lacak laporan")
+  // Riwayat laporan yang dikirim pengguna di browser ini (terbaru di atas)
+  useEffect(() => {
+    const load = () => setRecent(getStoredReports().slice().reverse().slice(0, 5));
+    load();
+    window.addEventListener(REPORTS_UPDATED_EVENT, load);
+    window.addEventListener("storage", load);
+    return () => {
+      window.removeEventListener(REPORTS_UPDATED_EVENT, load);
+      window.removeEventListener("storage", load);
+    };
+  }, []);
+
+  // Dipicu dari modal sukses dan tombol "Lihat Detail" di peta
   useEffect(() => {
     const onTrack = (e: Event) => {
       const id = (e as CustomEvent<string>).detail;
@@ -52,37 +65,38 @@ export default function TrackingSection() {
           </button>
         </form>
 
-        <p className="mx-auto mt-4 flex max-w-xl flex-wrap items-center justify-center gap-2 text-xs text-ink/65">
-          <span>Coba ID contoh:</span>
-          {exampleIds.map((id) => (
-            <button key={id} type="button" onClick={() => { setInput(id); runSearch(id); }} className="rounded-full bg-white px-3 py-1 font-medium text-primary shadow-sm ring-1 ring-primary/25 hover:bg-primary hover:text-white">
-              {id}
-            </button>
-          ))}
-        </p>
+        {recent.length > 0 && (
+          <div className="mx-auto mt-6 max-w-xl text-left">
+            <h3 className="mb-2 text-sm font-semibold text-primary">Riwayat laporan Anda</h3>
+            <ul className="space-y-2">
+              {recent.map((r) => (
+                <li key={r.id}>
+                  <button
+                    type="button" onClick={() => { setInput(r.id); runSearch(r.id); }}
+                    className="flex w-full items-center justify-between gap-3 rounded-2xl bg-white px-4 py-3 text-left shadow-sm ring-1 ring-black/5 transition hover:ring-primary/40"
+                  >
+                    <span>
+                      <span className="block font-bold">{r.id}</span>
+                      <span className="block text-xs text-ink/60">{r.animal.name || r.animal.type} · {formatDate(r.createdAt)}</span>
+                    </span>
+                    <span className="flex-none rounded-full px-3 py-0.5 text-xs font-semibold" style={{ background: statusMeta[r.status].bg, color: statusMeta[r.status].fg }}>{r.status}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <div aria-live="polite" className="text-left">
           {result.state === "error" && <p className="mt-6 text-center text-sm font-medium text-red-600">{result.message}</p>}
           {result.state === "notfound" && (
             <div className="mx-auto mt-6 max-w-xl rounded-2xl bg-white p-5 text-center shadow-sm">
               <p className="font-semibold">Laporan <span className="font-bold">{result.id}</span> tidak ditemukan.</p>
-              <p className="mt-1 text-sm text-ink/65">Periksa kembali penulisan ID. Pada mode demo, hanya laporan yang dibuat di browser ini dan ID contoh di atas yang dapat dicari.</p>
+              <p className="mt-1 text-sm text-ink/65">Periksa kembali penulisan ID laporan Anda.</p>
             </div>
           )}
           {result.state === "found" && <TrackingResult lookup={result.lookup} />}
         </div>
-
-        <details className="mx-auto mt-8 max-w-xl rounded-2xl bg-white/85 p-4 text-left text-sm shadow-sm">
-          <summary className="cursor-pointer font-semibold text-primary">Arti setiap status laporan</summary>
-          <ul className="mt-3 space-y-2">
-            {statusOrder.map((s) => (
-              <li key={s} className="flex flex-wrap items-baseline gap-x-2">
-                <span className="rounded-full px-3 py-0.5 text-xs font-semibold" style={{ background: statusMeta[s].bg, color: statusMeta[s].fg }}>{s}</span>
-                <span className="text-ink/70">{statusMeta[s].description}</span>
-              </li>
-            ))}
-          </ul>
-        </details>
       </div>
     </section>
   );

@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { CheckCircle2, Copy } from "lucide-react";
 import type { StoredReport } from "@/types/report";
-import { TRACK_EVENT } from "@/lib/tracking";
+import { goToTracking } from "@/lib/tracking";
 
 interface Props { report: StoredReport; persisted: boolean; onClose: () => void }
 
@@ -23,9 +23,7 @@ export default function SubmissionSuccess({ report, persisted, onClose }: Props)
   };
   const goTrack = () => {
     onClose();
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    document.getElementById("track")?.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
-    window.dispatchEvent(new CustomEvent(TRACK_EVENT, { detail: report.id }));
+    goToTracking(report.id);
   };
 
   const { animal, location, reporter } = report;
@@ -44,7 +42,7 @@ export default function SubmissionSuccess({ report, persisted, onClose }: Props)
       <div role="dialog" aria-modal="true" aria-labelledby="success-title" className="w-full max-w-md rounded-3xl bg-white p-6 shadow-soft" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-2 text-primary">
           <CheckCircle2 size={26} />
-          <h3 id="success-title" className="text-xl font-bold">Laporan tersimpan (mode demo)</h3>
+          <h3 id="success-title" className="text-xl font-bold">Laporan berhasil dikirim</h3>
         </div>
 
         <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl bg-cream px-4 py-3">
@@ -61,11 +59,9 @@ export default function SubmissionSuccess({ report, persisted, onClose }: Props)
           {rows.map(([k, v]) => (<div key={k} className="contents"><dt className="font-semibold">{k}</dt><dd>{v}</dd></div>))}
         </dl>
 
-        <p className="mt-4 rounded-xl bg-accent/10 px-3 py-2 text-xs leading-relaxed text-ink/75">
-          {persisted
-            ? "Ini simulasi: laporan hanya disimpan di browser Anda (localStorage) dan belum diterima instansi mana pun."
-            : "Penyimpanan browser tidak tersedia, jadi laporan ini tidak tersimpan. Ini hanya simulasi dan belum diterima instansi mana pun."}
-        </p>
+        {!persisted && (
+          <p className="mt-4 rounded-xl bg-accent/10 px-3 py-2 text-xs leading-relaxed text-ink/75">Laporan tidak dapat disimpan di perangkat ini. Silakan coba lagi.</p>
+        )}
 
         <div className="mt-5 flex flex-wrap justify-end gap-2">
           <button type="button" onClick={goTrack} className="rounded-full px-5 py-2 text-sm font-semibold text-primary ring-1 ring-primary/40 hover:bg-primary/5">Lacak laporan</button>

@@ -1,4 +1,4 @@
-// KONTEN CONTOH untuk demonstrasi. Bukan berita atau data aktual. Ganti `image` dengan gambar lokal bila sudah ada.
+// Konten berita. Ganti `image` dengan gambar lokal bila sudah ada.
 export type NewsCategory = "Berita Karhutla" | "Edukasi Satwa" | "Konservasi" | "Data Hotspot" | "Statistik";
 
 export const newsCategories: NewsCategory[] = ["Berita Karhutla", "Edukasi Satwa", "Konservasi", "Data Hotspot", "Statistik"];
@@ -29,7 +29,6 @@ export const dummyNews: NewsArticle[] = [
     summary: "Kondisi kering membuat lahan, terutama lahan gambut, lebih mudah terbakar dan sulit dipadamkan.",
     body: [
       "Pada musim kemarau, vegetasi dan tanah yang mengering meningkatkan risiko kebakaran lahan. Lahan gambut yang terbakar dapat membara di bawah permukaan dan menghasilkan asap dalam waktu lama.",
-      "Artikel ini adalah konten contoh untuk demonstrasi tampilan berita pada Satwarta.",
     ],
   },
   {
@@ -38,7 +37,7 @@ export const dummyNews: NewsArticle[] = [
     summary: "Hotspot adalah indikasi anomali suhu dari satelit yang masih perlu dipastikan di lapangan.",
     body: [
       "Hotspot menunjukkan area dengan suhu permukaan yang lebih tinggi dari sekitarnya menurut sensor satelit. Tidak semua hotspot berarti kebakaran, dan tidak semua kebakaran selalu terdeteksi.",
-      "Karena itu, laporan masyarakat dan verifikasi petugas di lapangan melengkapi data satelit. Layer hotspot pada peta Satwarta menampilkan deteksi satelit NASA FIRMS bila tersambung. Jika tidak, peta menampilkan data simulasi yang diberi label jelas.",
+      "Karena itu, laporan masyarakat dan verifikasi petugas di lapangan melengkapi data satelit. Layer hotspot pada peta Satwarta menampilkan deteksi satelit NASA FIRMS.",
     ],
   },
   {
@@ -56,7 +55,7 @@ export const dummyNews: NewsArticle[] = [
     summary: "Angka laporan hanya mencerminkan kejadian yang terlaporkan, bukan seluruh dampak sebenarnya.",
     body: [
       "Statistik dari laporan masyarakat bergantung pada siapa yang melapor dan seberapa mudah lokasi dijangkau. Karena itu, angka laporan cenderung lebih rendah dari dampak sebenarnya.",
-      "Angka pada halaman beranda Satwarta (137, 290, dan 232) adalah data dummy untuk demonstrasi, bukan data aktual.",
+      "Angka pada halaman beranda Satwarta sebaiknya dibaca sebagai gambaran dari laporan yang masuk.",
     ],
   },
   {

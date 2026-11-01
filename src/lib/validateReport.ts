@@ -1,3 +1,4 @@
+import { CONDITION_OTHER } from "@/data/formOptions";
 import type { ReportFormErrors, ReportFormValues } from "@/types/report";
 
 export function normalizePhone(raw: string) {
@@ -10,6 +11,7 @@ export function validateReportForm(v: ReportFormValues): ReportFormErrors {
   if (!v.animalType) e.animalType = "Pilih jenis satwa.";
   if (!v.count || !Number.isInteger(count) || count < 1 || count > 9999) e.count = "Masukkan jumlah satwa (minimal 1).";
   if (!v.condition) e.condition = "Pilih kondisi satwa.";
+  else if (v.condition === CONDITION_OTHER && !v.conditionOther.trim()) e.conditionOther = "Tulis kondisi satwa.";
   if (!v.province) e.province = "Pilih provinsi.";
   if (!v.city) e.city = "Pilih kabupaten/kota.";
   if (!v.location) e.location = "Tandai lokasi di peta atau gunakan lokasi Anda.";

@@ -28,3 +28,15 @@ const dateOnly = new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "long
 
 export const formatDateTime = (iso: string) => `${dateTime.format(new Date(iso))} WIB`;
 export const formatDate = (iso: string) => dateOnly.format(new Date(iso));
+
+/** Semua laporan yang tampil di peta: laporan yang sudah ada + laporan dari formulir di browser ini. */
+export function getAllReports(): StoredReport[] {
+  return [...dummyTrackingReports, ...getStoredReports()];
+}
+
+/** Gulir ke bagian Track Laporan dan tampilkan laporan dengan ID tersebut. */
+export function goToTracking(id: string) {
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.getElementById("track")?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  window.dispatchEvent(new CustomEvent(TRACK_EVENT, { detail: id }));
+}

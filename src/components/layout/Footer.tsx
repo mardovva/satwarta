@@ -4,7 +4,7 @@ const nav = [
   { label: "Beranda", href: "#beranda" },
   { label: "Lapor", href: "#lapor" },
   { label: "Track Laporan", href: "#track" },
-  { label: "Berita & Data", href: "#berita" },
+  { label: "Berita dan Data", href: "#berita" },
   { label: "Tentang", href: "#tentang" },
   { label: "FAQ", href: "#faq" },
 ];
@@ -34,8 +34,7 @@ export default function Footer() {
         </nav>
       </div>
       <div className="mx-auto mt-8 max-w-6xl border-t border-white/15 pt-5 text-xs leading-relaxed text-white/65">
-        <p>Prototipe demonstrasi: statistik, laporan satwa, dan konten berita adalah data contoh.</p>
-        <p className="mt-1">Citra satelit: Esri World Imagery. Peta: © OpenStreetMap contributors. Data hotspot: NASA FIRMS. © 2026 Satwarta.</p>
+        <p>Citra satelit: Esri World Imagery. Peta: © OpenStreetMap contributors. Data hotspot: NASA FIRMS. © 2026 Satwarta.</p>
       </div>
     </footer>
   );

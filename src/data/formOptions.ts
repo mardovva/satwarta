@@ -2,7 +2,5 @@ export const animalTypes = ["Mamalia", "Burung", "Reptil", "Amfibi", "Lainnya", 
 
 export const animalConditions = ["Terluka", "Terjebak", "Ditemukan mati", "Mengungsi", "Terpapar asap", "Tidak diketahui"];
 
-export const animalNameSuggestions = [
-  "Gajah Sumatera", "Orangutan Sumatera", "Orangutan Kalimantan", "Harimau Sumatera",
-  "Beruang Madu", "Tapir", "Trenggiling Sunda", "Burung Rangkong", "Bekantan",
-];
+/** Pilihan untuk menulis kondisi sendiri */
+export const CONDITION_OTHER = "Lainnya (tulis sendiri)";

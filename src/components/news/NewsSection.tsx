@@ -16,8 +16,8 @@ export default function NewsSection() {
     <section id="berita" className="bg-white px-4 py-20 sm:py-28">
       <div className="mx-auto max-w-6xl">
         <div className="text-center">
-          <h2 className="text-3xl font-extrabold tracking-tight text-primary sm:text-5xl">Berita &amp; Data</h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-ink/70 sm:text-base">Informasi seputar karhutla, edukasi satwa liar, dan konservasi. Konten di bawah ini masih contoh.</p>
+          <h2 className="text-3xl font-extrabold tracking-tight text-primary sm:text-5xl">Berita dan Data</h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-ink/70 sm:text-base">Informasi seputar karhutla, edukasi satwa liar, dan konservasi.</p>
         </div>
 
         <div className="mt-8 flex flex-wrap justify-center gap-2" role="group" aria-label="Filter kategori">

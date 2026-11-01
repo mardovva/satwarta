@@ -6,8 +6,10 @@ import LoginModal from "./LoginModal";
 
 const links = [
   { label: "Beranda", id: "beranda" },
-  { label: "Tentang", id: "tentang" },
   { label: "Lapor", id: "lapor" },
+  { label: "Track", id: "track" },
+  { label: "Berita dan Data", id: "berita" },
+  { label: "Tentang", id: "tentang" },
   { label: "FAQ", id: "faq" },
 ];
 
@@ -40,7 +42,7 @@ export default function Navbar() {
             <span className="text-lg font-bold lowercase sm:text-xl">satwarta</span>
           </a>
 
-          <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-10 text-lg md:flex">
+          <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-6 text-base lg:flex xl:gap-9 xl:text-lg">
             {links.map((l) => (
               <li key={l.id}>
                 <a href={`#${l.id}`} aria-current={l.id === active ? "page" : undefined} className={linkCls(l.id)}>{l.label}</a>
@@ -48,16 +50,16 @@ export default function Navbar() {
             ))}
           </ul>
 
-          <button onClick={openLogin} className="ml-auto hidden rounded-full bg-primary px-6 py-2 font-semibold text-white transition hover:bg-primary-dark md:block">
+          <button onClick={openLogin} className="ml-auto hidden rounded-full bg-primary px-6 py-2 font-semibold text-white transition hover:bg-primary-dark lg:block">
             Masuk
           </button>
-          <button onClick={() => setMenuOpen((v) => !v)} aria-label={menuOpen ? "Tutup menu" : "Buka menu"} aria-expanded={menuOpen} className="ml-auto rounded-full p-2 hover:bg-mist md:hidden">
+          <button onClick={() => setMenuOpen((v) => !v)} aria-label={menuOpen ? "Tutup menu" : "Buka menu"} aria-expanded={menuOpen} className="ml-auto rounded-full p-2 hover:bg-mist lg:hidden">
             {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </nav>
 
         {menuOpen && (
-          <div className="border-t border-gray-100 px-4 pb-5 pt-3 md:hidden">
+          <div className="border-t border-gray-100 px-4 pb-5 pt-3 lg:hidden">
             <ul className="space-y-1 text-lg">
               {links.map((l) => (
                 <li key={l.id}>

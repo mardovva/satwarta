@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import Decor from "@/components/layout/Decor";
 import type { PhotoItem, ReportFormErrors, ReportFormValues, StoredReport } from "@/types/report";
+import { CONDITION_OTHER } from "@/data/formOptions";
+import { savePhotos } from "@/lib/photoStore";
 import { saveReport } from "@/lib/reports";
 import { normalizePhone, validateReportForm } from "@/lib/validateReport";
 import AnimalInformationForm from "./AnimalInformationForm";
@@ -12,7 +14,7 @@ import SubmissionSuccess from "./SubmissionSuccess";
 import { FormField, fieldProps, inputClass } from "./FormField";
 
 const initialValues: ReportFormValues = {
-  animalType: "", animalName: "", count: "", condition: "",
+  animalType: "", animalName: "", count: "", condition: "", conditionOther: "",
   province: "", city: "", location: null,
   reporterName: "", phone: "", email: "",
 };
@@ -50,14 +52,15 @@ export default function ReportFormSection() {
       return;
     }
     setSubmitting(true);
-    timer.current = window.setTimeout(() => {
+    timer.current = window.setTimeout(async () => {
       const loc = values.location!;
       const saved = saveReport({
-        animal: { type: values.animalType, name: values.animalName.trim(), count: Number(values.count), condition: values.condition },
+        animal: { type: values.animalType, name: values.animalName.trim(), count: Number(values.count), condition: values.condition === CONDITION_OTHER ? values.conditionOther.trim() : values.condition },
         location: { province: values.province, city: values.city, lat: loc.lat, lng: loc.lng },
         photos: photos.map((p) => ({ name: p.file.name, size: p.file.size, type: p.file.type })),
         reporter: { name: values.reporterName.trim(), phone: normalizePhone(values.phone), email: values.email.trim() },
       });
+      if (photos.length > 0) await savePhotos(saved.report.id, photos.map((p) => p.file));
       photos.forEach((p) => URL.revokeObjectURL(p.url));
       setPhotos([]);
       setValues(initialValues);
@@ -92,14 +95,14 @@ export default function ReportFormSection() {
             <FormField id="field-phone" label="Nomor telepon/WhatsApp" required error={errors.phone}>
               <input {...fieldProps("field-phone", errors.phone)} type="tel" inputMode="tel" autoComplete="tel" value={values.phone} onChange={(e) => onChange("phone", e.target.value)} placeholder="08XXXXXXXXXX" className={inputClass(!!errors.phone)} />
             </FormField>
-            <FormField id="field-email" label="Email (opsional)" error={errors.email}>
+            <FormField id="field-email" label="Email" error={errors.email}>
               <input {...fieldProps("field-email", errors.email)} type="email" autoComplete="email" value={values.email} onChange={(e) => onChange("email", e.target.value)} placeholder="nama@email.com" className={inputClass(!!errors.email)} />
             </FormField>
           </div>
 
           <div className="flex flex-col-reverse items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-xs text-ink/60" role={hasErrors ? "alert" : undefined}>
-              {hasErrors ? "Periksa kembali isian yang ditandai merah." : "Mode demo: laporan disimpan di browser Anda dan belum dikirim ke instansi mana pun."}
+            <p className="text-xs font-medium text-red-600" role={hasErrors ? "alert" : undefined}>
+              {hasErrors ? "Periksa kembali isian yang ditandai merah." : ""}
             </p>
             <button
               type="submit" disabled={submitting}

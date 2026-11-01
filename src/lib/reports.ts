@@ -2,6 +2,9 @@ import type { StoredReport } from "@/types/report";
 
 const KEY = "satwarta:reports:v1";
 
+/** Dikirim setelah laporan baru tersimpan, agar peta memperbarui marker. */
+export const REPORTS_UPDATED_EVENT = "satwarta:reports-updated";
+
 /** Hanya panggil dari client (event handler / useEffect) agar tidak memicu hydration error. */
 export function getStoredReports(): StoredReport[] {
   if (typeof window === "undefined") return [];
@@ -37,6 +40,7 @@ export function saveReport(input: NewReportInput): { report: StoredReport; persi
   };
   try {
     window.localStorage.setItem(KEY, JSON.stringify([...existing, report]));
+    window.dispatchEvent(new Event(REPORTS_UPDATED_EVENT));
     return { report, persisted: true };
   } catch {
     return { report, persisted: false };
