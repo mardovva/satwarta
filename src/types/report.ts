@@ -24,7 +24,14 @@ export interface LatLng {
 export type TrackingStatus = "Submitted" | "Under Review" | "Verified" | "In Progress" | "Resolved" | "Rejected";
 
 export interface HistoryPhoto { url: string; caption: string }
-export interface StatusHistoryEntry { status: TrackingStatus; at: string; note: string; photos?: HistoryPhoto[] }
+export interface StatusHistoryEntry {
+  status: TrackingStatus;
+  at: string;
+  note: string;
+  photos?: HistoryPhoto[];
+  /** Jumlah foto petugas yang tersimpan di IndexedDB untuk langkah ini */
+  storedPhotos?: number;
+}
 export interface StoredPhoto { name: string; size: number; type: string }
 
 /** Bentuk data yang disimpan ke localStorage. Dirancang agar mudah dipetakan ke tabel Supabase nanti. */

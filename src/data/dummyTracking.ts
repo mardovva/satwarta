@@ -4,7 +4,7 @@ import { placeholderPhoto } from "@/lib/placeholderPhoto";
 // Laporan yang sudah ada. Foto: "pelapor" = dari pengirim laporan, "petugas" = bukti dari petugas.
 const rp = (emoji: string, title: string): HistoryPhoto => ({ url: placeholderPhoto(emoji, title, "pelapor"), caption: "Foto dari pelapor" });
 const op = (emoji: string, title: string): HistoryPhoto => ({ url: placeholderPhoto(emoji, title, "petugas"), caption: "Dokumentasi petugas" });
-const demoReporter = { name: "Pelapor demo", phone: "", email: "" };
+const demoReporter = { name: "Warga setempat", phone: "", email: "" };
 
 export const dummyTrackingReports: StoredReport[] = [
   {

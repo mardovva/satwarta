@@ -6,9 +6,9 @@ import type { PhotoItem } from "@/types/report";
 const MAX_FILES = 8;
 const MAX_MB = 5;
 
-interface Props { items: PhotoItem[]; onChange: (items: PhotoItem[]) => void }
+interface Props { items: PhotoItem[]; onChange: (items: PhotoItem[]) => void; label?: string; optional?: boolean }
 
-export default function FileUpload({ items, onChange }: Props) {
+export default function FileUpload({ items, onChange, label = "Dokumentasi", optional = true }: Props) {
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState("");
 
@@ -32,7 +32,7 @@ export default function FileUpload({ items, onChange }: Props) {
 
   return (
     <div>
-      <p className="mb-1.5 text-[15px] font-semibold">Dokumentasi <span className="font-normal text-ink/55">(opsional)</span></p>
+      <p className="mb-1.5 text-[15px] font-semibold">{label}{optional && <span className="font-normal text-ink/55"> (opsional)</span>}</p>
       <label
         htmlFor="field-photos"
         onDragOver={(e) => { e.preventDefault(); setDragging(true); }}

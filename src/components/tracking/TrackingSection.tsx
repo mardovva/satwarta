@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { statusMeta } from "@/data/trackingStatuses";
-import { REPORTS_UPDATED_EVENT, getStoredReports } from "@/lib/reports";
+import { REPORTS_UPDATED_EVENT, getStoredReports, withUpdates } from "@/lib/reports";
 import { TRACK_EVENT, findReport, formatDate, type TrackingLookup } from "@/lib/tracking";
 import type { StoredReport } from "@/types/report";
 import TrackingResult from "./TrackingResult";
@@ -26,7 +26,7 @@ export default function TrackingSection() {
 
   // Riwayat laporan yang dikirim pengguna di browser ini (terbaru di atas)
   useEffect(() => {
-    const load = () => setRecent(getStoredReports().slice().reverse().slice(0, 5));
+    const load = () => setRecent(getStoredReports().map((r) => withUpdates(r)).reverse().slice(0, 5));
     load();
     window.addEventListener(REPORTS_UPDATED_EVENT, load);
     window.addEventListener("storage", load);

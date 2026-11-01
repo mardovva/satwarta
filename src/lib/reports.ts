@@ -1,4 +1,4 @@
-import type { StoredReport } from "@/types/report";
+import type { StatusHistoryEntry, StoredReport } from "@/types/report";
 
 const KEY = "satwarta:reports:v1";
 
@@ -44,5 +44,39 @@ export function saveReport(input: NewReportInput): { report: StoredReport; persi
     return { report, persisted: true };
   } catch {
     return { report, persisted: false };
+  }
+}
+
+// ---------- Pembaruan oleh petugas ----------
+const UPDATES_KEY = "satwarta:officer-updates:v1";
+type UpdatesMap = Record<string, StatusHistoryEntry[]>;
+
+export function getUpdates(): UpdatesMap {
+  if (typeof window === "undefined") return {};
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(UPDATES_KEY) ?? "{}");
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+/** Gabungkan pembaruan petugas ke riwayat laporan; status mengikuti pembaruan terakhir. */
+export function withUpdates(report: StoredReport, updates: UpdatesMap = getUpdates()): StoredReport {
+  const extra = updates[report.id];
+  if (!extra?.length) return report;
+  const history = [...report.history, ...extra];
+  return { ...report, history, status: history[history.length - 1].status };
+}
+
+export function addStatusUpdate(reportId: string, entry: StatusHistoryEntry): boolean {
+  const all = getUpdates();
+  all[reportId] = [...(all[reportId] ?? []), entry];
+  try {
+    window.localStorage.setItem(UPDATES_KEY, JSON.stringify(all));
+    window.dispatchEvent(new Event(REPORTS_UPDATED_EVENT));
+    return true;
+  } catch {
+    return false;
   }
 }
