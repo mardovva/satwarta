@@ -29,49 +29,7 @@ Teknologi yang digunakan dalam pengembangan Satwarta:
 
 ## Getting Started (Sementara)
 
-Ikuti langkah-langkah berikut untuk menjalankan proyek Satwarta secara lokal.
-
-### Prerequisites
-
-Pastikan perangkat sudah memiliki:
-
-- Node.js
-- npm
-- Git
-
-### Installation
-
-**1. Clone repository**
-
-```bash
-git clone <https://github.com/mardovva/satwarta.git)>
-```
-
-**2. Masuk ke direktori proyek**
-
-```bash
-cd <project-folder>
-```
-
-**3. Install dependencies**
-
-```bash
-npm install
-```
-
-**4. Jalankan development server**
-
-```bash
-npm run dev
-```
-
-**5. Buka aplikasi**
-
-Akses aplikasi melalui browser:
-
-```text
-http://localhost:3000
-```
+Akses dapat melalui link [satwarta.vercel.app](https://satwarta.vercel.app)
 
 ---
 
