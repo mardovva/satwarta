@@ -27,7 +27,7 @@ Teknologi yang digunakan dalam pengembangan Satwarta:
 
 ---
 
-## Getting Started (Sementara)
+## Kunjungi Website
 
 Akses dapat melalui link [satwarta.vercel.app](https://satwarta.vercel.app)
 
