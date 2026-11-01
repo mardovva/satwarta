@@ -1,27 +1,18 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { LogOut } from "lucide-react";
-import { setRole } from "@/lib/role";
 
-export default function OfficerHeader() {
-  const router = useRouter();
-  const logout = () => { setRole("pelapor"); router.push("/"); };
+export default function OfficerHeader({ onLogout }: { onLogout: () => void }) {
   return (
-    <header className="sticky top-0 z-40 rounded-b-3xl bg-white shadow-nav">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:h-[72px] sm:px-8">
+    <header className="fixed inset-x-0 top-0 z-50 w-full transform-gpu rounded-b-3xl border-b border-white/40 bg-white/60 shadow-nav backdrop-blur-lg supports-[not(backdrop-filter:blur(1px))]:bg-white/95">
+      <div className="relative mx-auto flex h-16 max-w-[1400px] items-center px-4 sm:h-[72px] sm:px-8">
         <Link href="/" className="flex items-center gap-2 sm:gap-3">
           <Image src="/images/logo.png" alt="Logo Satwarta" width={40} height={41} className="h-8 w-auto sm:h-10" />
           <span className="text-lg font-bold lowercase sm:text-xl">satwarta</span>
         </Link>
-        <span className="rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold text-accent sm:text-sm">Dasbor Petugas</span>
-        <nav className="ml-auto flex items-center gap-2 sm:gap-4">
-          <Link href="/" className="hidden text-sm font-medium text-ink transition hover:text-accent sm:block">Beranda</Link>
-          <button type="button" onClick={logout} className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-dark">
-            <LogOut size={16} /> Keluar
-          </button>
-        </nav>
+        <button type="button" onClick={onLogout} className="ml-auto rounded-full bg-primary px-6 py-2 font-semibold text-white transition hover:bg-primary-dark">
+          Keluar
+        </button>
       </div>
     </header>
   );

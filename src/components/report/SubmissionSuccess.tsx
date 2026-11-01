@@ -32,6 +32,7 @@ export default function SubmissionSuccess({ report, persisted, onClose }: Props)
     ["Jumlah", String(animal.count)],
     ["Kondisi", animal.condition],
     ["Lokasi", `${location.city}, ${location.province}`],
+    ["Dikirim ke", `Petugas wilayah ${location.province}`],
     ["Koordinat", `${location.lat.toFixed(5)}, ${location.lng.toFixed(5)}`],
     ["Foto", `${report.photos.length} file`],
     ["Pelapor", reporter.name],

@@ -24,6 +24,7 @@ export interface LatLng {
 export type TrackingStatus = "Submitted" | "Under Review" | "Verified" | "In Progress" | "Resolved" | "Rejected";
 
 export interface HistoryPhoto { url: string; caption: string }
+export interface OfficerRef { username: string; name: string; agency: string }
 export interface StatusHistoryEntry {
   status: TrackingStatus;
   at: string;
@@ -31,6 +32,8 @@ export interface StatusHistoryEntry {
   photos?: HistoryPhoto[];
   /** Jumlah foto petugas yang tersimpan di IndexedDB untuk langkah ini */
   storedPhotos?: number;
+  /** Petugas yang melakukan pembaruan ini */
+  officer?: OfficerRef;
 }
 export interface StoredPhoto { name: string; size: number; type: string }
 

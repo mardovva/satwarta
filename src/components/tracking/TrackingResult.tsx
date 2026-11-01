@@ -2,6 +2,7 @@
 import { formatDate, type TrackingLookup } from "@/lib/tracking";
 import { useReportPhotos } from "@/hooks/useReportPhotos";
 import { statusMeta } from "@/data/trackingStatuses";
+import { handlerLabel } from "@/lib/handler";
 import TrackingTimeline from "./TrackingTimeline";
 
 export default function TrackingResult({ lookup }: { lookup: TrackingLookup }) {
@@ -14,6 +15,7 @@ export default function TrackingResult({ lookup }: { lookup: TrackingLookup }) {
     ["Jumlah / kondisi", `${report.animal.count} ekor · ${report.animal.condition}`],
     ["Lokasi", `${report.location.city}, ${report.location.province}`],
     ["Tanggal laporan", formatDate(report.createdAt)],
+    ["Ditangani oleh", handlerLabel(report)],
   ];
 
   return (

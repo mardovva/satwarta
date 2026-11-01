@@ -7,9 +7,11 @@ import { formatDate } from "@/lib/tracking";
 import { useReportPhotos } from "@/hooks/useReportPhotos";
 import TrackingTimeline from "@/components/tracking/TrackingTimeline";
 import PhotoLightbox from "@/components/tracking/PhotoLightbox";
+import { handlerLabel } from "@/lib/handler";
+import type { OfficerSession } from "@/lib/auth";
 import OfficerActionForm from "./OfficerActionForm";
 
-export default function ReportDetail({ report }: { report: StoredReport | null }) {
+export default function ReportDetail({ report, session }: { report: StoredReport | null; session: OfficerSession }) {
   if (!report) {
     return (
       <section id="detail" className="flex min-h-[260px] items-center justify-center rounded-3xl bg-white p-8 text-center text-sm text-ink/60 shadow-sm ring-1 ring-black/5">
@@ -17,10 +19,10 @@ export default function ReportDetail({ report }: { report: StoredReport | null }
       </section>
     );
   }
-  return <Detail key={report.id} report={report} />;
+  return <Detail key={report.id} report={report} session={session} />;
 }
 
-function Detail({ report }: { report: StoredReport }) {
+function Detail({ report, session }: { report: StoredReport; session: OfficerSession }) {
   const meta = statusMeta[report.status];
   const { history, reporterPhotos } = useReportPhotos(report);
   const [viewer, setViewer] = useState<number | null>(null);
@@ -39,6 +41,7 @@ function Detail({ report }: { report: StoredReport }) {
       </a>
     )],
     ["Tanggal laporan", formatDate(report.createdAt)],
+    ["Ditangani oleh", handlerLabel(report)],
     ["Pelapor", report.reporter.name || "-"],
     ["Telepon", report.reporter.phone ? <a key="p" href={`tel:${report.reporter.phone}`} className="text-primary hover:underline">{report.reporter.phone}</a> : "-"],
     ["Email", report.reporter.email || "-"],
@@ -78,7 +81,7 @@ function Detail({ report }: { report: StoredReport }) {
 
       <div className="rounded-2xl bg-cream p-4 sm:p-5">
         <h3 className="mb-3 text-lg font-bold text-primary">Tindak lanjut</h3>
-        <OfficerActionForm report={report} />
+        <OfficerActionForm report={report} session={session} />
       </div>
 
       <div>

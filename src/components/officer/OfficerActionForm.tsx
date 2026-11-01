@@ -5,10 +5,12 @@ import FileUpload from "@/components/report/FileUpload";
 import { inputClass } from "@/components/report/FormField";
 import { workflow } from "@/data/officerWorkflow";
 import { savePhotos } from "@/lib/photoStore";
+import { getHandler } from "@/lib/handler";
+import type { OfficerSession } from "@/lib/auth";
 import { addStatusUpdate } from "@/lib/reports";
 import type { PhotoItem, StoredReport } from "@/types/report";
 
-export default function OfficerActionForm({ report }: { report: StoredReport }) {
+export default function OfficerActionForm({ report, session }: { report: StoredReport; session: OfficerSession }) {
   const actions = workflow[report.status];
   const [index, setIndex] = useState(0);
   const [note, setNote] = useState("");
@@ -39,6 +41,15 @@ export default function OfficerActionForm({ report }: { report: StoredReport }) 
     );
   }
 
+  const handler = getHandler(report);
+  if (handler && handler.username !== session.username) {
+    return (
+      <p className="rounded-2xl bg-white px-4 py-3 text-sm text-ink/70 ring-1 ring-black/5">
+        Laporan ini ditangani oleh <strong>{handler.name}</strong> ({handler.agency}). Hanya petugas penanggung jawab yang dapat memperbarui statusnya.
+      </p>
+    );
+  }
+
   const action = actions[Math.min(index, actions.length - 1)];
 
   const submit = async (e: React.FormEvent) => {
@@ -56,7 +67,7 @@ export default function OfficerActionForm({ report }: { report: StoredReport }) 
       setBusy(false);
       return;
     }
-    const ok = addStatusUpdate(report.id, { status: action.to, at, note: note.trim(), ...(files.length > 0 ? { storedPhotos: files.length } : {}) });
+    const ok = addStatusUpdate(report.id, { status: action.to, at, note: note.trim(), officer: { username: session.username, name: session.name, agency: session.agency }, ...(files.length > 0 ? { storedPhotos: files.length } : {}) });
     if (!ok) { setError("Pembaruan tidak dapat disimpan. Coba lagi."); setBusy(false); return; }
 
     photos.forEach((p) => URL.revokeObjectURL(p.url));

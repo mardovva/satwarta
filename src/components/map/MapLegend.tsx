@@ -1,3 +1,5 @@
+import { statusMeta, statusOrder } from "@/data/trackingStatuses";
+
 export type HotspotStatus = { state: "loading" } | { state: "live"; count: number; dayRange: number } | { state: "unavailable" };
 export type Basemap = "satelit" | "peta";
 
@@ -17,14 +19,19 @@ export default function MapLegend({ hotspot, basemap, onBasemap }: MapLegendProp
         <button type="button" aria-pressed={basemap === "satelit"} onClick={() => onBasemap("satelit")} className={seg(basemap === "satelit")}>Satelit</button>
         <button type="button" aria-pressed={basemap === "peta"} onClick={() => onBasemap("peta")} className={seg(basemap === "peta")}>Peta</button>
       </div>
-      <ul className="flex flex-col gap-0.5 rounded-xl bg-black/45 px-3 py-1.5 text-white backdrop-blur-sm">
-        <li className="flex items-center gap-2">
-          <span className="h-3 w-3 flex-none rounded-full border-2 border-white bg-[#6B8F71]" />Laporan satwa
-        </li>
-        <li className="flex items-center gap-2">
-          <span className="h-3 w-3 flex-none rounded-full border border-[#FFD28A] bg-[#FF6A1A]" />{hotspotLabel(hotspot)}
-        </li>
-      </ul>
+      <div className="rounded-xl bg-black/50 px-3 py-1.5 text-white backdrop-blur-sm">
+        <p className="mb-1 font-semibold">Status laporan</p>
+        <ul className="grid grid-cols-2 gap-x-4 gap-y-0.5 text-[10px] sm:text-[11px]">
+          {statusOrder.map((s) => (
+            <li key={s} className="flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 flex-none rounded-full border border-white" style={{ background: statusMeta[s].dot }} />{s}
+            </li>
+          ))}
+        </ul>
+        <p className="mt-1.5 flex items-center gap-1.5 border-t border-white/25 pt-1.5 text-[10px] sm:text-[11px]">
+          <span className="h-2.5 w-2.5 flex-none rounded-full border border-[#FFD28A] bg-[#FF6A1A]" />{hotspotLabel(hotspot)}
+        </p>
+      </div>
     </div>
   );
 }

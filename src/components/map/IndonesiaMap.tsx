@@ -7,8 +7,9 @@ import type { HotspotFeed } from "@/lib/firms";
 import { REPORTS_UPDATED_EVENT } from "@/lib/reports";
 import { getAllReports } from "@/lib/tracking";
 import type { LatLng, MapMode } from "@/types/report";
-import { createMarkerElement } from "./MapMarker";
-import { createHotspotPopupContent, createReportPopupContent } from "./MapPopup";
+import { loadPhotos } from "@/lib/photoStore";
+import { createMarkerElement, setMarkerPhoto } from "./MapMarker";
+import { createHotspotPopupContent, createReportPopupContent, setPopupPhoto } from "./MapPopup";
 import MapLegend, { type Basemap, type HotspotStatus } from "./MapLegend";
 
 interface IndonesiaMapProps {
@@ -18,6 +19,8 @@ interface IndonesiaMapProps {
   onToggleFullscreen?: () => void;
   /** Dipanggil saat "Lihat Detail" pada popup laporan diklik (mode monitoring). */
   onViewDetail?: (reportId: string) => void;
+  /** Hanya tampilkan laporan dari provinsi ini (mis. wilayah kerja petugas). Kosongkan untuk semua. */
+  regions?: string[];
   /** Hanya mode location-picker. Simpan nilai persis seperti yang diberikan onPick (jangan dibulatkan). */
   pickedLocation?: LatLng | null;
   onPick?: (p: LatLng) => void;
@@ -60,11 +63,16 @@ const locale = {
 
 const emptyFC: FeatureCollection = { type: "FeatureCollection", features: [] };
 
-export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, onToggleFullscreen, onViewDetail, pickedLocation = null, onPick }: IndonesiaMapProps) {
+export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, onToggleFullscreen, onViewDetail, regions, pickedLocation = null, onPick }: IndonesiaMapProps) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markers = useRef<maplibregl.Marker[]>([]);
   const onViewDetailRef = useRef(onViewDetail);
+  const regionsRef = useRef(regions);
+  const renderRef = useRef<(() => void) | null>(null);
+  const photoUrls = useRef<string[]>([]);
+  const renderGen = useRef(0);
+  const regionKey = regions ? regions.join("|") : "*";
   const pickMarker = useRef<maplibregl.Marker | null>(null);
   const ownPick = useRef<LatLng | null>(null);
   const onPickRef = useRef(onPick);
@@ -75,6 +83,7 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
 
   useEffect(() => { onPickRef.current = onPick; }, [onPick]);
   useEffect(() => { onViewDetailRef.current = onViewDetail; }, [onViewDetail]);
+  useEffect(() => { regionsRef.current = regions; renderRef.current?.(); }, [regionKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Inisialisasi peta (sekali per mode) + cleanup.
   useEffect(() => {
@@ -117,13 +126,38 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
       setHotspot({ state: "loading" });
       // Marker = laporan dari formulir (disimpan di browser) + laporan yang sudah ada
       const renderReports = () => {
+        const gen = ++renderGen.current;
         markers.current.forEach((m) => m.remove());
-        markers.current = getAllReports().map((r) => {
-          const popup = new maplibregl.Popup({ offset: 30, maxWidth: "270px" });
-          popup.setDOMContent(createReportPopupContent(r, () => { popup.remove(); onViewDetailRef.current?.(r.id); }));
-          return new maplibregl.Marker({ element: createMarkerElement(r) }).setLngLat([r.location.lng, r.location.lat]).setPopup(popup).addTo(map);
-        });
+        photoUrls.current.forEach((u) => URL.revokeObjectURL(u));
+        photoUrls.current = [];
+        const scope = regionsRef.current;
+        markers.current = getAllReports()
+          .filter((r) => !scope || scope.includes(r.location.province))
+          .map((r) => {
+            const el = createMarkerElement(r);
+            const popup = new maplibregl.Popup({ offset: 32, maxWidth: "270px" });
+            const content = createReportPopupContent(r, () => { popup.remove(); onViewDetailRef.current?.(r.id); });
+            popup.setDOMContent(content);
+
+            // Foto marker dan popup = foto yang dikirim pelapor
+            const seeded = r.history.find((h) => h.status === "Submitted")?.photos?.[0]?.url;
+            if (seeded) {
+              setMarkerPhoto(el, seeded);
+              setPopupPhoto(content, seeded);
+            } else if (r.photos.length > 0) {
+              loadPhotos(r.id, 1).then((ps) => {
+                const url = ps[0]?.url;
+                if (!url) return;
+                if (gen !== renderGen.current) { URL.revokeObjectURL(url); return; }
+                photoUrls.current.push(url);
+                setMarkerPhoto(el, url);
+                setPopupPhoto(content, url);
+              });
+            }
+            return new maplibregl.Marker({ element: el }).setLngLat([r.location.lng, r.location.lat]).setPopup(popup).addTo(map);
+          });
       };
+      renderRef.current = renderReports;
       renderReports();
       window.addEventListener(REPORTS_UPDATED_EVENT, renderReports);
       window.addEventListener("storage", renderReports);
@@ -200,6 +234,10 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
       attribObserver.disconnect();
       ro.disconnect();
       removeReportListeners();
+      renderRef.current = null;
+      renderGen.current++;
+      photoUrls.current.forEach((u) => URL.revokeObjectURL(u));
+      photoUrls.current = [];
       markers.current.forEach((m) => m.remove());
       markers.current = [];
       pickMarker.current = null;

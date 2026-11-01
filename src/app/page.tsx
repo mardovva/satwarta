@@ -13,8 +13,10 @@ import Footer from "@/components/layout/Footer";
 
 export default function Home() {
   return (
-    <main className="relative overflow-x-clip bg-cream">
+    <>
+      {/* Navbar di luar <main> agar tidak terpengaruh overflow-clip (menghindari header bergeser saat scroll di Safari) */}
       <Navbar />
+      <main className="relative overflow-x-clip bg-cream">
       <PageBackground>
         <section id="beranda" className="relative pb-32 pt-[104px] sm:pt-[128px]">
           <Decor src="/images/branches/dry-leaf.png" width={218} height={239} className="left-0 top-16 w-[96px] sm:top-[72px] sm:w-[150px] lg:w-[200px]" />
@@ -34,6 +36,7 @@ export default function Home() {
       <AboutSection />
       <FAQSection />
       <Footer />
-    </main>
+      </main>
+    </>
   );
 }
