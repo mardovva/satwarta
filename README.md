@@ -1,10 +1,8 @@
-# 🐾 Satwarta (Satwa Warta)
+# 🐾 Satwarta
 
-**Satwarta** adalah platform pelaporan masyarakat untuk membantu penanganan satwa liar yang terdampak kebakaran hutan dan lahan (karhutla).
+**Satwarta** (Satwa Warta) adalah platform pelaporan masyarakat untuk membantu penanganan satwa liar yang terdampak kebakaran hutan dan lahan (karhutla).
 
-Melalui Satwarta, masyarakat dapat mengirimkan **laporan** berupa jenis satwa, kondisi, lokasi, dan dokumentasi satwa yang ditemukan. Berdasarkan isi laporan tersebut, AI akan memberikan saran kepada pelapor tentang cara pertolongan pertama pada satwa tersebut. Laporan kemudian dapat diverifikasi dan ditindaklanjuti oleh instansi terkait untuk proses penyelamatan.
-
-Satwarta juga menyediakan fitur **tracking** agar masyarakat dapat memantau perkembangan proses penanganan laporan secara transparan.
+Melalui Satwarta, masyarakat dapat mengirimkan **laporan** berupa jenis satwa, kondisi, lokasi, dan dokumentasi satwa yang ditemukan. Berdasarkan isi laporan tersebut, **AI** memberikan saran kepada pelapor tentang pertolongan pertama pada satwa tersebut selagi menunggu petugas. Laporan kemudian diverifikasi dan ditindaklanjuti oleh instansi petugas terkait untuk proses penyelamatan. Masyarakat dapat memantau perkembangan proses penanganan laporan secara transparan melalui fitur **tracking**
 
 ---
 
@@ -51,10 +49,10 @@ Akses dapat melalui link [satwarta.vercel.app](https://satwarta.vercel.app)
 
 ## Main Features
 
-- **Wildlife Reporting** — Masyarakat dapat melaporkan penemuan satwa liar yang terdampak karhutla.
 - **Location Mapping** — Menampilkan lokasi penemuan satwa melalui peta interaktif.
+- **Wildlife Reporting** — Masyarakat dapat melaporkan penemuan satwa liar yang terdampak karhutla.
 - **AI First-aid Chat Bot** – Memberikan saran kepada pelapor pertolongan pertama satwa selagi menunggu bantuan petugas.
-- **Report Verification** — Instansi terkait dapat memverifikasi laporan masyarakat.
+- **Report Verification** — Instansi terkait dapat memverifikasi dan mengupdate laporan masyarakat.
 - **Rescue Tracking** — Masyarakat dapat memantau perkembangan proses penyelamatan satwa.
 - **Wildlife News** — Menyediakan informasi dan berita terkait satwa liar serta dampak karhutla.
 
