@@ -28,11 +28,3 @@ export const workflow: Record<TrackingStatus, WorkflowAction[]> = {
   Rejected: [],
 };
 
-export const statusLabel: Record<TrackingStatus, string> = {
-  Submitted: "Baru masuk",
-  "Under Review": "Diperiksa",
-  Verified: "Terverifikasi",
-  "In Progress": "Ditangani",
-  Resolved: "Selesai",
-  Rejected: "Ditolak",
-};

@@ -4,6 +4,7 @@ import { ExternalLink } from "lucide-react";
 import type { StoredReport } from "@/types/report";
 import { statusMeta } from "@/data/trackingStatuses";
 import { formatDate } from "@/lib/tracking";
+import { handleImgError } from "@/lib/placeholderPhoto";
 import { useReportPhotos } from "@/hooks/useReportPhotos";
 import TrackingTimeline from "@/components/tracking/TrackingTimeline";
 import PhotoLightbox from "@/components/tracking/PhotoLightbox";
@@ -54,7 +55,7 @@ function Detail({ report, session }: { report: StoredReport; session: OfficerSes
           <p className="text-xs text-ink/55">ID laporan</p>
           <h2 className="text-2xl font-bold tracking-wide">{report.id}</h2>
         </div>
-        <span className="rounded-full px-4 py-1 text-sm font-semibold" style={{ background: meta.bg, color: meta.fg }}>{report.status}</span>
+        <span className="rounded-full px-4 py-1 text-sm font-semibold" style={{ background: meta.bg, color: meta.fg }}>{meta.label}</span>
       </header>
 
       <dl className="grid grid-cols-[auto_1fr] gap-x-5 gap-y-1.5 text-sm sm:grid-cols-[auto_1fr_auto_1fr]">
@@ -69,7 +70,7 @@ function Detail({ report, session }: { report: StoredReport; session: OfficerSes
               <li key={i}>
                 <button type="button" onClick={() => setViewer(i)} aria-label={`Perbesar foto ${i + 1}`} className="block overflow-hidden rounded-xl ring-1 ring-black/10 transition hover:ring-2 hover:ring-primary">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={p.url} alt={`Foto pelapor ${i + 1}`} className="h-24 w-24 object-cover" />
+                  <img src={p.url} alt={`Foto pelapor ${i + 1}`} className="h-24 w-24 object-cover" onError={handleImgError} />
                 </button>
               </li>
             ))}

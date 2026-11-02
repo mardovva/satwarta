@@ -6,11 +6,11 @@ import type { PhotoItem } from "@/types/report";
 const MAX_FILES = 8;
 const MAX_MB = 5;
 
-interface Props { items: PhotoItem[]; onChange: (items: PhotoItem[]) => void; label?: string; optional?: boolean }
+interface Props { items: PhotoItem[]; onChange: (items: PhotoItem[]) => void; label?: string; optional?: boolean; required?: boolean; error?: string }
 
-export default function FileUpload({ items, onChange, label = "Dokumentasi", optional = true }: Props) {
+export default function FileUpload({ items, onChange, label = "Dokumentasi", optional = true, required = false, error }: Props) {
   const [dragging, setDragging] = useState(false);
-  const [error, setError] = useState("");
+  const [fileProblem, setFileProblem] = useState("");
 
   const addFiles = (list: FileList | File[]) => {
     const next = [...items];
@@ -21,7 +21,7 @@ export default function FileUpload({ items, onChange, label = "Dokumentasi", opt
       if (next.length >= MAX_FILES) { problems.push(`Maksimal ${MAX_FILES} foto.`); break; }
       next.push({ id: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`, file: f, url: URL.createObjectURL(f) });
     }
-    setError(problems.join(" "));
+    setFileProblem(problems.join(" "));
     onChange(next);
   };
 
@@ -32,23 +32,23 @@ export default function FileUpload({ items, onChange, label = "Dokumentasi", opt
 
   return (
     <div>
-      <p className="mb-1.5 text-[15px] font-semibold">{label}{optional && <span className="font-normal text-ink/55"> (opsional)</span>}</p>
+      <p className="mb-1.5 text-[15px] font-semibold">{label}{required && <span aria-hidden className="ml-0.5 text-accent">*</span>}{optional && !required && <span className="font-normal text-ink/55"> (opsional)</span>}</p>
       <label
         htmlFor="field-photos"
         onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
         onDragLeave={() => setDragging(false)}
         onDrop={(e) => { e.preventDefault(); setDragging(false); addFiles(e.dataTransfer.files); }}
-        className={`flex cursor-pointer flex-col items-center gap-1 rounded-2xl px-4 py-6 text-center shadow-sm ring-1 transition focus-within:ring-2 focus-within:ring-primary ${dragging ? "bg-primary/5 ring-2 ring-primary" : "bg-white ring-black/5"}`}
+        className={`flex cursor-pointer flex-col items-center gap-1 rounded-2xl px-4 py-6 text-center shadow-sm ring-1 transition focus-within:ring-2 focus-within:ring-primary ${dragging ? "bg-primary/5 ring-2 ring-primary" : error ? "bg-white ring-2 ring-red-400" : "bg-white ring-black/5"}`}
       >
         <UploadCloud size={34} strokeWidth={1.5} className="text-ink/70" />
         <span className="text-base text-ink/80">Unggah foto dokumentasi</span>
         <span className="text-xs text-ink/55">Seret &amp; lepas atau klik untuk memilih · maks. {MAX_FILES} foto, {MAX_MB} MB per foto</span>
         <input
-          id="field-photos" type="file" accept="image/*" multiple className="sr-only"
+          id="field-photos" type="file" accept="image/*" multiple className="sr-only" aria-invalid={error ? true : undefined} aria-describedby={error ? "field-photos-error" : undefined}
           onChange={(e) => { if (e.target.files) addFiles(e.target.files); e.target.value = ""; }}
         />
       </label>
-      {error && <p className="mt-1 text-xs font-medium text-red-600" role="alert">{error}</p>}
+      {(error || fileProblem) && <p id="field-photos-error" className="mt-1 text-xs font-medium text-red-600" role="alert">{fileProblem || error}</p>}
 
       {items.length > 0 && (
         <ul className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">

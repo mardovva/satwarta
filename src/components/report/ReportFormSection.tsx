@@ -23,6 +23,7 @@ export default function ReportFormSection() {
   const [values, setValues] = useState<ReportFormValues>(initialValues);
   const [errors, setErrors] = useState<ReportFormErrors>({});
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
+  const [photoError, setPhotoError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<{ report: StoredReport; persisted: boolean } | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -44,8 +45,10 @@ export default function ReportFormSection() {
     e.preventDefault();
     if (submitting) return;
     const found = validateReportForm(values);
+    const missingPhoto = photos.length === 0;
     setErrors(found);
-    if (Object.keys(found).length > 0) {
+    setPhotoError(missingPhoto ? "Unggah minimal satu foto dokumentasi." : "");
+    if (Object.keys(found).length > 0 || missingPhoto) {
       requestAnimationFrame(() =>
         formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"], [data-invalid="true"]')?.focus()
       );
@@ -70,7 +73,7 @@ export default function ReportFormSection() {
     }, 1200);
   };
 
-  const hasErrors = Object.values(errors).some(Boolean);
+  const hasErrors = Object.values(errors).some(Boolean) || !!photoError;
 
   return (
     <section id="lapor" className="relative px-4 pb-44 pt-24 sm:pt-32">
@@ -86,7 +89,7 @@ export default function ReportFormSection() {
             <LocationPicker values={values} errors={errors} onChange={onChange} />
           </div>
 
-          <FileUpload items={photos} onChange={setPhotos} />
+          <FileUpload items={photos} onChange={(items) => { setPhotos(items); if (items.length > 0) setPhotoError(""); }} label="Dokumentasi" optional={false} required error={photoError} />
 
           <div className="grid gap-5 sm:grid-cols-3">
             <FormField id="field-reporterName" label="Nama pelapor" required error={errors.reporterName}>

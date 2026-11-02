@@ -35,7 +35,7 @@ export default function ReportQueue({ reports, selectedId, query, onQuery, onSel
               >
                 <span className="flex items-center justify-between gap-2">
                   <span className="font-bold">{r.id}</span>
-                  <span className="flex-none rounded-full px-2.5 py-0.5 text-[11px] font-semibold" style={{ background: m.bg, color: m.fg }}>{r.status}</span>
+                  <span className="flex-none rounded-full px-2.5 py-0.5 text-[11px] font-semibold" style={{ background: m.bg, color: m.fg }}>{m.label}</span>
                 </span>
                 <span className="mt-0.5 block text-sm">{r.animal.name || `Satwa ${r.animal.type.toLowerCase()}`} · {r.animal.count} ekor</span>
                 <span className="block text-xs text-ink/60">{r.location.city}, {r.location.province} · {formatDate(r.createdAt)}</span>

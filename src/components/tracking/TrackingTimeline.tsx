@@ -4,11 +4,12 @@ import { Camera, ChevronDown } from "lucide-react";
 import type { HistoryPhoto, StatusHistoryEntry } from "@/types/report";
 import { statusMeta } from "@/data/trackingStatuses";
 import { formatDateTime } from "@/lib/tracking";
+import { handleImgError } from "@/lib/placeholderPhoto";
 import PhotoLightbox from "./PhotoLightbox";
 
 interface Props {
   history: StatusHistoryEntry[];
-  /** Foto yang dikirim pelapor, ditampilkan pada langkah pertama (Submitted) */
+  /** Foto yang dikirim pelapor, ditampilkan pada langkah pertama (langkah pertama) */
   reporterPhotos: HistoryPhoto[];
 }
 
@@ -26,7 +27,7 @@ export default function TrackingTimeline({ history, reporterPhotos }: Props) {
           const photos = h.photos?.length ? h.photos : i === 0 ? reporterPhotos : [];
           const isOpen = open === i;
           const chip = (
-            <span className="rounded-full px-3 py-0.5 text-xs font-semibold" style={{ background: meta.bg, color: meta.fg }}>{h.status}</span>
+            <span className="rounded-full px-3 py-0.5 text-xs font-semibold" style={{ background: meta.bg, color: meta.fg }}>{meta.label}</span>
           );
           return (
             <li key={`${h.status}-${h.at}`} className="relative pb-6 pl-6 last:pb-0">
@@ -61,7 +62,7 @@ export default function TrackingTimeline({ history, reporterPhotos }: Props) {
                       <li key={k}>
                         <button type="button" onClick={() => setViewer({ photos, index: k })} aria-label={`Perbesar foto ${k + 1}`} className="block overflow-hidden rounded-xl ring-1 ring-black/10 transition hover:ring-2 hover:ring-primary">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={p.url} alt={`${p.caption} ${k + 1}`} className="h-20 w-20 object-cover sm:h-24 sm:w-24" />
+                          <img src={p.url} alt={`${p.caption} ${k + 1}`} className="h-20 w-20 object-cover sm:h-24 sm:w-24" onError={handleImgError} />
                         </button>
                       </li>
                     ))}

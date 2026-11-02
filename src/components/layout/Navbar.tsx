@@ -1,7 +1,8 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useHideOnScroll } from "@/hooks/useHideOnScroll";
 import LoginModal from "./LoginModal";
 
 const links = [
@@ -17,6 +18,8 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const [active, setActive] = useState("beranda");
+  const headerRef = useRef<HTMLElement>(null);
+  const hidden = useHideOnScroll(headerRef, !menuOpen && !loginOpen);
 
   useEffect(() => {
     const els = links.map((l) => document.getElementById(l.id)).filter((e): e is HTMLElement => !!e);
@@ -35,7 +38,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 w-full transform-gpu rounded-b-3xl border-b border-white/40 bg-white/60 shadow-nav backdrop-blur-lg supports-[not(backdrop-filter:blur(1px))]:bg-white/95">
+      <header ref={headerRef} className={`fixed inset-x-0 top-0 z-50 w-full transform-gpu rounded-b-3xl border-b border-white/40 bg-white/60 shadow-nav backdrop-blur-lg supports-[not(backdrop-filter:blur(1px))]:bg-white/95 transition-transform duration-300 ease-out focus-within:translate-y-0 ${hidden ? "-translate-y-[110%]" : "translate-y-0"}`}>
         <nav className="relative mx-auto flex h-16 max-w-[1400px] items-center px-4 sm:h-[72px] sm:px-8" aria-label="Navigasi utama">
           <a href="#beranda" className="flex items-center gap-2 sm:gap-3">
             <Image src="/images/logo.png" alt="Logo Satwarta" width={40} height={41} className="h-8 w-auto sm:h-10" />

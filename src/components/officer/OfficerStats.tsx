@@ -1,6 +1,5 @@
 import type { StoredReport, TrackingStatus } from "@/types/report";
 import { statusMeta, statusOrder } from "@/data/trackingStatuses";
-import { statusLabel } from "@/data/officerWorkflow";
 
 interface Props {
   reports: StoredReport[];
@@ -22,7 +21,7 @@ export default function OfficerStats({ reports, filter, onFilter }: Props) {
       {statusOrder.map((s) => (
         <button key={s} type="button" aria-pressed={filter === s} onClick={() => onFilter(filter === s ? "all" : s)} className={card(filter === s)}>
           <span className="text-3xl font-bold" style={{ color: statusMeta[s].dot }}>{count(s)}</span>
-          <span className="text-sm text-ink/70">{statusLabel[s]}</span>
+          <span className="text-sm text-ink/70">{statusMeta[s].label}</span>
         </button>
       ))}
     </div>

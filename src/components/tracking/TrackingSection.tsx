@@ -79,7 +79,7 @@ export default function TrackingSection() {
                       <span className="block font-bold">{r.id}</span>
                       <span className="block text-xs text-ink/60">{r.animal.name || r.animal.type} · {formatDate(r.createdAt)}</span>
                     </span>
-                    <span className="flex-none rounded-full px-3 py-0.5 text-xs font-semibold" style={{ background: statusMeta[r.status].bg, color: statusMeta[r.status].fg }}>{r.status}</span>
+                    <span className="flex-none rounded-full px-3 py-0.5 text-xs font-semibold" style={{ background: statusMeta[r.status].bg, color: statusMeta[r.status].fg }}>{statusMeta[r.status].label}</span>
                   </button>
                 </li>
               ))}

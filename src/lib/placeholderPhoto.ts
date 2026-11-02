@@ -1,11 +1,19 @@
-/** Gambar ilustrasi sementara (SVG) untuk foto pada laporan contoh. Ganti dengan foto asli bila tersedia. */
-export function placeholderPhoto(emoji: string, title: string, kind: "pelapor" | "petugas"): string {
-  const [a, b] = kind === "pelapor" ? ["#8A6B3F", "#3B2A14"] : ["#4F7A62", "#1E3A2B"];
+/** Gambar pengganti netral (tanpa emoji) bila file foto tidak ditemukan. */
+export function fallbackPhoto(): string {
   const svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720">` +
-    `<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs>` +
-    `<rect width="960" height="720" fill="url(#g)"/>` +
-    `<text x="480" y="400" font-size="220" text-anchor="middle">${emoji}</text>` +
-    `<text x="480" y="570" font-size="40" fill="#fff" fill-opacity=".92" text-anchor="middle" font-family="Arial, sans-serif">${title}</text></svg>`;
+    '<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720">' +
+    '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6B8F71"/><stop offset="1" stop-color="#345542"/></linearGradient></defs>' +
+    '<rect width="960" height="720" fill="url(#g)"/>' +
+    '<rect x="330" y="270" width="300" height="200" rx="28" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="12"/>' +
+    '<circle cx="480" cy="370" r="52" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="12"/>' +
+    '<text x="480" y="560" font-size="38" fill="#fff" fill-opacity=".9" text-anchor="middle" font-family="Arial, sans-serif">Foto belum tersedia</text></svg>';
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
+/** Pasang di onError <img>: ganti sekali dengan gambar pengganti. */
+export function handleImgError(e: { currentTarget: HTMLImageElement }) {
+  const img = e.currentTarget;
+  if (img.dataset.fallback) return;
+  img.dataset.fallback = "1";
+  img.src = fallbackPhoto();
 }

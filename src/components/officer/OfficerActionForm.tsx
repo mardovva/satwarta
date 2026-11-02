@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import FileUpload from "@/components/report/FileUpload";
 import { inputClass } from "@/components/report/FormField";
+import { statusMeta } from "@/data/trackingStatuses";
 import { workflow } from "@/data/officerWorkflow";
 import { savePhotos } from "@/lib/photoStore";
 import { getHandler } from "@/lib/handler";
@@ -36,7 +37,7 @@ export default function OfficerActionForm({ report, session }: { report: StoredR
   if (actions.length === 0) {
     return (
       <p className="rounded-2xl bg-cream px-4 py-3 text-sm text-ink/70">
-        Laporan ini berstatus {report.status} dan sudah final. Tidak ada tindakan lanjutan.
+        Laporan ini berstatus {statusMeta[report.status].label} dan sudah final. Tidak ada tindakan lanjutan.
       </p>
     );
   }
@@ -74,7 +75,7 @@ export default function OfficerActionForm({ report, session }: { report: StoredR
     setPhotos([]);
     setNote("");
     setBusy(false);
-    setMessage(`${report.id} diperbarui: ${action.to}.`);
+    setMessage(`${report.id} diperbarui: ${statusMeta[action.to].label}.`);
   };
 
   return (

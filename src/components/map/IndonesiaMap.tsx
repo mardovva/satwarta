@@ -8,9 +8,9 @@ import { REPORTS_UPDATED_EVENT } from "@/lib/reports";
 import { getAllReports } from "@/lib/tracking";
 import type { LatLng, MapMode } from "@/types/report";
 import { loadPhotos } from "@/lib/photoStore";
-import { createMarkerElement, setMarkerPhoto } from "./MapMarker";
+import { createMarkerElement } from "./MapMarker";
 import { createHotspotPopupContent, createReportPopupContent, setPopupPhoto } from "./MapPopup";
-import MapLegend, { type Basemap, type HotspotStatus } from "./MapLegend";
+import MapLegend, { type Basemap } from "./MapLegend";
 
 interface IndonesiaMapProps {
   mode?: MapMode;
@@ -77,7 +77,6 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
   const ownPick = useRef<LatLng | null>(null);
   const onPickRef = useRef(onPick);
   const [basemap, setBasemap] = useState<Basemap>("satelit");
-  const [hotspot, setHotspot] = useState<HotspotStatus>({ state: "loading" });
   const [ready, setReady] = useState(false);
   const monitoring = mode === "monitoring";
 
@@ -123,7 +122,6 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
     mapRef.current = map;
 
     if (mode === "monitoring") {
-      setHotspot({ state: "loading" });
       // Marker = laporan dari formulir (disimpan di browser) + laporan yang sudah ada
       const renderReports = () => {
         const gen = ++renderGen.current;
@@ -139,10 +137,9 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
             const content = createReportPopupContent(r, () => { popup.remove(); onViewDetailRef.current?.(r.id); });
             popup.setDOMContent(content);
 
-            // Foto marker dan popup = foto yang dikirim pelapor
+            // Foto di popup = foto yang dikirim pelapor
             const seeded = r.history.find((h) => h.status === "Submitted")?.photos?.[0]?.url;
             if (seeded) {
-              setMarkerPhoto(el, seeded);
               setPopupPhoto(content, seeded);
             } else if (r.photos.length > 0) {
               loadPhotos(r.id, 1).then((ps) => {
@@ -150,7 +147,6 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
                 if (!url) return;
                 if (gen !== renderGen.current) { URL.revokeObjectURL(url); return; }
                 photoUrls.current.push(url);
-                setMarkerPhoto(el, url);
                 setPopupPhoto(content, url);
               });
             }
@@ -201,12 +197,8 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
           .then((feed) => {
             if (cancelled || mapRef.current !== map) return;
             source.setData(feed.data);
-            setHotspot({ state: "live", count: feed.meta.count, dayRange: feed.meta.dayRange });
           })
-          .catch(() => {
-            if (cancelled || mapRef.current !== map) return;
-            setHotspot({ state: "unavailable" });
-          });
+          .catch(() => { /* hotspot tidak tersedia: peta tetap tampil tanpa lapisan hotspot */ });
       });
     } else {
       map.getCanvas().style.cursor = "crosshair";
@@ -275,7 +267,7 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
       <div ref={container} className="h-full w-full" />
       {monitoring && (
         <>
-          <MapLegend hotspot={hotspot} basemap={basemap} onBasemap={setBasemap} />
+          <MapLegend basemap={basemap} onBasemap={setBasemap} />
           {onToggleFullscreen && (
             <button
               onClick={onToggleFullscreen}

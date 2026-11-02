@@ -25,7 +25,7 @@ export default function TrackingResult({ lookup }: { lookup: TrackingLookup }) {
           <p className="text-xs text-ink/55">ID laporan</p>
           <h3 className="text-2xl font-bold tracking-wide">{report.id}</h3>
         </div>
-        <span className="rounded-full px-4 py-1 text-sm font-semibold" style={{ background: meta.bg, color: meta.fg }}>{report.status}</span>
+        <span className="rounded-full px-4 py-1 text-sm font-semibold" style={{ background: meta.bg, color: meta.fg }}>{meta.label}</span>
       </header>
 
       <p className="mt-2 text-sm text-ink/70">{meta.description}</p>

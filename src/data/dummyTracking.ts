@@ -1,5 +1,4 @@
 import type { HistoryPhoto, StoredReport } from "@/types/report";
-import { placeholderPhoto } from "@/lib/placeholderPhoto";
 
 // Laporan yang sudah ada. Foto: "pelapor" = dari pengirim laporan, "petugas" = bukti dari petugas.
 const OFFICERS = {
@@ -7,8 +6,8 @@ const OFFICERS = {
   kalteng: { username: "petugas.kalteng", name: "Petugas Kalimantan Tengah–Selatan", agency: "Tim Penyelamatan Satwa Kalimantan Tengah–Selatan" },
   kalbar: { username: "petugas.kalbar", name: "Petugas Kalimantan Barat–Timur", agency: "Tim Penyelamatan Satwa Kalimantan Barat–Timur" },
 };
-const rp = (emoji: string, title: string): HistoryPhoto => ({ url: placeholderPhoto(emoji, title, "pelapor"), caption: "Foto dari pelapor" });
-const op = (emoji: string, title: string): HistoryPhoto => ({ url: placeholderPhoto(emoji, title, "petugas"), caption: "Dokumentasi petugas" });
+const rp = (file: string): HistoryPhoto => ({ url: `/images/animals/${file}`, caption: "Foto dari pelapor" });
+const op = (file: string): HistoryPhoto => ({ url: `/images/animals/${file}`, caption: "Dokumentasi petugas" });
 const demoReporter = { name: "Warga setempat", phone: "", email: "" };
 
 export const dummyTrackingReports: StoredReport[] = [
@@ -17,11 +16,11 @@ export const dummyTrackingReports: StoredReport[] = [
     animal: { type: "Mamalia", name: "Gajah Sumatera", count: 2, condition: "Terjebak" },
     location: { province: "Riau", city: "Kabupaten Pelalawan", lat: 0.3, lng: 102.0 }, photos: [], reporter: demoReporter,
     history: [
-      { status: "Submitted", at: "2026-10-12T08:15:00+07:00", note: "Laporan berhasil dikirim." , photos: [rp("🐘", "Gajah terjebak di area terbakar"), rp("🔥", "Kondisi lahan di sekitar lokasi")] },
+      { status: "Submitted", at: "2026-10-12T08:15:00+07:00", note: "Laporan berhasil dikirim." , photos: [rp("gajah-sumatera.jpg"), rp("lahan-terbakar.jpg")] },
       { status: "Under Review", at: "2026-10-12T13:40:00+07:00", officer: OFFICERS.riaujambi, note: "Petugas memeriksa foto dan koordinat lokasi." },
       { status: "Verified", at: "2026-10-13T09:05:00+07:00", officer: OFFICERS.riaujambi, note: "Lokasi dan kondisi satwa terkonfirmasi." },
-      { status: "In Progress", at: "2026-10-13T15:30:00+07:00", officer: OFFICERS.riaujambi, note: "Tim lapangan menuju lokasi untuk evakuasi." , photos: [op("🚙", "Tim lapangan tiba di lokasi")] },
-      { status: "Resolved", at: "2026-10-15T11:20:00+07:00", officer: OFFICERS.riaujambi, note: "Satwa berhasil dievakuasi ke area yang aman." , photos: [op("🐘", "Gajah berhasil dievakuasi"), op("🌳", "Dilepasliarkan di area yang aman")] },
+      { status: "In Progress", at: "2026-10-13T15:30:00+07:00", officer: OFFICERS.riaujambi, note: "Tim lapangan menuju lokasi untuk evakuasi." , photos: [op("petugas-lapangan.jpg")] },
+      { status: "Resolved", at: "2026-10-15T11:20:00+07:00", officer: OFFICERS.riaujambi, note: "Satwa berhasil dievakuasi ke area yang aman." , photos: [op("petugas-evakuasi.jpg"), op("satwa-dilepasliarkan.jpg")] },
     ],
   },
   {
@@ -29,10 +28,10 @@ export const dummyTrackingReports: StoredReport[] = [
     animal: { type: "Mamalia", name: "Orangutan Kalimantan", count: 1, condition: "Terluka" },
     location: { province: "Kalimantan Tengah", city: "Kabupaten Pulang Pisau", lat: -2.7, lng: 114.2 }, photos: [], reporter: demoReporter,
     history: [
-      { status: "Submitted", at: "2026-10-18T10:02:00+07:00", note: "Laporan berhasil dikirim." , photos: [rp("🦧", "Orangutan terluka di tepi lahan"), rp("🌫️", "Asap di sekitar lokasi")] },
+      { status: "Submitted", at: "2026-10-18T10:02:00+07:00", note: "Laporan berhasil dikirim." , photos: [rp("orangutan.jpg"), rp("asap-karhutla.jpg")] },
       { status: "Under Review", at: "2026-10-18T14:10:00+07:00", officer: OFFICERS.kalteng, note: "Petugas memeriksa laporan dan dokumentasi." },
       { status: "Verified", at: "2026-10-19T08:45:00+07:00", officer: OFFICERS.kalteng, note: "Laporan valid, satwa terlihat terluka di tepi lahan terbakar." },
-      { status: "In Progress", at: "2026-10-19T13:00:00+07:00", officer: OFFICERS.kalteng, note: "Tim penyelamat dan dokter hewan sedang menuju lokasi." , photos: [op("🩺", "Pemeriksaan oleh dokter hewan")] },
+      { status: "In Progress", at: "2026-10-19T13:00:00+07:00", officer: OFFICERS.kalteng, note: "Tim penyelamat dan dokter hewan sedang menuju lokasi." , photos: [op("dokter-hewan.jpg")] },
     ],
   },
   {
@@ -40,7 +39,7 @@ export const dummyTrackingReports: StoredReport[] = [
     animal: { type: "Burung", name: "Burung Rangkong", count: 3, condition: "Mengungsi" },
     location: { province: "Kalimantan Barat", city: "Kabupaten Ketapang", lat: -1.8, lng: 110.0 }, photos: [], reporter: demoReporter,
     history: [
-      { status: "Submitted", at: "2026-10-27T16:30:00+07:00", note: "Laporan berhasil dikirim." , photos: [rp("🦅", "Kawanan rangkong mengungsi")] },
+      { status: "Submitted", at: "2026-10-27T16:30:00+07:00", note: "Laporan berhasil dikirim." , photos: [rp("burung-rangkong.jpg")] },
       { status: "Under Review", at: "2026-10-28T09:15:00+07:00", officer: OFFICERS.kalbar, note: "Petugas sedang memeriksa laporan." },
     ],
   },
@@ -59,7 +58,7 @@ export const dummyTrackingReports: StoredReport[] = [
     animal: { type: "Mamalia", name: "Beruang Madu", count: 1, condition: "Ditemukan mati" },
     location: { province: "Kalimantan Timur", city: "Kabupaten Kutai Kartanegara", lat: -0.4, lng: 116.8 }, photos: [], reporter: demoReporter,
     history: [
-      { status: "Submitted", at: "2026-10-24T12:20:00+07:00", note: "Laporan berhasil dikirim." , photos: [rp("🐻", "Lokasi penemuan satwa")] },
+      { status: "Submitted", at: "2026-10-24T12:20:00+07:00", note: "Laporan berhasil dikirim." , photos: [rp("beruang-madu.jpg")] },
       { status: "Under Review", at: "2026-10-24T15:00:00+07:00", officer: OFFICERS.kalbar, note: "Petugas memeriksa foto dokumentasi." },
       { status: "Verified", at: "2026-10-25T09:30:00+07:00", officer: OFFICERS.kalbar, note: "Laporan valid. Menunggu penjadwalan penanganan." },
     ],
