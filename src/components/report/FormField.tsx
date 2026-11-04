@@ -1,7 +1,7 @@
 import { ChevronDown } from "lucide-react";
 
 export const inputClass = (invalid?: boolean) =>
-  `w-full rounded-xl bg-white px-4 py-2.5 text-[15px] shadow-sm outline-none ring-1 transition placeholder:text-ink/40 focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:bg-white/60 ${
+  `w-full rounded-xl bg-white px-4 py-2.5 text-[0.9375rem] shadow-sm outline-none ring-1 transition placeholder:text-ink/40 focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:bg-white/60 ${
     invalid ? "ring-red-400" : "ring-black/5"
   }`;
 
@@ -19,7 +19,7 @@ interface FormFieldProps { id: string; label: string; required?: boolean; error?
 export function FormField({ id, label, required, error, hint, children }: FormFieldProps) {
   return (
     <div>
-      <label htmlFor={id} className="mb-1.5 block text-[15px] font-semibold">
+      <label htmlFor={id} className="mb-1.5 block text-[0.9375rem] font-semibold">
         {label}
         {required && <span aria-hidden className="ml-0.5 text-accent">*</span>}
       </label>

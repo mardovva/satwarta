@@ -7,7 +7,7 @@ export default function PageBackground({ children }: { children: React.ReactNode
     <div className="relative overflow-clip bg-cream">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 aspect-[1280/2500] min-h-[2600px] bg-cover bg-top bg-no-repeat"
+        className="pointer-events-none absolute inset-x-0 top-0 aspect-[1280/2500] min-h-[162.5rem] bg-cover bg-top bg-no-repeat"
         style={{ backgroundImage: "url('/images/background/background.png')" }}
       />
       <div className="relative">{children}</div>

@@ -26,7 +26,7 @@ export default function OfficerLoginForm({ onSuccess }: { onSuccess: (s: Officer
   return (
     <form onSubmit={submit} noValidate className="space-y-4">
       <div>
-        <label htmlFor="officer-username" className="mb-1.5 block text-[15px] font-semibold">Username</label>
+        <label htmlFor="officer-username" className="mb-1.5 block text-[0.9375rem] font-semibold">Username</label>
         <input
           id="officer-username" type="text" autoComplete="username" autoCapitalize="none" autoCorrect="off" spellCheck={false} autoFocus value={username}
           onChange={(e) => { setUsername(e.target.value); setError(""); }} placeholder="Masukkan username"
@@ -34,7 +34,7 @@ export default function OfficerLoginForm({ onSuccess }: { onSuccess: (s: Officer
         />
       </div>
       <div>
-        <label htmlFor="officer-password" className="mb-1.5 block text-[15px] font-semibold">Kata sandi</label>
+        <label htmlFor="officer-password" className="mb-1.5 block text-[0.9375rem] font-semibold">Kata sandi</label>
         <div className="relative">
           <input
             id="officer-password" type={show ? "text" : "password"} autoComplete="current-password" value={password}

@@ -64,8 +64,8 @@ export default function LocationPicker({ values, errors, onChange }: Props) {
       </FormField>
 
       <div>
-        <p className="mb-1.5 text-[15px] font-semibold">Tandai lokasi di peta<span aria-hidden className="ml-0.5 text-accent">*</span></p>
-        <div id="field-location" tabIndex={-1} data-invalid={errors.location ? "true" : undefined} className={`h-[220px] overflow-hidden rounded-xl shadow-sm outline-none ring-1 ${errors.location ? "ring-2 ring-red-400" : "ring-black/5"}`}>
+        <p className="mb-1.5 text-[0.9375rem] font-semibold">Tandai lokasi di peta<span aria-hidden className="ml-0.5 text-accent">*</span></p>
+        <div id="field-location" tabIndex={-1} data-invalid={errors.location ? "true" : undefined} className={`h-[13.75rem] overflow-hidden rounded-xl shadow-sm outline-none ring-1 ${errors.location ? "ring-2 ring-red-400" : "ring-black/5"}`}>
           <IndonesiaMap mode="location-picker" pickedLocation={loc} onPick={(p: LatLng) => onChange("location", p)} />
         </div>
 

@@ -15,7 +15,7 @@ import OfficerActionForm from "./OfficerActionForm";
 export default function ReportDetail({ report, session }: { report: StoredReport | null; session: OfficerSession }) {
   if (!report) {
     return (
-      <section id="detail" className="flex min-h-[260px] items-center justify-center rounded-3xl bg-white p-8 text-center text-sm text-ink/60 shadow-sm ring-1 ring-black/5">
+      <section id="detail" className="flex min-h-[16.25rem] items-center justify-center rounded-3xl bg-white p-8 text-center text-sm text-ink/60 shadow-sm ring-1 ring-black/5">
         Pilih laporan dari daftar atau dari peta untuk melihat detail dan memprosesnya.
       </section>
     );

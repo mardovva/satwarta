@@ -33,7 +33,7 @@ export default function TrackingTimeline({ history, reporterPhotos }: Props) {
             <li key={`${h.status}-${h.at}`} className="relative pb-6 pl-6 last:pb-0">
               <span
                 aria-hidden
-                className={`absolute -left-[9px] top-1 h-4 w-4 rounded-full border-2 border-white ${current ? "ring-4 ring-primary/20" : ""}`}
+                className={`absolute -left-[0.5625rem] top-1 h-4 w-4 rounded-full border-2 border-white ${current ? "ring-4 ring-primary/20" : ""}`}
                 style={{ backgroundColor: meta.dot }}
               />
               <div className="flex flex-wrap items-center gap-2">

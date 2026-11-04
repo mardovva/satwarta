@@ -58,7 +58,7 @@ export default function TrackingSection() {
           <input
             id="track-id" value={input} onChange={(e) => setInput(e.target.value)}
             placeholder="Contoh: SWT-2026-0001" autoComplete="off" spellCheck={false}
-            className="w-full flex-1 rounded-xl bg-white px-4 py-3 text-[15px] shadow-sm outline-none ring-1 ring-black/5 placeholder:text-ink/40 focus:ring-2 focus:ring-primary"
+            className="w-full flex-1 rounded-xl bg-white px-4 py-3 text-[0.9375rem] shadow-sm outline-none ring-1 ring-black/5 placeholder:text-ink/40 focus:ring-2 focus:ring-primary"
           />
           <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3 font-semibold text-white shadow-md transition hover:bg-primary-dark">
             <Search size={18} /> Cari Laporan

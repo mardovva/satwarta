@@ -97,7 +97,7 @@ export default function OfficerActionForm({ report, session }: { report: StoredR
       <p className="text-sm text-ink/70">{action.description}</p>
 
       <div>
-        <label htmlFor="officer-note" className="mb-1.5 block text-[15px] font-semibold">Catatan <span className="font-normal text-ink/55">(tampil di riwayat laporan)</span></label>
+        <label htmlFor="officer-note" className="mb-1.5 block text-[0.9375rem] font-semibold">Catatan <span className="font-normal text-ink/55">(tampil di riwayat laporan)</span></label>
         <textarea
           id="officer-note" rows={3} maxLength={500} value={note} onChange={(e) => { setNote(e.target.value); setError(""); }}
           placeholder="Contoh: Tim lapangan tiba di lokasi dan mulai evakuasi."

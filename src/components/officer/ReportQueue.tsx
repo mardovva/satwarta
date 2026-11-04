@@ -23,7 +23,7 @@ export default function ReportQueue({ reports, selectedId, query, onQuery, onSel
         />
       </div>
 
-      <ul className="mt-3 space-y-2 lg:max-h-[640px] lg:overflow-y-auto lg:pr-1">
+      <ul className="mt-3 space-y-2 lg:max-h-[40rem] lg:overflow-y-auto lg:pr-1">
         {reports.map((r) => {
           const m = statusMeta[r.status];
           const active = r.id === selectedId;
@@ -35,7 +35,7 @@ export default function ReportQueue({ reports, selectedId, query, onQuery, onSel
               >
                 <span className="flex items-center justify-between gap-2">
                   <span className="font-bold">{r.id}</span>
-                  <span className="flex-none rounded-full px-2.5 py-0.5 text-[11px] font-semibold" style={{ background: m.bg, color: m.fg }}>{m.label}</span>
+                  <span className="flex-none rounded-full px-2.5 py-0.5 text-[0.6875rem] font-semibold" style={{ background: m.bg, color: m.fg }}>{m.label}</span>
                 </span>
                 <span className="mt-0.5 block text-sm">{r.animal.name || `Satwa ${r.animal.type.toLowerCase()}`} · {r.animal.count} ekor</span>
                 <span className="block text-xs text-ink/60">{r.location.city}, {r.location.province} · {formatDate(r.createdAt)}</span>

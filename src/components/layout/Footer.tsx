@@ -5,7 +5,6 @@ const nav = [
   { label: "Lapor", href: "#lapor" },
   { label: "Track Laporan", href: "#track" },
   { label: "Berita dan Data", href: "#berita" },
-  { label: "Tentang", href: "#tentang" },
   { label: "FAQ", href: "#faq" },
 ];
 

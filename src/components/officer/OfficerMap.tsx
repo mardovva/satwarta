@@ -30,9 +30,9 @@ export default function OfficerMap({ onSelect, regions }: { onSelect: (id: strin
   };
 
   return (
-    <div className="h-[340px] sm:h-[420px]">
-      <div className={fullscreen ? "fixed inset-0 z-[100] bg-white p-3 sm:p-6" : "h-full overflow-hidden rounded-[20px] shadow-soft"}>
-        <div className={fullscreen ? "h-full w-full overflow-hidden rounded-[20px]" : "h-full w-full"}>
+    <div className="h-[21.25rem] sm:h-[26.25rem]">
+      <div className={fullscreen ? "fixed inset-0 z-[100] bg-white p-3 sm:p-6" : "h-full overflow-hidden rounded-[1.25rem] shadow-soft"}>
+        <div className={fullscreen ? "h-full w-full overflow-hidden rounded-[1.25rem]" : "h-full w-full"}>
           <IndonesiaMap mode="monitoring" fullscreen={fullscreen} onToggleFullscreen={() => setFullscreen((v) => !v)} onViewDetail={viewDetail} regions={regions} />
         </div>
       </div>

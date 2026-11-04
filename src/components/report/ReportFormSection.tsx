@@ -77,8 +77,8 @@ export default function ReportFormSection() {
 
   return (
     <section id="lapor" className="relative px-4 pb-44 pt-24 sm:pt-32">
-      <Decor src="/images/branches/branch-leaf.png" width={505} height={262} className="-bottom-10 left-0 w-[210px] sm:w-[340px] lg:w-[420px]" />
-      <div className="relative z-10 mx-auto max-w-[1100px]">
+      <Decor src="/images/branches/branch-leaf.png" width={505} height={262} className="-bottom-10 left-0 w-[13.125rem] sm:w-[21.25rem] lg:w-[26.25rem]" />
+      <div className="relative z-10 mx-auto max-w-[68.75rem]">
         <h2 className="text-center text-3xl font-extrabold tracking-tight text-primary sm:text-5xl">Formulir Laporan Satwa Terdampak</h2>
 
         <form ref={formRef} noValidate onSubmit={handleSubmit} className="mt-10 space-y-6">

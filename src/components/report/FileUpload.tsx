@@ -32,7 +32,7 @@ export default function FileUpload({ items, onChange, label = "Dokumentasi", opt
 
   return (
     <div>
-      <p className="mb-1.5 text-[15px] font-semibold">{label}{required && <span aria-hidden className="ml-0.5 text-accent">*</span>}{optional && !required && <span className="font-normal text-ink/55"> (opsional)</span>}</p>
+      <p className="mb-1.5 text-[0.9375rem] font-semibold">{label}{required && <span aria-hidden className="ml-0.5 text-accent">*</span>}{optional && !required && <span className="font-normal text-ink/55"> (opsional)</span>}</p>
       <label
         htmlFor="field-photos"
         onDragOver={(e) => { e.preventDefault(); setDragging(true); }}

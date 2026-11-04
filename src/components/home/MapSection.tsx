@@ -32,11 +32,11 @@ export default function MapSection() {
   }, [fullscreen]);
 
   return (
-    <section className="mx-auto mt-8 w-[92%] max-w-[1330px] md:w-[84%]">
+    <section className="mx-auto mt-8 w-[92%] max-w-[83.125rem] md:w-[84%]">
       {/* pembungkus tinggi tetap agar halaman tidak melompat saat peta masuk fullscreen */}
-      <div className="h-[300px] sm:h-[320px] md:h-[380px]">
-        <div className={fullscreen ? "fixed inset-0 z-[100] bg-white p-3 sm:p-6" : "h-full overflow-hidden rounded-[20px] shadow-soft"}>
-          <div className={fullscreen ? "h-full w-full overflow-hidden rounded-[20px]" : "h-full w-full"}>
+      <div className="h-[18.75rem] sm:h-[20rem] md:h-[23.75rem]">
+        <div className={fullscreen ? "fixed inset-0 z-[100] bg-white p-3 sm:p-6" : "h-full overflow-hidden rounded-[1.25rem] shadow-soft"}>
+          <div className={fullscreen ? "h-full w-full overflow-hidden rounded-[1.25rem]" : "h-full w-full"}>
             <IndonesiaMap mode="monitoring" fullscreen={fullscreen} onToggleFullscreen={() => setFullscreen((v) => !v)} onViewDetail={viewDetail} />
           </div>
         </div>
