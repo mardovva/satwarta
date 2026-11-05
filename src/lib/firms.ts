@@ -1,7 +1,7 @@
 import type { FeatureCollection, Point } from "geojson";
 
 // NASA FIRMS Area API: /api/area/csv/[MAP_KEY]/[SOURCE]/[west,south,east,north]/[DAY_RANGE]
-export const FIRMS_SOURCE = "VIIRS_SNPP_NRT";
+export const FIRMS_SOURCE = "VIIRS_NOAA21_NRT";
 export const FIRMS_DAY_RANGE = 2;
 export const FIRMS_AREA = "94,-11.5,141.5,6.5"; // wilayah Indonesia
 

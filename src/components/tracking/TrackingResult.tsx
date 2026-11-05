@@ -1,11 +1,12 @@
 "use client";
+import { X } from "lucide-react";
 import { formatDate, type TrackingLookup } from "@/lib/tracking";
 import { useReportPhotos } from "@/hooks/useReportPhotos";
 import { statusMeta } from "@/data/trackingStatuses";
 import { handlerLabel } from "@/lib/handler";
 import TrackingTimeline from "./TrackingTimeline";
 
-export default function TrackingResult({ lookup }: { lookup: TrackingLookup }) {
+export default function TrackingResult({ lookup, onClose }: { lookup: TrackingLookup; onClose: () => void }) {
   const { report } = lookup;
   const meta = statusMeta[report.status];
   const { history, reporterPhotos } = useReportPhotos(report);
@@ -19,8 +20,11 @@ export default function TrackingResult({ lookup }: { lookup: TrackingLookup }) {
   ];
 
   return (
-    <article className="mx-auto mt-8 w-full max-w-2xl rounded-3xl bg-white p-6 shadow-soft sm:p-8">
-      <header className="flex flex-wrap items-start justify-between gap-3">
+    <article className="relative mx-auto mt-8 w-full max-w-2xl rounded-3xl bg-white p-6 shadow-soft sm:p-8">
+      <button type="button" onClick={onClose} aria-label="Tutup hasil pelacakan" className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-mist text-ink/70 transition hover:bg-black/10 hover:text-ink sm:right-5 sm:top-5">
+        <X size={18} />
+      </button>
+      <header className="flex flex-wrap items-start justify-between gap-3 pr-12">
         <div>
           <p className="text-xs text-ink/55">ID laporan</p>
           <h3 className="text-2xl font-bold tracking-wide">{report.id}</h3>

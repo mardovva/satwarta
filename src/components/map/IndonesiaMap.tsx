@@ -8,7 +8,7 @@ import { REPORTS_UPDATED_EVENT } from "@/lib/reports";
 import { getAllReports } from "@/lib/tracking";
 import type { LatLng, MapMode } from "@/types/report";
 import { loadPhotos } from "@/lib/photoStore";
-import { createMarkerElement } from "./MapMarker";
+import { createMarkerElement, setMarkerPhoto } from "./MapMarker";
 import { createHotspotPopupContent, createReportPopupContent, setPopupPhoto } from "./MapPopup";
 import MapLegend, { type Basemap } from "./MapLegend";
 
@@ -137,9 +137,10 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
             const content = createReportPopupContent(r, () => { popup.remove(); onViewDetailRef.current?.(r.id); });
             popup.setDOMContent(content);
 
-            // Foto di popup = foto yang dikirim pelapor
+            // Foto di marker dan popup = foto pertama yang dikirim pelapor
             const seeded = r.history.find((h) => h.status === "Submitted")?.photos?.[0]?.url;
             if (seeded) {
+              setMarkerPhoto(el, seeded);
               setPopupPhoto(content, seeded);
             } else if (r.photos.length > 0) {
               loadPhotos(r.id, 1).then((ps) => {
@@ -147,6 +148,7 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
                 if (!url) return;
                 if (gen !== renderGen.current) { URL.revokeObjectURL(url); return; }
                 photoUrls.current.push(url);
+                setMarkerPhoto(el, url);
                 setPopupPhoto(content, url);
               });
             }

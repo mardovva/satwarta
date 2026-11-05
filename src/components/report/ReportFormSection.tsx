@@ -5,7 +5,7 @@ import Decor from "@/components/layout/Decor";
 import type { PhotoItem, ReportFormErrors, ReportFormValues, StoredReport } from "@/types/report";
 import { CONDITION_OTHER } from "@/data/formOptions";
 import { savePhotos } from "@/lib/photoStore";
-import { saveReport } from "@/lib/reports";
+import { REPORTS_UPDATED_EVENT, saveReport } from "@/lib/reports";
 import { normalizePhone, validateReportForm } from "@/lib/validateReport";
 import AnimalInformationForm from "./AnimalInformationForm";
 import LocationPicker from "./LocationPicker";
@@ -63,7 +63,11 @@ export default function ReportFormSection() {
         photos: photos.map((p) => ({ name: p.file.name, size: p.file.size, type: p.file.type })),
         reporter: { name: values.reporterName.trim(), phone: normalizePhone(values.phone), email: values.email.trim() },
       });
-      if (photos.length > 0) await savePhotos(saved.report.id, photos.map((p) => p.file));
+      if (photos.length > 0) {
+        await savePhotos(saved.report.id, photos.map((p) => p.file));
+        // Foto baru tersimpan sekarang: minta peta memuat ulang agar marker dan popup memakai foto tersebut
+        window.dispatchEvent(new Event(REPORTS_UPDATED_EVENT));
+      }
       photos.forEach((p) => URL.revokeObjectURL(p.url));
       setPhotos([]);
       setValues(initialValues);

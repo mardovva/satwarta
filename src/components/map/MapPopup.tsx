@@ -43,7 +43,7 @@ export function createReportPopupContent(r: StoredReport, onDetail: () => void):
 
   root.append(
     photo,
-    el("strong", "display:block;font-size:15px;margin-bottom:6px", title),
+    el("strong", "display:block;font-size:15px;margin-bottom:6px;padding-right:26px", title),
     infoGrid([
       ["Lokasi", `${r.location.city}, ${r.location.province}`],
       ["Kondisi", r.animal.condition],

@@ -95,7 +95,7 @@ export default function TrackingSection() {
               <p className="mt-1 text-sm text-ink/65">Periksa kembali penulisan ID laporan Anda.</p>
             </div>
           )}
-          {result.state === "found" && <TrackingResult lookup={result.lookup} />}
+          {result.state === "found" && <TrackingResult lookup={result.lookup} onClose={() => setResult({ state: "idle" })} />}
         </div>
       </div>
     </section>
