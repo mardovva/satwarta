@@ -15,7 +15,7 @@ export default function DonationCard({ report, need, onDonate }: Props) {
   const pct = Math.round((need.collected / need.target) * 100);
 
   return (
-    <article className="flex h-[28.5rem] w-[19rem] flex-none snap-start flex-col overflow-hidden rounded-3xl bg-white shadow-md ring-1 ring-black/5 sm:w-[21rem]">
+    <article className="flex h-[28.5rem] w-full flex-col overflow-hidden rounded-3xl bg-white shadow-md ring-1 ring-black/5">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={photo} alt={`Foto laporan ${report.id}`} onError={handleImgError} draggable={false} className="h-44 w-full flex-none object-cover" />
       <div className="flex flex-1 flex-col p-5">

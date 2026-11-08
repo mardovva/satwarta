@@ -39,7 +39,7 @@ export default function StatisticsSection() {
   }, []);
 
   return (
-    <section ref={ref} className="mx-auto mt-2 flex max-w-6xl flex-wrap items-center justify-center gap-x-10 gap-y-3 px-4 sm:mt-4 lg:flex-nowrap lg:gap-x-8 xl:gap-x-12">
+    <section ref={ref} className="mx-auto mt-6 flex max-w-6xl flex-wrap items-center justify-center gap-x-10 gap-y-3 px-4 sm:mt-8 lg:flex-nowrap lg:gap-x-8 xl:gap-x-12">
       <Stat value={stats.dead} label="satwa mati terbakar" color="#F04B50" active={inView} delay={0} />
       <Stat value={stats.inCare} label="satwa dalam penanganan" color="#EBAA78" active={inView} delay={300} />
       <Stat value={stats.rescued} label="satwa terselamatkan" color="#345542" active={inView} delay={600} />
