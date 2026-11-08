@@ -1,14 +1,17 @@
 "use client";
-import { X } from "lucide-react";
+import { useState } from "react";
+import { Trash2, X } from "lucide-react";
 import { formatDate, type TrackingLookup } from "@/lib/tracking";
 import { useReportPhotos } from "@/hooks/useReportPhotos";
 import { statusMeta } from "@/data/trackingStatuses";
 import { handlerLabel } from "@/lib/handler";
+import DeleteReportDialog from "./DeleteReportDialog";
 import TrackingTimeline from "./TrackingTimeline";
 
 /** Hasil pelacakan selebar peta dan formulir; foto tiap langkah tampil di sebelah kanan timeline. */
 export default function TrackingResult({ lookup, onClose }: { lookup: TrackingLookup; onClose: () => void }) {
   const { report } = lookup;
+  const [confirming, setConfirming] = useState(false);
   const meta = statusMeta[report.status];
   const { history, reporterPhotos } = useReportPhotos(report);
 
@@ -40,6 +43,16 @@ export default function TrackingResult({ lookup, onClose }: { lookup: TrackingLo
 
       <h4 className="mb-6 mt-8 text-lg font-bold text-primary">Riwayat laporan</h4>
       <TrackingTimeline history={history} reporterPhotos={reporterPhotos} split />
+
+      {/* hanya laporan buatan pengguna yang dapat dihapus */}
+      {lookup.source === "local" && (
+        <div className="mt-8 flex justify-end border-t border-black/5 pt-5">
+          <button type="button" onClick={() => setConfirming(true)} className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold text-red-600 ring-1 ring-red-300 transition hover:bg-red-50">
+            <Trash2 size={16} /> Hapus laporan
+          </button>
+        </div>
+      )}
+      {confirming && <DeleteReportDialog reportId={report.id} onClose={() => setConfirming(false)} onDeleted={onClose} />}
     </article>
   );
 }

@@ -55,3 +55,22 @@ export async function loadPhotos(keyPrefix: string, count: number, caption = "Fo
     return [];
   }
 }
+
+/** Menghapus semua foto sebuah laporan: foto pelapor ("ID:0") dan foto petugas ("ID:o:waktu:0"). */
+export async function deletePhotosByReport(reportId: string): Promise<boolean> {
+  if (typeof indexedDB === "undefined") return true;
+  try {
+    const db = await openDb();
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(STORE, "readwrite");
+      tx.objectStore(STORE).delete(IDBKeyRange.bound(`${reportId}:`, `${reportId}:\uffff`));
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+      tx.onabort = () => reject(tx.error);
+    });
+    db.close();
+    return true;
+  } catch {
+    return false;
+  }
+}
