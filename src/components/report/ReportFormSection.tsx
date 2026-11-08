@@ -96,11 +96,12 @@ export default function ReportFormSection() {
           <div className="grid gap-x-12 gap-y-6 md:grid-cols-2">
             <div className="md:border-r md:border-ink/10 md:pr-12">
               <AnimalInformationForm values={values} errors={errors} onChange={onChange} />
+              <div className="mt-5">
+                <FileUpload items={photos} onChange={(items) => { setPhotos(items); if (items.length > 0) setPhotoError(""); }} label="Dokumentasi" optional={false} required error={photoError} />
+              </div>
             </div>
             <LocationPicker values={values} errors={errors} onChange={onChange} />
           </div>
-
-          <FileUpload items={photos} onChange={(items) => { setPhotos(items); if (items.length > 0) setPhotoError(""); }} label="Dokumentasi" optional={false} required error={photoError} />
 
           <div className="grid gap-5 sm:grid-cols-3">
             <FormField id="field-reporterName" label="Nama pelapor" required error={errors.reporterName}>

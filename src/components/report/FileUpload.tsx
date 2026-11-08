@@ -51,7 +51,7 @@ export default function FileUpload({ items, onChange, label = "Dokumentasi", opt
       {(error || fileProblem) && <p id="field-photos-error" className="mt-1 text-xs font-medium text-red-600" role="alert">{fileProblem || error}</p>}
 
       {items.length > 0 && (
-        <ul className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
+        <ul className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-4">
           {items.map((item) => (
             <li key={item.id} className="relative aspect-square overflow-hidden rounded-xl bg-white shadow-sm">
               {/* eslint-disable-next-line @next/next/no-img-element */}

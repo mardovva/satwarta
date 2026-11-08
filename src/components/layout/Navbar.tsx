@@ -39,10 +39,10 @@ export default function Navbar() {
     <>
       <div className={`site-header pointer-events-none fixed inset-x-0 top-0 z-50 transition-[padding] duration-500 ease-out ${floating ? "px-3 pt-3 sm:px-6 sm:pt-4" : "px-0 pt-0"}`}>
       <header
-        className={`pointer-events-auto mx-auto border backdrop-blur-sm transition-all duration-500 ease-out ${
+        className={`pointer-events-auto mx-auto border transition-all duration-500 ease-out ${
           floating
-            ? `max-w-[75rem] border-white/40 shadow-nav ${menuOpen ? "rounded-3xl bg-white/95" : "rounded-full bg-white/30"}`
-            : "max-w-[120rem] rounded-none border-transparent bg-transparent shadow-none backdrop-blur-none"
+            ? `max-w-[75rem] border-white/40 shadow-nav backdrop-blur-xl backdrop-saturate-150 ${menuOpen ? "rounded-3xl bg-white/95" : "rounded-full bg-white/25"}`
+            : "max-w-[120rem] rounded-none border-transparent bg-transparent shadow-none"
         }`}
       >
         <nav className="relative mx-auto flex h-14 items-center px-5 sm:h-16 sm:px-7" aria-label="Navigasi utama">
