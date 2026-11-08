@@ -3,7 +3,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Satwarta — Jaga Satwa, Jaga Kita",
+  title: "Satwarta | Pelaporan & Penyelamatan Satwa",
   description: "Platform pelaporan masyarakat untuk satwa liar yang terdampak karhutla di Indonesia.",
 };
 
