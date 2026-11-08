@@ -35,9 +35,9 @@ export default function MapSection() {
   }, [fullscreen]);
 
   return (
-    <section className="mx-auto mt-8 w-[92%] max-w-[83.125rem] md:w-[84%]">
-      {/* pembungkus tinggi tetap agar halaman tidak melompat saat peta masuk fullscreen */}
-      <Reveal variant="zoom"><div className="h-[23rem] sm:h-[27rem] md:h-[33rem]">
+    <section className="mx-auto mt-6 flex w-[92%] max-w-[83.125rem] flex-1 flex-col md:w-[84%]">
+      {/* peta mengisi sisa tinggi layar pertama (min 14 rem, maks 46 rem); inset-0 agar tinggi tidak bergantung persen */}
+      <Reveal variant="zoom" className="relative max-h-[46rem] min-h-[14rem] flex-1"><div className="absolute inset-0">
         <div className={fullscreen ? "fixed inset-0 z-[100] bg-white p-3 sm:p-6" : "h-full overflow-hidden rounded-[1.25rem] shadow-soft"}>
           <div className={fullscreen ? "h-full w-full overflow-hidden rounded-[1.25rem]" : "h-full w-full"}>
             <IndonesiaMap mode="monitoring" fullscreen={fullscreen} onToggleFullscreen={() => setFullscreen((v) => !v)} onViewDetail={viewDetail} />
@@ -48,7 +48,7 @@ export default function MapSection() {
       <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
         <button
           type="button" onClick={() => openFirstAid()}
-          className="inline-flex w-full max-w-[21.5rem] items-center justify-center gap-2 rounded-full bg-white px-7 py-3 sm:w-[21.5rem] text-base font-semibold text-primary shadow-md ring-1 ring-primary/25 transition hover:-translate-y-0.5 hover:bg-cream hover:shadow-lg sm:text-lg"
+          className="inline-flex w-full max-w-[19rem] items-center justify-center gap-2 rounded-full bg-white px-7 py-3 text-base font-semibold text-primary shadow-md ring-1 ring-primary/25 transition hover:-translate-y-0.5 hover:bg-cream hover:shadow-lg sm:w-[19rem]"
         >
           <MessageCircle size={20} /> AI Chat Satwarta
         </button>

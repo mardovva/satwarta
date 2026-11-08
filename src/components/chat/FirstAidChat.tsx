@@ -33,6 +33,7 @@ export default function FirstAidChat() {
   const [busy, setBusy] = useState(false);
   const [full, setFull] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [lift, setLift] = useState(0); // seberapa jauh footer masuk ke layar; tombol dan panel naik sebesar itu
   const [mine, setMine] = useState<StoredReport[]>([]);
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -78,10 +79,15 @@ export default function FirstAidChat() {
 
   // Tombol melayang baru muncul setelah pengguna meninggalkan layar pertama (di sana sudah ada tombol AI Chat)
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 500);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 500);
+      const footer = document.getElementById("site-footer");
+      setLift(footer ? Math.max(0, Math.round(window.innerHeight - footer.getBoundingClientRect().top)) : 0);
+    };
+    window.addEventListener("resize", onScroll);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); };
   }, []);
 
   // Daftar laporan milik pengguna untuk dipilih sebagai konteks
@@ -110,23 +116,28 @@ export default function FirstAidChat() {
 
   return (
     <>
-      {!open && scrolled && (
+      {/* tombol melayang: muncul dengan pop lembut setelah scroll, dan berhenti di atas footer */}
+      <div className="fixed bottom-4 right-4 z-40 sm:bottom-6 sm:right-6" style={{ transform: `translateY(-${lift}px)` }}>
         <button
-          type="button" onClick={() => setOpen(true)} aria-label="Buka AI Chat Satwarta"
-          className="fixed bottom-4 right-4 z-40 inline-flex items-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-semibold text-primary shadow-soft ring-1 ring-primary/20 transition hover:bg-cream sm:bottom-6 sm:right-6"
+          type="button" onClick={() => setOpen(true)} aria-label="Buka AI Chat Satwarta" tabIndex={!open && scrolled ? 0 : -1}
+          className={`inline-flex items-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-semibold text-primary shadow-soft ring-1 ring-primary/20 transition-[transform,opacity,background-color] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:bg-cream motion-reduce:transition-none ${
+            !open && scrolled ? "translate-y-0 scale-100 opacity-100" : "pointer-events-none translate-y-4 scale-75 opacity-0"
+          }`}
         >
           <MessageCircle size={20} /> <span className="hidden sm:inline">AI Chat Satwarta</span>
         </button>
-      )}
+      </div>
 
       {open && (
         <section
           role="dialog" aria-label="AI Chat Satwarta"
-          className={`fixed z-[105] flex flex-col overflow-hidden bg-white text-primary shadow-soft ring-1 ring-black/10 ${
+          className={`fixed z-[105] flex origin-bottom-right animate-pop-in flex-col overflow-hidden bg-white text-primary shadow-soft ring-1 ring-black/10 motion-reduce:animate-none ${
             full
               ? "inset-3 rounded-3xl sm:inset-6"
-              : "bottom-4 right-4 h-[min(34rem,calc(100vh-2rem))] w-[min(24rem,calc(100vw-2rem))] rounded-3xl sm:bottom-6 sm:right-6"
+              : "bottom-4 right-4 w-[min(24rem,calc(100vw-2rem))] rounded-3xl sm:bottom-6 sm:right-6"
           }`}
+          // di atas footer: panel ikut naik dan tingginya menyesuaikan sisa ruang
+          style={full ? undefined : { transform: `translateY(-${lift}px)`, height: `min(34rem, calc(100vh - 2rem - ${lift}px))` }}
         >
           <header className="flex items-center justify-between gap-3 border-b border-black/5 px-4 py-3">
             <h2 className="flex items-center gap-2 font-bold"><MessageCircle size={18} /> AI Chat Satwarta</h2>

@@ -43,3 +43,7 @@ body.map-fullscreen .site-header { visibility: hidden; }
 .pay-ring { animation: pay-ring 1s ease-out 0.2s both; }
 .pay-check { stroke-dasharray: 36; stroke-dashoffset: 36; animation: pay-check 0.5s ease-out 0.45s forwards; }
 @media (prefers-reduced-motion: reduce) { .pay-pop, .pay-ring { animation: none; } .pay-check { animation: none; stroke-dashoffset: 0; } }
+
+/* Layar pertama (landing) setinggi layar: peta mengisi sisa ruang sehingga dua tombol CTA menjadi batas bawah.
+   svh = tinggi layar terkecil (aman untuk toolbar Safari yang bisa menyusut). */
+.hero-fit { min-height: 100vh; min-height: 100svh; }

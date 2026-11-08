@@ -8,7 +8,7 @@ const social = [
 
 export default function Footer() {
   return (
-    <footer className="bg-primary px-4 py-8 text-white">
+    <footer id="site-footer" className="bg-primary px-4 py-8 text-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-5">
         <div className="flex flex-col items-start gap-3">
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white">

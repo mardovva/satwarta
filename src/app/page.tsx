@@ -19,10 +19,10 @@ export default function Home() {
       <Navbar />
       <main className="relative overflow-x-clip">
       <PageBackground>
-        <section id="beranda" className="relative pb-6 pt-[5.5rem] sm:pt-[6.75rem]">
-          <Decor src="/images/branches/dry-leaf.png" width={218} height={239} sway="left top" className="bottom-0 left-0 z-[15] w-[6rem] sm:-bottom-8 sm:w-[9.375rem] lg:-bottom-[3.75rem] lg:w-[12.5rem]" />
-          <Decor src="/images/branches/dry-branch.png" width={192} height={140} sway="right top" className="bottom-2.5 right-0 z-[15] w-[6.875rem] sm:-bottom-2 sm:w-[10rem] lg:-bottom-7 lg:w-[13.125rem]" />
-          <div className="relative z-20">
+        <section id="beranda" className="hero-fit relative flex flex-col pb-8 pt-[5.5rem] sm:pt-[6rem]">
+          <Decor src="/images/branches/dry-leaf.png" width={218} height={239} sway="left top" className="bottom-2 left-0 z-[15] w-[6rem] sm:-bottom-6 sm:w-[9.375rem] lg:-bottom-[3.25rem] lg:w-[12.5rem]" />
+          <Decor src="/images/branches/dry-branch.png" width={192} height={140} sway="right top" className="bottom-4 right-0 z-[15] w-[6.875rem] sm:bottom-0 sm:w-[10rem] lg:-bottom-5 lg:w-[13.125rem]" />
+          <div className="relative z-20 flex flex-1 flex-col">
             <HeroSection />
             <StatisticsSection />
             <MapSection />
