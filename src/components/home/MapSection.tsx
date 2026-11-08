@@ -15,7 +15,7 @@ const IndonesiaMap = dynamic(() => import("@/components/map/IndonesiaMap"), {
 export default function MapSection() {
   const [fullscreen, setFullscreen] = useState(false);
 
-  // "Lihat Detail" pada popup: keluar dari fullscreen lalu buka laporan di bagian Track Laporan
+  // "Lihat Detail" pada popup: keluar dari fullscreen lalu buka laporan di bagian Lacak Laporan
   const viewDetail = (id: string) => {
     setFullscreen(false);
     window.setTimeout(() => goToTracking(id), 80);

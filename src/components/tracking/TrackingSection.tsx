@@ -53,12 +53,12 @@ export default function TrackingSection() {
 
   return (
     <section id="track" className="relative z-10 px-4 pb-16 pt-16">
-      {/* branch-leaf sejajar dengan judul "Track Laporan" */}
+      {/* branch-leaf sejajar dengan judul "Lacak Laporan" */}
       <Decor src="/images/branches/branch-leaf.png" width={505} height={262} sway="left center" className="left-0 hidden w-[14rem] sm:top-7 sm:block lg:-top-5 lg:w-[26.25rem]" />
       <Decor src="/images/branches/dry-branch.png" width={192} height={140} sway="right top" className="right-0 top-24 hidden w-[8rem] md:block lg:w-[13.125rem]" />
 
       <div className="relative z-10 mx-auto max-w-3xl text-center">
-        <Reveal><h2 className="text-3xl font-extrabold tracking-tight text-primary sm:text-5xl">Track Laporan</h2></Reveal>
+        <Reveal><h2 className="text-3xl font-extrabold tracking-tight text-primary sm:text-5xl">Lacak Laporan</h2></Reveal>
 
         <Reveal delay={0.1}>
           <form onSubmit={(e) => { e.preventDefault(); runSearch(input); }} className="mx-auto mt-8 flex max-w-xl flex-col gap-3 sm:flex-row">
@@ -76,7 +76,7 @@ export default function TrackingSection() {
               )}
             </div>
             <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3 font-semibold text-white shadow-md transition hover:bg-primary-dark">
-              <Search size={18} /> Cari Laporan
+              <Search size={18} /> Lacak laporan
             </button>
           </form>
         </Reveal>

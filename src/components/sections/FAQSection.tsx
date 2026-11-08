@@ -7,7 +7,7 @@ const faqs = [
   { q: "Apa itu Satwarta?", a: "Satwarta adalah platform pelaporan masyarakat untuk satwa liar yang terdampak kebakaran hutan dan lahan (karhutla) di Indonesia. Masyarakat dapat melaporkan satwa, melihat peta, dan memantau perkembangan laporan." },
   { q: "Bagaimana cara membuat laporan?", a: "Buka bagian Lapor, isi informasi satwa (jenis, jumlah, kondisi), pilih provinsi dan kabupaten/kota, tandai lokasi di peta atau gunakan lokasi Anda, tambahkan foto bila ada, isi data pelapor, lalu tekan Kirim Laporan. Anda akan mendapat ID laporan." },
   { q: "Apakah laporan harus disertai foto?", a: "Ya, minimal satu foto dokumentasi wajib dilampirkan agar petugas dapat memverifikasi laporan dengan cepat. Ambil foto dari jarak aman dan jangan mendekati satwa yang terluka atau panik." },
-  { q: "Bagaimana cara melacak laporan?", a: "Masukkan ID laporan (misalnya SWT-2026-0001) pada bagian Track Laporan, lalu tekan Cari Laporan. Anda akan melihat status terkini beserta riwayatnya." },
+  { q: "Bagaimana cara melacak laporan?", a: "Masukkan ID laporan (misalnya SWT-2026-0001) pada bagian Lacak Laporan, lalu tekan Lacak laporan. Anda akan melihat status terkini beserta riwayatnya." },
   { q: "Apa yang terjadi setelah laporan diverifikasi?", a: "Laporan yang valid berstatus Terverifikasi, lalu ditindaklanjuti petugas atau tim lapangan (Sedang Ditangani) sampai selesai (Selesai). Laporan yang tidak dapat diverifikasi berstatus Ditolak beserta alasannya." },
 ];
 

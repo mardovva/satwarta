@@ -96,7 +96,7 @@ function guidanceFor(ctx: ReportContext): string {
     "",
     ...steps.map((s, i) => `${i + 1}. ${s}`),
     "",
-    `Pantau status laporan di Track Laporan, dan perbarui bila kondisi berubah. Jika ada bahaya langsung bagi manusia, hubungi petugas atau instansi setempat. Ini panduan umum; petugas wilayah ${ctx.province} yang akan menangani satwa.`,
+    `Pantau status laporan di Lacak Laporan, dan perbarui bila kondisi berubah. Jika ada bahaya langsung bagi manusia, hubungi petugas atau instansi setempat. Ini panduan umum; petugas wilayah ${ctx.province} yang akan menangani satwa.`,
   ].join("\n");
 }
 
@@ -109,8 +109,8 @@ function answerQuestion(q: string, ctx: ReportContext | null): string | null {
   if (/asap|api|kebakaran/.test(q)) return "**Utamakan keselamatan Anda.** Jangan mendekati api atau area berasap demi satwa. Jika Anda dalam bahaya, menjauhlah dan hubungi petugas atau instansi setempat.";
   if (/petugas|kapan|lama|datang|belum/.test(q)) {
     return ctx
-      ? `Petugas wilayah ${ctx.province} akan memproses laporan ${ctx.id}. Pantau status terbarunya di Track Laporan. Jika kondisinya mendesak atau ada bahaya bagi manusia, hubungi petugas atau instansi setempat.`
-      : "Petugas wilayah setempat akan memproses laporan Anda. Pantau statusnya di Track Laporan. Jika mendesak, hubungi petugas atau instansi setempat.";
+      ? `Petugas wilayah ${ctx.province} akan memproses laporan ${ctx.id}. Pantau status terbarunya di Lacak Laporan. Jika kondisinya mendesak atau ada bahaya bagi manusia, hubungi petugas atau instansi setempat.`
+      : "Petugas wilayah setempat akan memproses laporan Anda. Pantau statusnya di Lacak Laporan. Jika mendesak, hubungi petugas atau instansi setempat.";
   }
   return null;
 }

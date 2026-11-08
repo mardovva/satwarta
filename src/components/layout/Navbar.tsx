@@ -8,7 +8,7 @@ import LoginModal from "./LoginModal";
 const links = [
   { label: "Beranda", id: "beranda" },
   { label: "Lapor", id: "lapor" },
-  { label: "Track", id: "track" },
+  { label: "Lacak", id: "track" },
   { label: "Donasi", id: "donasi" },
   { label: "FAQ", id: "faq" },
 ];

@@ -35,7 +35,7 @@ export function getAllReports(): StoredReport[] {
   return [...dummyTrackingReports, ...getStoredReports()].map((r) => withUpdates(r, updates));
 }
 
-/** Gulir ke bagian Track Laporan dan tampilkan laporan dengan ID tersebut. */
+/** Gulir ke bagian Lacak Laporan dan tampilkan laporan dengan ID tersebut. */
 export function goToTracking(id: string) {
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   document.getElementById("track")?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
