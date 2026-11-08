@@ -53,6 +53,6 @@ export default function TrackingResult({ lookup, onClose }: { lookup: TrackingLo
         </div>
       )}
       {confirming && <DeleteReportDialog reportId={report.id} onClose={() => setConfirming(false)} onDeleted={onClose} />}
-    </article>
+        </article>
   );
 }

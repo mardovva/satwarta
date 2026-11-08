@@ -265,7 +265,7 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
   }, [pickedLocation, mode]);
 
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full" data-basemap={basemap}>
       <div ref={container} className="h-full w-full" />
       {monitoring && (
         <>
@@ -274,7 +274,7 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
             <button
               onClick={onToggleFullscreen}
               aria-label={fullscreen ? "Tutup layar penuh" : "Layar penuh"}
-              className="absolute right-3 top-3 z-10 rounded-full bg-white p-2 shadow-md transition hover:bg-mist"
+              className={`absolute right-3 top-3 z-10 rounded-full border border-white/50 bg-white/25 p-2 shadow-nav backdrop-blur-xl backdrop-saturate-150 transition hover:bg-white/45 ${basemap === "satelit" ? "text-white" : "text-ink"}`}
             >
               {fullscreen ? <X size={18} /> : <Maximize2 size={18} />}
             </button>

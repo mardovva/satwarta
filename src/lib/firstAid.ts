@@ -24,9 +24,9 @@ export function toContext(r: StoredReport): ReportContext {
   };
 }
 
-/** Buka asisten pertolongan pertama dari bagian lain halaman, berdasarkan ID laporan. */
+/** Buka halaman AI Chat, dengan konteks laporan bila ID diberikan. */
 export function openFirstAid(reportId?: string) {
-  window.dispatchEvent(new CustomEvent(FIRST_AID_EVENT, { detail: reportId ?? null }));
+  window.location.assign(reportId ? `/chat?laporan=${encodeURIComponent(reportId)}` : "/chat");
 }
 
 export const FIRST_AID_SYSTEM_PROMPT = `Kamu adalah asisten pertolongan pertama untuk satwa liar yang terdampak kebakaran hutan dan lahan di Indonesia, di platform Satwarta. Pengguna adalah pelapor (masyarakat awam) yang menunggu petugas datang.

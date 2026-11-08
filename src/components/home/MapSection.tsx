@@ -2,9 +2,10 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { goToTracking } from "@/lib/tracking";
+import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
-import { openFirstAid } from "@/lib/firstAid";
+import { INTRO } from "@/lib/intro";
 import ReportButton from "./ReportButton";
 
 const IndonesiaMap = dynamic(() => import("@/components/map/IndonesiaMap"), {
@@ -12,6 +13,21 @@ const IndonesiaMap = dynamic(() => import("@/components/map/IndonesiaMap"), {
   loading: () => <div className="h-full w-full animate-pulse bg-[#DCE6DC]" />,
 });
 
+/** Dua tombol CTA di atas peta. */
+export function CtaRow() {
+  return (
+    <Reveal initialDelay={INTRO.nextDelay}>
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-3 px-4">
+        <Link href="/chat" className="inline-flex w-full max-w-[19rem] items-center justify-center gap-2 rounded-full border border-white/50 bg-white/40 px-7 py-3 text-base font-semibold text-primary shadow-nav backdrop-blur-xl backdrop-saturate-150 transition hover:-translate-y-0.5 hover:bg-white/60 hover:shadow-lg sm:w-[19rem]">
+          <MessageCircle size={20} /> Tanya Satwarta AI
+        </Link>
+        <ReportButton />
+      </div>
+    </Reveal>
+  );
+}
+
+/** Peta setinggi 75% layar: separuh atasnya terlihat di layar pertama, sisanya muncul saat digulir (seperti Cluely). */
 export default function MapSection() {
   const [fullscreen, setFullscreen] = useState(false);
 
@@ -35,25 +51,17 @@ export default function MapSection() {
   }, [fullscreen]);
 
   return (
-    <section className="mx-auto mt-6 flex w-[92%] max-w-[83.125rem] flex-1 flex-col md:w-[84%]">
-      {/* peta mengisi sisa tinggi layar pertama (min 14 rem, maks 46 rem); inset-0 agar tinggi tidak bergantung persen */}
-      <Reveal variant="zoom" className="relative max-h-[46rem] min-h-[14rem] flex-1"><div className="absolute inset-0">
-        <div className={fullscreen ? "fixed inset-0 z-[100] bg-white p-3 sm:p-6" : "h-full overflow-hidden rounded-[1.25rem] shadow-soft"}>
-          <div className={fullscreen ? "h-full w-full overflow-hidden rounded-[1.25rem]" : "h-full w-full"}>
-            <IndonesiaMap mode="monitoring" fullscreen={fullscreen} onToggleFullscreen={() => setFullscreen((v) => !v)} onViewDetail={viewDetail} />
+    <section className="mx-auto mt-4 w-[92%] max-w-[83.125rem] md:w-[84%]">
+      {/* tinggi = 75% layar (svh); inset-0 agar tinggi peta tidak bergantung persen */}
+      <Reveal variant="stick" initialDelay={INTRO.nextDelay} className="relative h-[75svh] min-h-[24rem] max-h-[52rem]">
+        <div className="absolute inset-0">
+          <div className={fullscreen ? "fixed inset-0 z-[100] bg-white p-3 sm:p-6" : "h-full overflow-hidden rounded-[1.25rem] shadow-[0_30px_80px_-12px_rgba(10,30,20,0.40)]"}>
+            <div className={fullscreen ? "h-full w-full overflow-hidden rounded-[1.25rem]" : "h-full w-full"}>
+              <IndonesiaMap mode="monitoring" fullscreen={fullscreen} onToggleFullscreen={() => setFullscreen((v) => !v)} onViewDetail={viewDetail} />
+            </div>
           </div>
         </div>
-      </div></Reveal>
-      <Reveal delay={0.1}>
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-        <button
-          type="button" onClick={() => openFirstAid()}
-          className="inline-flex w-full max-w-[19rem] items-center justify-center gap-2 rounded-full bg-white px-7 py-3 text-base font-semibold text-primary shadow-md ring-1 ring-primary/25 transition hover:-translate-y-0.5 hover:bg-cream hover:shadow-lg sm:w-[19rem]"
-        >
-          <MessageCircle size={20} /> AI Chat Satwarta
-        </button>
-        <ReportButton />
-      </div></Reveal>
+      </Reveal>
     </section>
   );
 }

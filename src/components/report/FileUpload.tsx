@@ -38,7 +38,7 @@ export default function FileUpload({ items, onChange, label = "Dokumentasi", opt
         onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
         onDragLeave={() => setDragging(false)}
         onDrop={(e) => { e.preventDefault(); setDragging(false); addFiles(e.dataTransfer.files); }}
-        className={`flex cursor-pointer flex-col items-center gap-1 rounded-2xl px-4 py-6 text-center shadow-sm ring-1 transition focus-within:ring-2 focus-within:ring-primary ${dragging ? "bg-primary/5 ring-2 ring-primary" : error ? "bg-white ring-2 ring-red-400" : "bg-white ring-black/5"}`}
+        className={`flex cursor-pointer flex-col items-center gap-1 rounded-2xl px-4 py-3 text-center shadow-sm ring-1 transition focus-within:ring-2 focus-within:ring-primary ${dragging ? "bg-primary/5 ring-2 ring-primary" : error ? "bg-white ring-2 ring-red-400" : "bg-white ring-black/5"}`}
       >
         <UploadCloud size={34} strokeWidth={1.5} className="text-ink/70" />
         <span className="text-base text-ink/80">Unggah foto dokumentasi</span>

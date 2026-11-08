@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Megaphone, ShieldCheck, X } from "lucide-react";
+import { UserRound, UserRoundCheck, X } from "lucide-react";
 import { enterAsOfficer } from "@/lib/auth";
 import { setRole } from "@/lib/role";
 
@@ -27,16 +27,15 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
-      <div role="dialog" aria-modal="true" aria-labelledby="login-title" className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-soft" onClick={(e) => e.stopPropagation()}>
+      <div role="dialog" aria-modal="true" aria-label="Pilih peran: Pelapor atau Petugas" className="relative w-full max-w-md rounded-3xl bg-white p-6 pt-14 shadow-soft" onClick={(e) => e.stopPropagation()}>
         <button onClick={onClose} aria-label="Tutup" className="absolute right-4 top-4 rounded-full p-1 hover:bg-mist"><X size={18} /></button>
-        <h2 id="login-title" className="text-2xl font-bold text-primary">Masuk</h2>
-        <div className="mt-5 grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           <button type="button" onClick={asPelapor} className={card}>
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary"><Megaphone size={24} /></span>
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary"><UserRound size={32} strokeWidth={1.75} /></span>
             <span className="text-lg font-bold">Pelapor</span>
           </button>
           <button type="button" onClick={asPetugas} className={card}>
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/15 text-accent"><ShieldCheck size={24} /></span>
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary"><UserRoundCheck size={32} strokeWidth={1.75} /></span>
             <span className="text-lg font-bold">Petugas</span>
           </button>
         </div>

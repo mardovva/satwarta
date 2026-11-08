@@ -54,7 +54,7 @@ function DashboardContent({ session, onLogout, onSwitch }: { session: OfficerSes
         <section className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h1 className="text-2xl font-extrabold tracking-tight text-primary sm:text-3xl">{session.name}</h1>
+              <h1 className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">{session.name}</h1>
               <p className="text-sm text-ink/70">{session.agency}</p>
             </div>
             <label className="text-xs font-semibold text-ink/60">

@@ -23,7 +23,7 @@ const photos = [
  */
 export default function PhotoCarousel() {
   return (
-    <section aria-label="Dokumentasi lapangan" className="relative z-10 pb-6 pt-8">
+    <section aria-label="Dokumentasi lapangan" className="relative z-10 pb-8 pt-20">
       <Reveal>
       <div className="overflow-hidden shadow-[0_8px_28px_rgba(0,0,0,0.22)] motion-reduce:overflow-x-auto">
         <ul className="flex w-max animate-marquee will-change-transform motion-reduce:animate-none">

@@ -71,10 +71,10 @@ export default function LocationPicker({ values, errors, onChange }: Props) {
 
   const loc = values.location;
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       <div>
         <p className="mb-1.5 text-[0.9375rem] font-semibold">Tandai lokasi di peta<span aria-hidden className="ml-0.5 text-accent">*</span></p>
-        <div id="field-location" tabIndex={-1} data-invalid={errors.location ? "true" : undefined} className={`h-[18rem] overflow-hidden rounded-xl shadow-sm outline-none ring-1 ${errors.location ? "ring-2 ring-red-400" : "ring-black/5"}`}>
+        <div id="field-location" tabIndex={-1} data-invalid={errors.location ? "true" : undefined} className={`h-[12rem] overflow-hidden rounded-xl shadow-sm outline-none ring-1 ${errors.location ? "ring-2 ring-red-400" : "ring-black/5"}`}>
           <IndonesiaMap mode="location-picker" pickedLocation={loc} onPick={(p: LatLng) => onChange("location", p)} />
         </div>
 

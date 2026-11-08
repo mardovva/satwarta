@@ -3,18 +3,29 @@
 @tailwind utilities;
 
 html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
-body { background-color: #FAF8F2; }
+body { background-color: #EDF2EC; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
-.maplibregl-popup-content { border-radius: 14px; padding: 14px 16px; box-shadow: 0 8px 24px rgba(0,0,0,.2); font-family: inherit; }
+/* Popup peta: kaca buram seperti header (transparan + blur) */
+.maplibregl-popup-content {
+  border-radius: 18px; padding: 14px 16px; font-family: inherit;
+  background: rgba(255,255,255,.68);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2); backdrop-filter: blur(18px) saturate(1.2);
+  border: 1px solid rgba(255,255,255,.7);
+  box-shadow: 0 6px 22px rgba(10,30,20,.16);
+}
+.maplibregl-popup-anchor-top .maplibregl-popup-tip, .maplibregl-popup-anchor-top-left .maplibregl-popup-tip, .maplibregl-popup-anchor-top-right .maplibregl-popup-tip { border-bottom-color: rgba(255,255,255,.68); }
+.maplibregl-popup-anchor-bottom .maplibregl-popup-tip, .maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip, .maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip { border-top-color: rgba(255,255,255,.68); }
+.maplibregl-popup-anchor-left .maplibregl-popup-tip { border-right-color: rgba(255,255,255,.68); }
+.maplibregl-popup-anchor-right .maplibregl-popup-tip { border-left-color: rgba(255,255,255,.68); }
 /* Tombol tutup popup: bulat dan sedikit masuk dari tepi */
 .maplibregl-popup-content .maplibregl-popup-close-button {
   top: 10px; right: 10px; width: 28px; height: 28px; padding: 0;
   display: flex; align-items: center; justify-content: center;
-  border-radius: 9999px; background: rgba(255,255,255,.95); color: #171717;
+  border-radius: 9999px; background: rgba(255,255,255,.85); color: #171717;
   font-size: 20px; line-height: 1; box-shadow: 0 1px 5px rgba(0,0,0,.3);
 }
-.maplibregl-popup-content .maplibregl-popup-close-button:hover { background: #F5F5F5; }
+.maplibregl-popup-content .maplibregl-popup-close-button:hover { background: rgba(255,255,255,.9); }
 
 /* Navbar disembunyikan saat peta fullscreen */
 body.map-fullscreen .site-header { visibility: hidden; }
@@ -30,6 +41,8 @@ body.map-fullscreen .site-header { visibility: hidden; }
 .reveal[data-variant="left"] { transform: translate3d(-3rem, 0, 0) scale(0.96); }
 .reveal[data-variant="right"] { transform: translate3d(3rem, 0, 0) scale(0.96); }
 .reveal[data-variant="zoom"] { transform: scale(0.9); }
+/* menempel ke layar: mulai membesar (seolah dekat dengan mata), lalu mengecil dan mengunci; durasi dibuat setara tombol CTA */
+.reveal[data-variant="stick"] { transform: scale(1.22); transform-origin: 50% 35%; transition-timing-function: ease-out, cubic-bezier(0.22, 1, 0.36, 1); } /* hanya ubah easing: jangan pakai shorthand `transition` karena akan mereset transition-delay */
 .reveal[data-in="true"] { opacity: 1; transform: none; will-change: auto; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
@@ -47,3 +60,28 @@ body.map-fullscreen .site-header { visibility: hidden; }
 /* Layar pertama (landing) setinggi layar: peta mengisi sisa ruang sehingga dua tombol CTA menjadi batas bawah.
    svh = tinggi layar terkecil (aman untuk toolbar Safari yang bisa menyusut). */
 .hero-fit { min-height: 100vh; min-height: 100svh; }
+
+/* Gambar hero di bagian atas halaman; memudar ke warna solid saat digulir ke bawah (warna sama dengan body). */
+.hero-bg { height: 105vh; height: 105svh; }
+
+/* Ukuran mengikuti tinggi layar (tablet/desktop) agar tiap halaman muat dalam satu layar.
+   16px pada layar setinggi >= 760px; mengecil sampai 12px pada layar yang lebih pendek. */
+@media (min-width: 768px) {
+  html { font-size: 16px; font-size: clamp(12px, 2.1vh, 16px); font-size: clamp(12px, 2.1svh, 16px); }
+}
+
+/* Kontrol peta (zoom, informasi/atribusi): kaca buram seperti header. Ikon putih di peta satelit, gelap di peta jalan. */
+.maplibregl-ctrl-group,
+.maplibregl-ctrl-attrib.maplibregl-compact {
+  background: rgba(255,255,255,.28) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(1.5); backdrop-filter: blur(16px) saturate(1.5);
+  border: 1px solid rgba(255,255,255,.5);
+  box-shadow: 0 4px 18px rgba(20,40,30,.12) !important;
+}
+.maplibregl-ctrl-group { border-radius: 14px; overflow: hidden; }
+.maplibregl-ctrl-group button + button { border-top: 1px solid rgba(255,255,255,.4); }
+.maplibregl-ctrl-attrib.maplibregl-compact { border-radius: 14px; }
+[data-basemap="satelit"] .maplibregl-ctrl-icon,
+[data-basemap="satelit"] .maplibregl-ctrl-attrib-button { filter: invert(1) drop-shadow(0 1px 2px rgba(0,0,0,.35)); }
+[data-basemap="satelit"] .maplibregl-ctrl-attrib-inner,
+[data-basemap="satelit"] .maplibregl-ctrl-attrib-inner a { color: #fff; }

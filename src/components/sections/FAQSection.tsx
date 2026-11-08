@@ -38,7 +38,7 @@ export default function FAQSection() {
   }, []);
 
   return (
-    <section id="faq" className="px-4 pb-6 pt-16 sm:pb-8">
+    <section id="faq" className="px-4 pb-6 pt-16">
       <div
         className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:gap-14"
         style={{ "--faq-extra": `${reserve?.extra ?? 0}px` } as CSSProperties}

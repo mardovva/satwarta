@@ -2,23 +2,27 @@
 import { useEffect, useState } from "react";
 import { dummyStats } from "@/data/dummyReports";
 import Reveal from "@/components/ui/Reveal";
+import { INTRO } from "@/lib/intro";
 import { useInView } from "@/hooks/useInView";
 import { useCountUp } from "@/hooks/useCountUp";
 import { REPORTS_UPDATED_EVENT } from "@/lib/reports";
 import { computeStats, type ReportStats } from "@/lib/stats";
 
-interface StatProps { value: number; label: string; color: string; active: boolean; delay: number }
+interface StatProps { value: number; label: string; color?: string; active: boolean; index: number }
 
-function Stat({ value, label, color, active, delay }: StatProps) {
-  const display = useCountUp(value, active, 5500, delay);
+function Stat({ value, label, active, index }: StatProps) {
+  // Angka muncul bersama judul, lalu menghitung setelah terlihat
+  const display = useCountUp(value, active, INTRO.countDurationMs, INTRO.countDelayMs + index * INTRO.countStaggerMs);
   return (
-    <Reveal delay={delay / 1000 + 0.1}><div className="flex shrink-0 items-center" role="group" aria-label={`${value} ${label}`}>
-      <span className="relative inline-block text-2xl font-bold tabular-nums sm:text-3xl" style={{ color }} aria-hidden>
-        <span className="invisible">{value}</span>
-        <span className="absolute inset-0 text-right">{display}</span>
-      </span>
-      <span aria-hidden className="ml-2 whitespace-nowrap text-sm text-ink sm:text-base">{label}</span>
-    </div></Reveal>
+    <Reveal initialDelay={INTRO.titleDelay} delay={index * 0.1}>
+      <div className="flex shrink-0 items-center text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.12)]" role="group" aria-label={`${value} ${label}`}>
+        <span className="relative inline-block text-2xl font-bold tabular-nums sm:text-3xl" aria-hidden>
+          <span className="invisible">{value}</span>
+          <span className="absolute inset-0 text-right">{display}</span>
+        </span>
+        <span aria-hidden className="ml-3 whitespace-nowrap text-sm font-semibold text-white sm:text-base">{label}</span>
+      </div>
+    </Reveal>
   );
 }
 
@@ -40,9 +44,9 @@ export default function StatisticsSection() {
 
   return (
     <section ref={ref} className="mx-auto mt-6 flex max-w-6xl flex-wrap items-center justify-center gap-x-10 gap-y-3 px-4 sm:mt-8 lg:flex-nowrap lg:gap-x-8 xl:gap-x-12">
-      <Stat value={stats.dead} label="satwa mati terbakar" color="#F04B50" active={inView} delay={0} />
-      <Stat value={stats.inCare} label="satwa dalam penanganan" color="#EBAA78" active={inView} delay={300} />
-      <Stat value={stats.rescued} label="satwa terselamatkan" color="#345542" active={inView} delay={600} />
+      <Stat value={stats.dead} label="satwa mati terbakar" active={inView} index={0} />
+      <Stat value={stats.inCare} label="satwa dalam penanganan" active={inView} index={1} />
+      <Stat value={stats.rescued} label="satwa terselamatkan" active={inView} index={2} />
     </section>
   );
 }

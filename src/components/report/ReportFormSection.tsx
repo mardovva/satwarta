@@ -81,18 +81,15 @@ export default function ReportFormSection() {
   const hasErrors = Object.values(errors).some(Boolean) || !!photoError;
 
   return (
-    <section id="lapor" className="relative pb-24 pt-16">
-      <Decor src="/images/branches/branches-with-animal.png" width={606} height={208} className="-top-6 left-0 z-[15] w-[14.375rem] sm:top-8 sm:w-[12rem] md:top-6 md:w-[16rem] lg:top-4 lg:w-[20rem] xl:-top-2 xl:w-[30rem] 2xl:-top-8 2xl:w-[37.875rem]" />
+    <section id="lapor" className="relative min-h-[100svh] pb-12 pt-16">
       <Decor src="/images/branches/dry-leaf-2.png" width={117} height={125} sway="right top" className="right-0 top-4 z-[15] hidden w-[5.625rem] sm:block lg:top-2 lg:w-[7.3125rem]" />
       <div className="relative z-10">
-        <Reveal variant="right">
-          <div className="mx-auto w-[92%] max-w-[83.125rem] md:w-[84%]">
-            <h2 className="whitespace-nowrap text-right text-lg font-extrabold tracking-tight text-primary sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">Formulir Laporan Satwa Terdampak</h2>
-          </div>
+        <Reveal>
+          <h2 className="px-4 text-center text-3xl font-bold tracking-tight text-primary sm:text-5xl">Formulir Laporan Satwa Terdampak</h2>
         </Reveal>
 
         <Reveal delay={0.1}>
-        <form ref={formRef} noValidate onSubmit={handleSubmit} className="mx-auto mt-10 w-[92%] max-w-[83.125rem] space-y-6 rounded-[1.25rem] bg-white/60 p-5 shadow-soft ring-1 ring-black/5 backdrop-blur-sm sm:p-8 md:w-[84%] md:p-10">
+        <form ref={formRef} noValidate onSubmit={handleSubmit} className="mx-auto mt-6 w-[92%] max-w-[83.125rem] space-y-4 rounded-[1.25rem] bg-white/60 p-5 shadow-soft ring-1 ring-black/5 backdrop-blur-sm sm:p-6 md:w-[84%] md:p-7">
           <div className="grid gap-x-12 gap-y-6 md:grid-cols-2">
             <div className="md:border-r md:border-ink/10 md:pr-12">
               <AnimalInformationForm values={values} errors={errors} onChange={onChange} />
@@ -103,7 +100,7 @@ export default function ReportFormSection() {
             <LocationPicker values={values} errors={errors} onChange={onChange} />
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-3">
             <FormField id="field-reporterName" label="Nama pelapor" required error={errors.reporterName}>
               <input {...fieldProps("field-reporterName", errors.reporterName)} autoComplete="name" value={values.reporterName} onChange={(e) => onChange("reporterName", e.target.value)} placeholder="Masukkan nama" className={inputClass(!!errors.reporterName)} />
             </FormField>

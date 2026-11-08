@@ -30,7 +30,8 @@ export function useCountUp(value: number, active: boolean, duration = 1600, dela
       setDisplay(v);
       if (p < 1) raf = requestAnimationFrame(step);
     };
-    const timer = window.setTimeout(() => { raf = requestAnimationFrame(step); }, delay);
+    const startDelay = from === 0 ? delay : 0; // jeda hanya untuk hitungan pertama dari 0
+    const timer = window.setTimeout(() => { raf = requestAnimationFrame(step); }, startDelay);
     return () => { window.clearTimeout(timer); cancelAnimationFrame(raf); };
   }, [value, active, duration, delay]);
 

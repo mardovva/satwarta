@@ -1,5 +1,8 @@
 import Image from "next/image";
 
+/** Ubah ke false untuk menyembunyikan semua ranting dan daun dekorasi (tampilan lebih polos ala Cluely). */
+const SHOW_DECOR = true;
+
 interface DecorProps {
   src: string;
   width: number;
@@ -13,6 +16,7 @@ interface DecorProps {
 
 /** Dekorasi ilustrasi: absolute, tidak menangkap klik, berada di belakang konten kecuali diberi z-index. */
 export default function Decor({ src, width, height, className = "", sway, flip }: DecorProps) {
+  if (!SHOW_DECOR) return null;
   const img = (
     <Image
       src={src}

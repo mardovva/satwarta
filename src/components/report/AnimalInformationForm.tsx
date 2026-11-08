@@ -10,7 +10,7 @@ interface Props {
 
 export default function AnimalInformationForm({ values, errors, onChange }: Props) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       <FormField id="field-animalType" label="Jenis satwa" required error={errors.animalType}>
         <SelectField id="field-animalType" value={values.animalType} onChange={(v) => onChange("animalType", v)} placeholder="Pilih jenis satwa" options={animalTypes} error={errors.animalType} />
       </FormField>

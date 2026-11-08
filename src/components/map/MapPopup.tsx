@@ -24,7 +24,7 @@ function infoGrid(rows: [string, Node | string][]) {
 
 /** Popup ringkas: foto, ID laporan, status, dan tombol Lihat Detail. Dibangun dengan DOM (textContent) agar aman dari XSS. */
 export function createReportPopupContent(r: StoredReport, onDetail: () => void): HTMLElement {
-  const root = el("div", "width:220px;max-width:100%;font-size:13px;line-height:1.5;color:#171717;text-align:left");
+  const root = el("div", "width:220px;max-width:100%;font-size:13px;line-height:1.5;color:#0F1F17;text-align:left");
 
   const photo = el("img", "display:none;width:100%;height:130px;object-fit:cover;border-radius:12px;margin-bottom:10px");
   photo.setAttribute("data-photo", "");
@@ -57,7 +57,7 @@ export function setPopupPhoto(root: HTMLElement, url: string) {
 
 /** Popup untuk satu titik hotspot NASA FIRMS. */
 export function createHotspotPopupContent(p: Record<string, unknown>): HTMLElement {
-  const root = el("div", "min-width:200px;font-size:13px;line-height:1.5;color:#171717;text-align:left");
+  const root = el("div", "min-width:200px;font-size:13px;line-height:1.5;color:#0F1F17;text-align:left");
   root.append(
     el("strong", "display:block;font-size:14px;margin-bottom:6px", "Hotspot NASA FIRMS"),
     infoGrid([
@@ -66,7 +66,7 @@ export function createHotspotPopupContent(p: Record<string, unknown>): HTMLEleme
       ["Keyakinan", String(p.confidence)],
       ["FRP", `${Number(p.frp).toFixed(1)} MW`],
     ]),
-    el("p", "margin:8px 0 0;font-size:11px;color:#666", "Indikasi panas dari satelit, belum tentu kebakaran.")
+    el("p", "margin:8px 0 0;font-size:11px;color:#2F3F36", "Indikasi panas dari satelit, belum tentu kebakaran.")
   );
   return root;
 }

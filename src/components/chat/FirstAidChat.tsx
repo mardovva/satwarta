@@ -202,7 +202,7 @@ export default function FirstAidChat() {
               <input
                 id="first-aid-input" ref={inputRef} value={input} onChange={(e) => setInput(e.target.value)} maxLength={300} autoComplete="off"
                 placeholder="Tulis pertanyaan Anda…"
-                className="min-w-0 flex-1 rounded-full bg-white/60 px-4 py-2 text-sm text-primary outline-none ring-1 ring-white/60 backdrop-blur-md placeholder:text-primary/50 focus:ring-2 focus:ring-primary"
+                className="min-w-0 flex-1 rounded-full bg-white/60 px-4 py-2 text-sm text-primary outline-none ring-1 ring-white/60 backdrop-blur-md placeholder:text-primary/50 focus:bg-white/75"
               />
               <button type="submit" disabled={busy || !input.trim()} aria-label="Kirim" className="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-primary text-white transition hover:bg-primary-dark disabled:opacity-50">
                 <Send size={16} />
