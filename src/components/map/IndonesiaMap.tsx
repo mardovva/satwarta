@@ -195,12 +195,12 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
         // Data hotspot dari NASA FIRMS lewat route server (/api/hotspots).
         const source = map.getSource("hotspots") as maplibregl.GeoJSONSource;
         fetch("/api/hotspots")
-          .then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json() as Promise<HotspotFeed>; })
+          .then(async (r) => { if (!r.ok) throw new Error(`${r.status} ${await r.text()}`); return r.json() as Promise<HotspotFeed>; })
           .then((feed) => {
             if (cancelled || mapRef.current !== map) return;
             source.setData(feed.data);
           })
-          .catch(() => { /* hotspot tidak tersedia: peta tetap tampil tanpa lapisan hotspot */ });
+          .catch((err) => { console.warn("Hotspot NASA FIRMS tidak tersedia:", err); });
       });
     } else {
       map.getCanvas().style.cursor = "crosshair";

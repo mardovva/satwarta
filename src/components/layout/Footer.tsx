@@ -1,39 +1,33 @@
 import Image from "next/image";
+import { Instagram, Linkedin } from "lucide-react";
 
-const nav = [
-  { label: "Beranda", href: "#beranda" },
-  { label: "Lapor", href: "#lapor" },
-  { label: "Track Laporan", href: "#track" },
-  { label: "Berita dan Data", href: "#berita" },
-  { label: "FAQ", href: "#faq" },
+const social = [
+  { label: "Instagram", href: "https://www.instagram.com/mardovva", Icon: Instagram },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/mardova-fadhilah-11b920395", Icon: Linkedin },
 ];
 
 export default function Footer() {
   return (
-    <footer className="bg-primary px-4 py-12 text-white">
-      <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-[1.4fr_1fr]">
-        <div>
-          <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white">
-              <Image src="/images/logo.png" alt="Logo Satwarta" width={40} height={41} className="h-7 w-auto" />
-            </span>
-            <span className="text-xl font-bold lowercase">satwarta</span>
-          </div>
-          <p className="mt-3 font-semibold">Jaga Satwa, Jaga Kita.</p>
-          <p className="mt-2 max-w-md text-sm leading-relaxed text-white/75">
-            Platform pelaporan masyarakat untuk satwa liar yang terdampak kebakaran hutan dan lahan di Indonesia.
-          </p>
+    <footer className="bg-primary px-4 py-8 text-white">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-5">
+        <div className="flex flex-col items-start gap-3">
+          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white">
+            <Image src="/images/logo.png" alt="Logo Satwarta" width={40} height={41} className="h-7 w-auto" />
+          </span>
+          <p className="text-sm text-white/80">Copyright Satwarta 2026</p>
         </div>
-        <nav aria-label="Navigasi footer">
-          <ul className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
-            {nav.map((n) => (
-              <li key={n.href}><a href={n.href} className="text-white/85 transition hover:text-accent">{n.label}</a></li>
-            ))}
-          </ul>
-        </nav>
-      </div>
-      <div className="mx-auto mt-8 max-w-6xl border-t border-white/15 pt-5 text-xs leading-relaxed text-white/65">
-        <p>Citra satelit: Esri World Imagery. Peta: © OpenStreetMap contributors. Data hotspot: NASA FIRMS. © 2026 Satwarta.</p>
+        <ul className="flex items-center gap-3">
+          {social.map(({ label, href, Icon }) => (
+            <li key={label}>
+              <a
+                href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition hover:bg-white hover:text-primary"
+              >
+                <Icon size={20} />
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </footer>
   );

@@ -1,10 +1,12 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
-import { Search } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Search, X } from "lucide-react";
 import { statusMeta } from "@/data/trackingStatuses";
 import { REPORTS_UPDATED_EVENT, getStoredReports, withUpdates } from "@/lib/reports";
 import { TRACK_EVENT, findReport, formatDate, type TrackingLookup } from "@/lib/tracking";
 import type { StoredReport } from "@/types/report";
+import Decor from "@/components/layout/Decor";
+import Reveal from "@/components/ui/Reveal";
 import TrackingResult from "./TrackingResult";
 
 type Result =
@@ -17,6 +19,8 @@ export default function TrackingSection() {
   const [input, setInput] = useState("");
   const [result, setResult] = useState<Result>({ state: "idle" });
   const [recent, setRecent] = useState<StoredReport[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const clear = () => { setInput(""); setResult({ state: "idle" }); inputRef.current?.focus(); };
 
   const runSearch = useCallback((raw: string) => {
     if (!raw.trim()) { setResult({ state: "error", message: "Masukkan ID laporan terlebih dahulu." }); return; }
@@ -48,43 +52,57 @@ export default function TrackingSection() {
   }, [runSearch]);
 
   return (
-    <section id="track" className="relative z-10 px-4 pb-28 pt-16 sm:pb-36">
-      <div className="mx-auto max-w-3xl text-center">
-        <h2 className="text-3xl font-extrabold tracking-tight text-primary sm:text-5xl">Track Laporan</h2>
-        <p className="mt-3 text-sm text-ink/70 sm:text-base">Masukkan ID laporan untuk melihat perkembangan penanganannya.</p>
+    <section id="track" className="relative z-10 px-4 pb-16 pt-16">
+      {/* branch-leaf sejajar dengan judul "Track Laporan" */}
+      <Decor src="/images/branches/branch-leaf.png" width={505} height={262} sway="left center" className="left-0 hidden w-[14rem] sm:top-7 sm:block lg:-top-5 lg:w-[26.25rem]" />
+      <Decor src="/images/branches/dry-branch.png" width={192} height={140} sway="right top" className="right-0 top-24 hidden w-[8rem] md:block lg:w-[13.125rem]" />
 
-        <form onSubmit={(e) => { e.preventDefault(); runSearch(input); }} className="mx-auto mt-8 flex max-w-xl flex-col gap-3 sm:flex-row">
-          <label htmlFor="track-id" className="sr-only">ID laporan</label>
-          <input
-            id="track-id" value={input} onChange={(e) => setInput(e.target.value)}
-            placeholder="Contoh: SWT-2026-0001" autoComplete="off" spellCheck={false}
-            className="w-full flex-1 rounded-xl bg-white px-4 py-3 text-[0.9375rem] shadow-sm outline-none ring-1 ring-black/5 placeholder:text-ink/40 focus:ring-2 focus:ring-primary"
-          />
-          <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3 font-semibold text-white shadow-md transition hover:bg-primary-dark">
-            <Search size={18} /> Cari Laporan
-          </button>
-        </form>
+      <div className="relative z-10 mx-auto max-w-3xl text-center">
+        <Reveal><h2 className="text-3xl font-extrabold tracking-tight text-primary sm:text-5xl">Track Laporan</h2></Reveal>
+
+        <Reveal delay={0.1}>
+          <form onSubmit={(e) => { e.preventDefault(); runSearch(input); }} className="mx-auto mt-8 flex max-w-xl flex-col gap-3 sm:flex-row">
+            <label htmlFor="track-id" className="sr-only">ID laporan</label>
+            <div className="relative flex-1">
+              <input
+                id="track-id" ref={inputRef} value={input} onChange={(e) => setInput(e.target.value)}
+                placeholder="Masukkan ID laporan SWT-2026-0000" autoComplete="off" spellCheck={false}
+                className="w-full rounded-xl bg-white py-3 pl-4 pr-10 text-[0.9375rem] shadow-sm outline-none ring-1 ring-black/5 placeholder:text-ink/40 focus:ring-2 focus:ring-primary"
+              />
+              {input && (
+                <button type="button" onClick={clear} aria-label="Hapus pencarian" className="absolute right-2.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-ink/50 transition hover:bg-mist hover:text-ink">
+                  <X size={16} />
+                </button>
+              )}
+            </div>
+            <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3 font-semibold text-white shadow-md transition hover:bg-primary-dark">
+              <Search size={18} /> Cari Laporan
+            </button>
+          </form>
+        </Reveal>
 
         {recent.length > 0 && (
-          <div className="mx-auto mt-6 max-w-xl text-left">
-            <h3 className="mb-2 text-sm font-semibold text-primary">Riwayat laporan Anda</h3>
-            <ul className="space-y-2">
-              {recent.map((r) => (
-                <li key={r.id}>
-                  <button
-                    type="button" onClick={() => { setInput(r.id); runSearch(r.id); }}
-                    className="flex w-full items-center justify-between gap-3 rounded-2xl bg-white px-4 py-3 text-left shadow-sm ring-1 ring-black/5 transition hover:ring-primary/40"
-                  >
-                    <span>
-                      <span className="block font-bold">{r.id}</span>
-                      <span className="block text-xs text-ink/60">{r.animal.name || r.animal.type} · {formatDate(r.createdAt)}</span>
-                    </span>
-                    <span className="flex-none rounded-full px-3 py-0.5 text-xs font-semibold" style={{ background: statusMeta[r.status].bg, color: statusMeta[r.status].fg }}>{statusMeta[r.status].label}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <Reveal delay={0.15}>
+            <div className="mx-auto mt-6 max-w-xl text-left">
+              <h3 className="mb-2 text-sm font-semibold text-primary">Riwayat laporan Anda</h3>
+              <ul className="space-y-2">
+                {recent.map((r) => (
+                  <li key={r.id}>
+                    <button
+                      type="button" onClick={() => { setInput(r.id); runSearch(r.id); }}
+                      className="flex w-full items-center justify-between gap-3 rounded-2xl bg-white px-4 py-3 text-left shadow-sm ring-1 ring-black/5 transition hover:ring-primary/40"
+                    >
+                      <span>
+                        <span className="block font-bold">{r.id}</span>
+                        <span className="block text-xs text-ink/60">{r.animal.name || r.animal.type} · {formatDate(r.createdAt)}</span>
+                      </span>
+                      <span className="flex-none rounded-full px-3 py-0.5 text-xs font-semibold" style={{ background: statusMeta[r.status].bg, color: statusMeta[r.status].fg }}>{statusMeta[r.status].label}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
         )}
 
         <div aria-live="polite" className="text-left">
@@ -95,8 +113,12 @@ export default function TrackingSection() {
               <p className="mt-1 text-sm text-ink/65">Periksa kembali penulisan ID laporan Anda.</p>
             </div>
           )}
-          {result.state === "found" && <TrackingResult lookup={result.lookup} onClose={() => setResult({ state: "idle" })} />}
         </div>
+      </div>
+
+      {/* hasil selebar peta dan formulir */}
+      <div className="relative z-10">
+        {result.state === "found" && <Reveal key={result.lookup.report.id}><TrackingResult lookup={result.lookup} onClose={() => setResult({ state: "idle" })} /></Reveal>}
       </div>
     </section>
   );

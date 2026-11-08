@@ -73,3 +73,18 @@ export async function login(username: string, password: string): Promise<LoginRe
   try { window.localStorage.setItem(SESSION_KEY, JSON.stringify(session)); } catch { /* abaikan */ }
   return { ok: true, session };
 }
+
+const LAST_KEY = "satwarta:last-officer";
+
+/** Masuk sebagai petugas tanpa kata sandi (satu klik). Mengingat petugas terakhir yang dipakai. */
+export function enterAsOfficer(username?: string): OfficerSession {
+  let last: string | null = null;
+  try { last = window.localStorage.getItem(LAST_KEY); } catch { /* abaikan */ }
+  const account = officerAccounts.find((a) => a.username === username) ?? officerAccounts.find((a) => a.username === last) ?? officerAccounts[0];
+  const session: OfficerSession = { username: account.username, name: account.name, agency: account.agency, expiresAt: Date.now() + SESSION_TTL_MS };
+  try {
+    window.localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    window.localStorage.setItem(LAST_KEY, account.username);
+  } catch { /* abaikan */ }
+  return session;
+}

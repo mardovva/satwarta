@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakarta", display: "swap" });
 
 export const metadata: Metadata = {
   title: "Satwarta — Jaga Satwa, Jaga Kita",
@@ -12,8 +12,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id" className={inter.variable}>
-      <body className="font-sans text-ink antialiased">{children}</body>
+    <html lang="id" className={jakarta.variable}>
+      <body className="font-sans text-ink antialiased">
+        <noscript><style>{`.reveal{opacity:1!important;transform:none!important}`}</style></noscript>
+        {children}
+      </body>
     </html>
   );
 }

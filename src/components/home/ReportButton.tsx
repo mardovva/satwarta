@@ -8,7 +8,7 @@ export default function ReportButton() {
   return (
     <button
       onClick={goToForm}
-      className="rounded-full bg-primary px-7 py-3 text-base font-semibold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-primary-dark hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:text-lg"
+      className="inline-flex w-full max-w-[21.5rem] items-center justify-center rounded-full bg-primary px-7 py-3 sm:w-[21.5rem] text-base font-semibold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-primary-dark hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:text-lg"
     >
       Buat laporan satwa terdampak
     </button>

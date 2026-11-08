@@ -44,16 +44,6 @@ export const dummyTrackingReports: StoredReport[] = [
     ],
   },
   {
-    id: "SWT-2026-0904", createdAt: "2026-10-20T07:45:00+07:00", status: "Rejected",
-    animal: { type: "Tidak diketahui", name: "", count: 1, condition: "Terpapar asap" },
-    location: { province: "Jambi", city: "Kabupaten Muaro Jambi", lat: -1.5, lng: 103.9 }, photos: [], reporter: demoReporter,
-    history: [
-      { status: "Submitted", at: "2026-10-20T07:45:00+07:00", note: "Laporan berhasil dikirim." },
-      { status: "Under Review", at: "2026-10-20T11:30:00+07:00", officer: OFFICERS.riaujambi, note: "Petugas memeriksa laporan." },
-      { status: "Rejected", at: "2026-10-21T10:00:00+07:00", officer: OFFICERS.riaujambi, note: "Tidak ada foto dan titik lokasi kurang jelas, sehingga laporan tidak dapat diverifikasi." },
-    ],
-  },
-  {
     id: "SWT-2026-0905", createdAt: "2026-10-24T12:20:00+07:00", status: "Verified",
     animal: { type: "Mamalia", name: "Beruang Madu", count: 1, condition: "Ditemukan mati" },
     location: { province: "Kalimantan Timur", city: "Kabupaten Kutai Kartanegara", lat: -0.4, lng: 116.8 }, photos: [], reporter: demoReporter,

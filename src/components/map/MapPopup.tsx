@@ -1,8 +1,6 @@
 import type { StoredReport } from "@/types/report";
 import { statusMeta } from "@/data/trackingStatuses";
-import { handlerLabel } from "@/lib/handler";
 import { fallbackPhoto } from "@/lib/placeholderPhoto";
-import { formatDate } from "@/lib/tracking";
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, css = "", text?: string) {
   const e = document.createElement(tag);
@@ -24,18 +22,17 @@ function infoGrid(rows: [string, Node | string][]) {
   return grid;
 }
 
-/** Isi popup dibangun dengan DOM (textContent), bukan string HTML, agar aman dari XSS. */
+/** Popup ringkas: foto, ID laporan, status, dan tombol Lihat Detail. Dibangun dengan DOM (textContent) agar aman dari XSS. */
 export function createReportPopupContent(r: StoredReport, onDetail: () => void): HTMLElement {
-  const root = el("div", "width:250px;max-width:100%;font-size:13px;line-height:1.5;color:#171717;text-align:left");
-  const title = r.animal.name || `Satwa ${r.animal.type.toLowerCase()}`;
+  const root = el("div", "width:220px;max-width:100%;font-size:13px;line-height:1.5;color:#171717;text-align:left");
 
-  const photo = el("img", "display:none;width:100%;height:120px;object-fit:cover;border-radius:12px;margin-bottom:8px");
+  const photo = el("img", "display:none;width:100%;height:130px;object-fit:cover;border-radius:12px;margin-bottom:10px");
   photo.setAttribute("data-photo", "");
-  photo.alt = `Foto laporan ${title}`;
+  photo.alt = `Foto laporan ${r.id}`;
   photo.onerror = () => { photo.onerror = null; photo.src = fallbackPhoto(); };
 
   const m = statusMeta[r.status];
-  const chip = el("span", `display:inline-block;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:600;background:${m.bg};color:${m.fg}`, m.label);
+  const chip = el("span", `display:inline-block;border-radius:999px;padding:2px 12px;font-size:12px;font-weight:600;background:${m.bg};color:${m.fg}`, m.label);
 
   const btn = el("button", "margin-top:12px;background:#345542;color:#fff;border:0;border-radius:999px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer", "Lihat Detail");
   btn.type = "button";
@@ -43,14 +40,8 @@ export function createReportPopupContent(r: StoredReport, onDetail: () => void):
 
   root.append(
     photo,
-    el("strong", "display:block;font-size:15px;margin-bottom:6px;padding-right:26px", title),
-    infoGrid([
-      ["Lokasi", `${r.location.city}, ${r.location.province}`],
-      ["Kondisi", r.animal.condition],
-      ["Tanggal", formatDate(r.createdAt)],
-      ["Ditangani oleh", handlerLabel(r)],
-      ["Status", chip],
-    ]),
+    el("strong", "display:block;font-size:15px;margin-bottom:6px;padding-right:26px", r.id),
+    infoGrid([["Status", chip]]),
     btn
   );
   return root;

@@ -1,11 +1,12 @@
+import Reveal from "@/components/ui/Reveal";
+
 export default function HeroSection() {
   return (
     <div className="px-4 text-center">
-      <h1 className="text-4xl font-extrabold tracking-tight text-primary sm:text-5xl md:text-6xl">Jaga Satwa Jaga Kita</h1>
-      <p className="mx-auto mt-5 max-w-2xl text-sm leading-relaxed text-ink/80 sm:text-base">
-        <span className="block">Rumahnya terbakar, kulitnya terasa panas, napasnya sesak.</span>
-        <span className="block">Segera laporkan satwa yang terdampak dan pantau proses penyelamatannya.</span>
-      </p>
+      <Reveal><h1 className="text-4xl font-extrabold tracking-tight text-primary sm:text-5xl lg:text-6xl">Setiap Temuan Setiap Kehidupan</h1></Reveal>
+      <Reveal delay={0.15}>
+        <p className="mx-auto mt-3 max-w-2xl sm:mt-4 text-sm text-ink sm:text-base">Laporkan satwa yang terdampak dan pantau proses penyelamatannya.</p>
+      </Reveal>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { Plus } from "lucide-react";
+import Reveal from "@/components/ui/Reveal";
 
 const faqs = [
   { q: "Apa itu Satwarta?", a: "Satwarta adalah platform pelaporan masyarakat untuk satwa liar yang terdampak kebakaran hutan dan lahan (karhutla) di Indonesia. Masyarakat dapat melaporkan satwa, melihat peta, dan memantau perkembangan laporan." },
@@ -11,33 +12,77 @@ const faqs = [
 ];
 
 export default function FAQSection() {
-  const [open, setOpen] = useState<number | null>(0);
+  const [open, setOpen] = useState<number | null>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  // Ruang yang dipesan: tinggi daftar saat semua tertutup + tinggi jawaban terpanjang, agar membesarnya kartu
+  // tidak menambah tinggi halaman. Tinggi "tertutup" dihitung dari judul kartu (bukan dari tinggi daftar yang
+  // sedang beranimasi), sehingga nilainya stabil dan footer tidak naik-turun saat kartu dibuka atau ditutup.
+  const [reserve, setReserve] = useState<{ min: number; extra: number } | null>(null);
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+    let timer = 0;
+    const measure = () => {
+      const heads = Array.from(list.querySelectorAll<HTMLElement>("h3"));
+      const gap = parseFloat(getComputedStyle(document.documentElement).fontSize); // space-y-4 = 1rem
+      const closed = heads.reduce((sum, h) => sum + h.offsetHeight, 0) + Math.max(0, heads.length - 1) * gap;
+      const extra = Math.max(0, ...Array.from(list.querySelectorAll<HTMLElement>("[data-faq-inner]")).map((n) => n.scrollHeight));
+      setReserve((prev) => (prev && prev.min === Math.round(closed + extra) && prev.extra === extra ? prev : { min: Math.round(closed + extra), extra }));
+    };
+    const schedule = () => { window.clearTimeout(timer); timer = window.setTimeout(measure, 120); };
+    measure();
+    document.fonts?.ready.then(measure);
+    window.addEventListener("resize", schedule);
+    return () => { window.clearTimeout(timer); window.removeEventListener("resize", schedule); };
+  }, []);
+
   return (
-    <section id="faq" className="bg-white px-4 py-20 sm:py-28">
-      <div className="mx-auto max-w-3xl">
-        <h2 className="text-center text-3xl font-extrabold tracking-tight text-primary sm:text-5xl">FAQ</h2>
-        <p className="mt-3 text-center text-sm text-ink/70 sm:text-base">Pertanyaan yang sering diajukan.</p>
-        <div className="mt-8 space-y-3">
-          {faqs.map((f, i) => {
-            const isOpen = open === i;
-            return (
-              <div key={f.q} className="rounded-2xl bg-cream ring-1 ring-black/5">
-                <h3>
-                  <button
-                    type="button" aria-expanded={isOpen} aria-controls={`faq-panel-${i}`} id={`faq-btn-${i}`}
-                    onClick={() => setOpen(isOpen ? null : i)}
-                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-semibold"
-                  >
-                    {f.q}
-                    <ChevronDown size={20} className={`flex-none text-primary transition-transform ${isOpen ? "rotate-180" : ""}`} />
-                  </button>
-                </h3>
-                {isOpen && (
-                  <div id={`faq-panel-${i}`} role="region" aria-labelledby={`faq-btn-${i}`} className="px-5 pb-5 text-sm leading-relaxed text-ink/75">{f.a}</div>
-                )}
-              </div>
-            );
-          })}
+    <section id="faq" className="px-4 pb-6 pt-16 sm:pb-8">
+      <div
+        className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:gap-14"
+        style={{ "--faq-extra": `${reserve?.extra ?? 0}px` } as CSSProperties}
+      >
+        {/* tengah vertikal terhadap kartu-kartu (ruang cadangan di bawah daftar dikompensasi) */}
+        <Reveal variant="left" className="md:mb-[var(--faq-extra)]">
+          <div>
+            <h2 className="text-4xl font-bold leading-tight tracking-tight text-primary sm:text-5xl">Pertanyaan yang sering ditanyakan</h2>
+            <p className="mt-4 max-w-md text-base leading-relaxed text-primary/80 sm:text-lg">
+              Temukan jawaban dari pertanyaan umum seputar pelaporan, pelacakan, dan penanganan satwa.
+            </p>
+          </div>
+        </Reveal>
+
+        <div style={reserve ? { minHeight: reserve.min } : undefined}>
+          <div ref={listRef} className="space-y-4">
+            {faqs.map((f, i) => {
+              const isOpen = open === i;
+              return (
+                <Reveal key={f.q} delay={i * 0.07}>
+                  <div className={`rounded-[1.75rem] bg-white transition-shadow duration-500 ${isOpen ? "shadow-[0_12px_28px_rgba(0,0,0,0.14)]" : "shadow-[0_6px_18px_rgba(0,0,0,0.08)] hover:shadow-[0_10px_24px_rgba(0,0,0,0.12)]"}`}>
+                    <h3>
+                      <button
+                        type="button" aria-expanded={isOpen} aria-controls={`faq-panel-${i}`} id={`faq-btn-${i}`}
+                        onClick={() => setOpen(isOpen ? null : i)}
+                        className="flex w-full items-center justify-between gap-4 px-6 py-4 text-left font-medium text-primary sm:px-8"
+                      >
+                        {f.q}
+                        <Plus size={22} strokeWidth={2.5} className={`flex-none transition-transform duration-500 ease-out ${isOpen ? "rotate-[135deg]" : ""}`} />
+                      </button>
+                    </h3>
+                    <div
+                      id={`faq-panel-${i}`} role="region" aria-labelledby={`faq-btn-${i}`} aria-hidden={!isOpen}
+                      className={`grid transition-[grid-template-rows,opacity] duration-500 ease-out ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
+                    >
+                      <div data-faq-inner className="overflow-hidden">
+                        <p className="px-6 pb-5 text-sm leading-relaxed text-ink/75 sm:px-8 sm:text-base">{f.a}</p>
+                      </div>
+                    </div>
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

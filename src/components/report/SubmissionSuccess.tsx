@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { CheckCircle2, Copy } from "lucide-react";
 import type { StoredReport } from "@/types/report";
+import { openFirstAid } from "@/lib/firstAid";
 import { goToTracking } from "@/lib/tracking";
 
 interface Props { report: StoredReport; persisted: boolean; onClose: () => void }
@@ -65,6 +66,7 @@ export default function SubmissionSuccess({ report, persisted, onClose }: Props)
         )}
 
         <div className="mt-5 flex flex-wrap justify-end gap-2">
+          <button type="button" onClick={() => { onClose(); openFirstAid(report.id); }} className="rounded-full px-5 py-2 text-sm font-semibold text-primary ring-1 ring-primary/40 hover:bg-primary/5">Pertolongan pertama</button>
           <button type="button" onClick={goTrack} className="rounded-full px-5 py-2 text-sm font-semibold text-primary ring-1 ring-primary/40 hover:bg-primary/5">Lacak laporan</button>
           <button ref={closeRef} type="button" onClick={onClose} className="rounded-full bg-primary px-6 py-2 text-sm font-semibold text-white hover:bg-primary-dark">Tutup</button>
         </div>

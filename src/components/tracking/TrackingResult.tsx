@@ -6,6 +6,7 @@ import { statusMeta } from "@/data/trackingStatuses";
 import { handlerLabel } from "@/lib/handler";
 import TrackingTimeline from "./TrackingTimeline";
 
+/** Hasil pelacakan selebar peta dan formulir; foto tiap langkah tampil di sebelah kanan timeline. */
 export default function TrackingResult({ lookup, onClose }: { lookup: TrackingLookup; onClose: () => void }) {
   const { report } = lookup;
   const meta = statusMeta[report.status];
@@ -20,10 +21,11 @@ export default function TrackingResult({ lookup, onClose }: { lookup: TrackingLo
   ];
 
   return (
-    <article className="relative mx-auto mt-8 w-full max-w-2xl rounded-3xl bg-white p-6 shadow-soft sm:p-8">
+    <article className="relative mx-auto mt-10 w-[92%] max-w-[83.125rem] rounded-[1.25rem] bg-white p-6 shadow-soft sm:p-8 md:w-[84%] md:p-10">
       <button type="button" onClick={onClose} aria-label="Tutup hasil pelacakan" className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-mist text-ink/70 transition hover:bg-black/10 hover:text-ink sm:right-5 sm:top-5">
         <X size={18} />
       </button>
+
       <header className="flex flex-wrap items-start justify-between gap-3 pr-12">
         <div>
           <p className="text-xs text-ink/55">ID laporan</p>
@@ -32,15 +34,12 @@ export default function TrackingResult({ lookup, onClose }: { lookup: TrackingLo
         <span className="rounded-full px-4 py-1 text-sm font-semibold" style={{ background: meta.bg, color: meta.fg }}>{meta.label}</span>
       </header>
 
-      <p className="mt-2 text-sm text-ink/70">{meta.description}</p>
-
-      <dl className="mt-5 grid grid-cols-[auto_1fr] gap-x-5 gap-y-2 text-sm">
+      <dl className="mt-5 grid grid-cols-[auto_1fr] gap-x-5 gap-y-2 text-sm md:grid-cols-[auto_1fr_auto_1fr] md:gap-x-8">
         {rows.map(([k, v]) => (<div key={k} className="contents"><dt className="font-semibold">{k}</dt><dd>{v}</dd></div>))}
       </dl>
 
-      <h4 className="mb-1 mt-7 text-lg font-bold text-primary">Riwayat laporan</h4>
-      <p className="mb-4 text-xs text-ink/55">Klik langkah yang memiliki foto untuk melihat dokumentasinya.</p>
-      <TrackingTimeline history={history} reporterPhotos={reporterPhotos} />
+      <h4 className="mb-6 mt-8 text-lg font-bold text-primary">Riwayat laporan</h4>
+      <TrackingTimeline history={history} reporterPhotos={reporterPhotos} split />
     </article>
   );
 }
