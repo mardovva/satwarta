@@ -120,7 +120,7 @@ export default function FirstAidChat() {
       <div className="fixed bottom-4 right-4 z-40 sm:bottom-6 sm:right-6" style={{ transform: `translateY(-${lift}px)` }}>
         <button
           type="button" onClick={() => setOpen(true)} aria-label="Buka AI Chat Satwarta" tabIndex={!open && scrolled ? 0 : -1}
-          className={`inline-flex items-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-semibold text-primary shadow-soft ring-1 ring-primary/20 transition-[transform,opacity,background-color] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:bg-cream motion-reduce:transition-none ${
+          className={`inline-flex items-center gap-2 rounded-full bg-white/30 px-4 py-3 text-sm font-semibold text-primary shadow-nav ring-1 ring-white/50 backdrop-blur-xl backdrop-saturate-150 transition-[transform,opacity,background-color] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:bg-white/50 motion-reduce:transition-none ${
             !open && scrolled ? "translate-y-0 scale-100 opacity-100" : "pointer-events-none translate-y-4 scale-75 opacity-0"
           }`}
         >
@@ -131,7 +131,7 @@ export default function FirstAidChat() {
       {open && (
         <section
           role="dialog" aria-label="AI Chat Satwarta"
-          className={`fixed z-[105] flex origin-bottom-right animate-pop-in flex-col overflow-hidden bg-white text-primary shadow-soft ring-1 ring-black/10 motion-reduce:animate-none ${
+          className={`fixed z-[105] flex origin-bottom-right animate-pop-in flex-col overflow-hidden bg-white/35 text-primary shadow-soft ring-1 ring-white/50 backdrop-blur-xl backdrop-saturate-150 motion-reduce:animate-none ${
             full
               ? "inset-3 rounded-3xl sm:inset-6"
               : "bottom-4 right-4 w-[min(24rem,calc(100vw-2rem))] rounded-3xl sm:bottom-6 sm:right-6"
@@ -139,7 +139,7 @@ export default function FirstAidChat() {
           // di atas footer: panel ikut naik dan tingginya menyesuaikan sisa ruang
           style={full ? undefined : { transform: `translateY(-${lift}px)`, height: `min(34rem, calc(100vh - 2rem - ${lift}px))` }}
         >
-          <header className="flex items-center justify-between gap-3 border-b border-black/5 px-4 py-3">
+          <header className="flex items-center justify-between gap-3 border-b border-white/40 px-4 py-3">
             <h2 className="flex items-center gap-2 font-bold"><MessageCircle size={18} /> AI Chat Satwarta</h2>
             <div className="flex items-center gap-1">
               <button type="button" onClick={() => setFull((v) => !v)} aria-label={full ? "Perkecil" : "Layar penuh"} className="rounded-full p-1.5 hover:bg-primary/10">
@@ -150,7 +150,7 @@ export default function FirstAidChat() {
           </header>
 
           {ctx && (
-            <p className="border-b border-black/5 bg-cream px-4 py-2 text-xs">
+            <p className="border-b border-white/40 bg-white/30 px-4 py-2 text-xs">
               Laporan <strong>{ctx.id}</strong> · {ctx.animalName || ctx.animalType} · {ctx.condition}
             </p>
           )}
@@ -158,7 +158,7 @@ export default function FirstAidChat() {
           <div className="flex-1 space-y-3 overflow-y-auto px-4 py-3 text-sm" aria-live="polite">
             <div className={full ? "mx-auto w-full max-w-3xl space-y-3" : "space-y-3"}>
               {showGreeting && (
-                <div className="max-w-[90%] rounded-2xl rounded-tl-sm bg-cream px-3 py-2">
+                <div className="max-w-[90%] rounded-2xl rounded-tl-sm bg-white/60 backdrop-blur-md px-3 py-2">
                   <p>Halo! Saya membantu memberi panduan pertolongan pertama untuk satwa terdampak sambil Anda menunggu petugas.</p>
                   <p className="mt-1">{mine.length > 0 ? "Pilih laporan Anda di bawah, atau ceritakan kondisi satwanya." : "Ceritakan jenis satwa dan kondisinya."}</p>
                 </div>
@@ -167,7 +167,7 @@ export default function FirstAidChat() {
                 <ul className="space-y-2">
                   {mine.map((r) => (
                     <li key={r.id}>
-                      <button type="button" onClick={() => startWith(r)} className="w-full rounded-xl bg-white px-3 py-2 text-left ring-1 ring-primary/30 transition hover:bg-primary/5">
+                      <button type="button" onClick={() => startWith(r)} className="w-full rounded-xl bg-white/60 px-3 py-2 text-left ring-1 ring-white/60 backdrop-blur-md transition hover:bg-white/80">
                         <span className="block font-semibold">{r.id}</span>
                         <span className="block text-xs opacity-70">{r.animal.name || r.animal.type} · {r.animal.condition}</span>
                       </button>
@@ -178,17 +178,17 @@ export default function FirstAidChat() {
 
               {visible.map((m, i) => (
                 <div key={i} className={m.role === "user" ? "flex justify-end" : "flex"}>
-                  <div className={`max-w-[90%] space-y-1 rounded-2xl px-3 py-2 ${m.role === "user" ? "rounded-tr-sm bg-primary text-white" : "rounded-tl-sm bg-cream"}`}>
+                  <div className={`max-w-[90%] space-y-1 rounded-2xl px-3 py-2 ${m.role === "user" ? "rounded-tr-sm bg-primary/90 text-white" : "rounded-tl-sm bg-white/60 backdrop-blur-md"}`}>
                     <Rich text={m.content} />
                   </div>
                 </div>
               ))}
-              {busy && <div className="w-fit rounded-2xl rounded-tl-sm bg-cream px-3 py-2 opacity-70">Menyiapkan panduan…</div>}
+              {busy && <div className="w-fit rounded-2xl rounded-tl-sm bg-white/60 backdrop-blur-md px-3 py-2 opacity-70">Menyiapkan panduan…</div>}
 
               {ctx && !busy && visible.length > 0 && (
                 <div className="flex flex-wrap gap-2 pt-1">
                   {QUICK.map((q) => (
-                    <button key={q} type="button" onClick={() => send(q)} className="rounded-full bg-white px-3 py-1 text-xs font-medium ring-1 ring-primary/30 hover:bg-primary/5">{q}</button>
+                    <button key={q} type="button" onClick={() => send(q)} className="rounded-full bg-white/60 px-3 py-1 text-xs font-medium ring-1 ring-white/60 backdrop-blur-md hover:bg-white/80">{q}</button>
                   ))}
                 </div>
               )}
@@ -196,13 +196,13 @@ export default function FirstAidChat() {
             </div>
           </div>
 
-          <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="border-t border-black/5 p-3">
+          <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="border-t border-white/40 p-3">
             <div className={`flex items-center gap-2 ${full ? "mx-auto max-w-3xl" : ""}`}>
               <label htmlFor="first-aid-input" className="sr-only">Pertanyaan</label>
               <input
                 id="first-aid-input" ref={inputRef} value={input} onChange={(e) => setInput(e.target.value)} maxLength={300} autoComplete="off"
                 placeholder="Tulis pertanyaan Anda…"
-                className="min-w-0 flex-1 rounded-full bg-cream px-4 py-2 text-sm text-primary outline-none ring-1 ring-black/5 placeholder:text-primary/50 focus:ring-2 focus:ring-primary"
+                className="min-w-0 flex-1 rounded-full bg-white/60 px-4 py-2 text-sm text-primary outline-none ring-1 ring-white/60 backdrop-blur-md placeholder:text-primary/50 focus:ring-2 focus:ring-primary"
               />
               <button type="submit" disabled={busy || !input.trim()} aria-label="Kirim" className="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-primary text-white transition hover:bg-primary-dark disabled:opacity-50">
                 <Send size={16} />
