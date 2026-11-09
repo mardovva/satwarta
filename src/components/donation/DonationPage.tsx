@@ -137,7 +137,7 @@ export default function DonationPage() {
 
       {/* FAQ: tata letak dan animasi sama dengan FAQ di Beranda */}
       <FAQSection
-        id="faq-donasi" idPrefix="faq-donasi" className="relative z-10 px-4 pb-6 pt-24"
+        id="faq-donasi" idPrefix="faq-donasi" showDecor={false} className="relative z-10 px-4 pb-6 pt-24"
         title="Pertanyaan seputar donasi" subtitle="Temukan jawaban dari pertanyaan umum seputar berdonasi untuk satwa terdampak."
         items={DONASI_FAQ}
       />

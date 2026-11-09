@@ -132,6 +132,17 @@ export default function ReportFormSection() {
 
   const hasErrors = Object.values(errors).some(Boolean) || !!photoError;
 
+  // Status analisis AI: tampil di sebelah kanan label "Dokumentasi"
+  const aiNotice = ai.status === "idle" || ai.status === "off" ? null : (
+    <span role="status" className="inline-flex items-center gap-1.5 text-xs font-medium text-primary">
+      {ai.status === "loading" ? <Loader2 size={13} className="flex-none animate-spin" /> : <Sparkles size={13} className="flex-none" />}
+      {ai.status === "loading" && "AI sedang menganalisis foto…"}
+      {ai.status === "done" && (ai.filled.length > 0 ? `AI mengisi ${ai.filled.join(", ")}. Periksa kembali.` : "Analisis AI selesai. Isian Anda tidak diubah.")}
+      {ai.status === "none" && "AI tidak menemukan satwa pada foto."}
+      {ai.status === "error" && "Analisis otomatis belum tersedia."}
+    </span>
+  );
+
   return (
     <section id="lapor" className="relative min-h-[100svh] pb-12 pt-16">
       <Decor src="/images/branches/dry-leaf.png" width={218} height={239} sway="left top" className="-left-2 top-4 hidden w-[5.625rem] sm:block lg:-left-3 lg:top-2 lg:w-[7.3125rem]" />
@@ -147,18 +158,7 @@ export default function ReportFormSection() {
             <div className="md:border-r md:border-ink/10 md:pr-12">
               <AnimalInformationForm values={values} errors={errors} onChange={onChange} />
               <div className="mt-5">
-                <FileUpload items={photos} onChange={(items) => { setPhotos(items); if (items.length > 0) setPhotoError(""); }} label="Dokumentasi" optional={false} required error={photoError} />
-                {ai.status !== "idle" && ai.status !== "off" && (
-                  <p role="status" className="mt-2 flex items-start gap-2 rounded-xl bg-white/70 px-3 py-2 text-xs text-primary ring-1 ring-black/5">
-                    {ai.status === "loading" ? <Loader2 size={14} className="mt-0.5 flex-none animate-spin" /> : <Sparkles size={14} className="mt-0.5 flex-none" />}
-                    <span>
-                      {ai.status === "loading" && "Menganalisis foto dengan AI (Google Gemini) untuk mengisi formulir…"}
-                      {ai.status === "done" && (ai.filled.length > 0 ? `AI mengisi ${ai.filled.join(", ")} dari foto. Periksa kembali sebelum mengirim.` : "AI selesai menganalisis foto. Isian Anda tidak diubah.")}
-                      {ai.status === "none" && "AI tidak menemukan satwa pada foto ini. Isi formulir secara manual."}
-                      {ai.status === "error" && "Analisis foto otomatis belum tersedia. Isi formulir secara manual."}
-                    </span>
-                  </p>
-                )}
+                <FileUpload items={photos} onChange={(items) => { setPhotos(items); if (items.length > 0) setPhotoError(""); }} label="Dokumentasi" optional={false} required error={photoError} labelExtra={aiNotice} />
               </div>
             </div>
             <LocationPicker values={values} errors={errors} onChange={onChange} />

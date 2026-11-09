@@ -1,14 +1,14 @@
 "use client";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { UploadCloud, X } from "lucide-react";
 import type { PhotoItem } from "@/types/report";
 
 const MAX_FILES = 8;
 const MAX_MB = 5;
 
-interface Props { items: PhotoItem[]; onChange: (items: PhotoItem[]) => void; label?: string; optional?: boolean; required?: boolean; error?: string }
+interface Props { items: PhotoItem[]; onChange: (items: PhotoItem[]) => void; label?: string; optional?: boolean; required?: boolean; error?: string; /** Keterangan di sebelah kanan label (mis. status analisis AI) */ labelExtra?: ReactNode }
 
-export default function FileUpload({ items, onChange, label = "Dokumentasi", optional = true, required = false, error }: Props) {
+export default function FileUpload({ items, onChange, label = "Dokumentasi", optional = true, required = false, error, labelExtra }: Props) {
   const [dragging, setDragging] = useState(false);
   const [fileProblem, setFileProblem] = useState("");
 
@@ -32,7 +32,10 @@ export default function FileUpload({ items, onChange, label = "Dokumentasi", opt
 
   return (
     <div>
-      <p className="mb-1.5 text-[0.9375rem] font-semibold">{label}{required && <span aria-hidden className="ml-0.5 text-accent">*</span>}{optional && !required && <span className="font-normal text-ink/55"> (opsional)</span>}</p>
+      <div className="mb-1.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-0.5">
+        <p className="text-[0.9375rem] font-semibold">{label}{required && <span aria-hidden className="ml-0.5 text-accent">*</span>}{optional && !required && <span className="font-normal text-ink/55"> (opsional)</span>}</p>
+        {labelExtra}
+      </div>
       <label
         htmlFor="field-photos"
         onDragOver={(e) => { e.preventDefault(); setDragging(true); }}

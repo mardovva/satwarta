@@ -38,6 +38,7 @@ export default function Navbar() {
     isHome && id === active ? "font-semibold text-accent" : "transition-colors hover:text-accent";
   const chatCls = pathname === "/chat" ? "font-semibold text-accent" : "transition-colors hover:text-accent";
   const donasiCls = pathname.startsWith("/donasi") ? "font-semibold text-accent" : "transition-colors hover:text-accent";
+  const lembagaCls = pathname.startsWith("/lembaga") ? "font-semibold text-accent" : "transition-colors hover:text-accent";
   const hashHref = (id: string) => `${isHome ? "" : "/"}#${id}`;
   // Di Beranda: tautan anchor biasa. Dari halaman lain: Link (navigasi di dalam aplikasi), sehingga Beranda tidak dimuat ulang
   // dan tidak mengulang animasi untuk bagian yang sudah pernah dilihat.
@@ -68,6 +69,7 @@ export default function Navbar() {
             ))}
             <li><Link href="/chat" aria-current={pathname === "/chat" ? "page" : undefined} className={chatCls}>AI Chat</Link></li>
             <li><Link href="/donasi" aria-current={pathname.startsWith("/donasi") ? "page" : undefined} className={donasiCls}>Donasi</Link></li>
+            <li><Link href="/lembaga" aria-current={pathname.startsWith("/lembaga") ? "page" : undefined} className={lembagaCls}>Lembaga</Link></li>
           </ul>
 
           <button onClick={openLogin} className="ml-auto hidden rounded-full border border-white/50 bg-white/25 px-6 py-2 font-semibold text-current backdrop-blur-xl backdrop-saturate-150 transition hover:bg-white/45 lg:block">
@@ -88,6 +90,7 @@ export default function Navbar() {
               ))}
               <li><Link href="/chat" onClick={() => setMenuOpen(false)} className={`block rounded-xl px-3 py-2 ${chatCls}`}>AI Chat</Link></li>
               <li><Link href="/donasi" onClick={() => setMenuOpen(false)} className={`block rounded-xl px-3 py-2 ${donasiCls}`}>Donasi</Link></li>
+              <li><Link href="/lembaga" onClick={() => setMenuOpen(false)} className={`block rounded-xl px-3 py-2 ${lembagaCls}`}>Lembaga</Link></li>
             </ul>
             <button onClick={openLogin} className="mt-3 w-full rounded-full bg-primary py-2.5 font-semibold text-white hover:bg-primary-dark">Masuk</button>
           </div>

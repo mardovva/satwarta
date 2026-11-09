@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Plus } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
+import Decor from "@/components/layout/Decor";
 
 const faqs = [
   { q: "Apa itu Satwarta?", a: "Satwarta adalah platform pelaporan masyarakat untuk satwa liar yang terdampak kebakaran hutan dan lahan (karhutla) di Indonesia. Masyarakat dapat melaporkan satwa, melihat peta, dan memantau perkembangan laporan." },
@@ -20,6 +21,8 @@ interface FaqProps {
   className?: string;
   /** Awalan id tombol dan panel; harus unik bila ada lebih dari satu FAQ di halaman */
   idPrefix?: string;
+  /** Dry-leaf di kiri atas judul (hanya layar md ke atas) */
+  showDecor?: boolean;
 }
 
 export default function FAQSection({
@@ -29,6 +32,7 @@ export default function FAQSection({
   items = faqs,
   className = "px-4 pb-6 pt-24",
   idPrefix = "faq",
+  showDecor = true,
 }: FaqProps) {
   const [open, setOpen] = useState<number | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -56,7 +60,8 @@ export default function FAQSection({
   }, []);
 
   return (
-    <section id={id} className={className}>
+    <section id={id} className={`relative ${className}`}>
+      {showDecor && <Decor src="/images/branches/dry-leaf.png" width={218} height={239} sway="left top" className="-left-3 top-3 hidden w-[7rem] md:block lg:-left-6 lg:w-[9rem]" />}
       <div
         className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:gap-14"
         style={{ "--faq-extra": `${reserve?.extra ?? 0}px` } as CSSProperties}
