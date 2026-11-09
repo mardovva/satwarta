@@ -7,6 +7,18 @@ const BASE = "https://generativelanguage.googleapis.com/v1beta/models";
 export const DEFAULT_GEMINI_MODEL = "gemini-3.8-flash";
 const FALLBACK_MODELS = ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite"];
 
+/**
+ * Tingkat berpikir per model, agar jawaban cepat. Menurut dokumentasi Google: gemini-3.8-flash berpikir "medium" secara bawaan
+ * dan hanya mendukung low/medium/high; gemini-3.6-flash dan model Flash-Lite mendukung "minimal". Model lain: tidak diatur.
+ * Bila sebuah model menolak pengaturan ini (400), permintaan diulang tanpa pengaturan tersebut.
+ */
+function thinkingLevelFor(model: string): "minimal" | "low" | undefined {
+  if (/flash-lite/.test(model)) return "minimal";
+  if (model.startsWith("gemini-3.8-flash")) return "low";
+  if (model.startsWith("gemini-3.6-flash")) return "minimal";
+  return undefined;
+}
+
 export const geminiConfigured = () => !!process.env.GEMINI_API_KEY;
 export const geminiModels = () => Array.from(new Set([process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL, ...FALLBACK_MODELS]));
 
@@ -27,33 +39,52 @@ interface GeminiOptions {
   json?: boolean;
   maxOutputTokens?: number;
   temperature?: number;
+  /** Batas waktu total semua percobaan (ms). Harus di bawah maxDuration fungsi server. */
   timeoutMs?: number;
+  /** Batas waktu per model (ms); bila terlampaui, model berikutnya dicoba. */
+  attemptMs?: number;
 }
 
-export async function geminiGenerateDetailed({ system, contents, json = false, maxOutputTokens = 1500, temperature = 0.3, timeoutMs = 25_000 }: GeminiOptions): Promise<{ text: string; model: string; attempts: string[] }> {
+export async function geminiGenerateDetailed({ system, contents, json = false, maxOutputTokens = 1500, temperature = 0.3, timeoutMs = 24_000, attemptMs = 12_000 }: GeminiOptions): Promise<{ text: string; model: string; attempts: string[] }> {
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new GeminiError("GEMINI_API_KEY belum terbaca");
 
-  const body = JSON.stringify({
+  const bodyFor = (thinking: "minimal" | "low" | undefined) => JSON.stringify({
     ...(system ? { systemInstruction: { parts: [{ text: system }] } } : {}),
     contents,
-    generationConfig: { maxOutputTokens, temperature, ...(json ? { responseMimeType: "application/json" } : {}) },
+    generationConfig: {
+      maxOutputTokens, temperature,
+      ...(json ? { responseMimeType: "application/json" } : {}),
+      ...(thinking ? { thinkingConfig: { thinkingLevel: thinking } } : {}),
+    },
   });
 
-  let lastError: GeminiError | null = null;
+  const deadline = Date.now() + timeoutMs;
   const attempts: string[] = [];
+  let lastError: GeminiError | null = null;
+
   for (const model of geminiModels()) {
+    const remaining = deadline - Date.now();
+    if (remaining < 2000) { attempts.push(`${model}: dilewati (waktu habis)`); break; }
+
+    const call = (thinking: "minimal" | "low" | undefined) => fetch(`${BASE}/${encodeURIComponent(model)}:generateContent`, {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-goog-api-key": key },
+      body: bodyFor(thinking),
+      signal: AbortSignal.timeout(Math.min(attemptMs, remaining)),
+    });
+
+    const level = thinkingLevelFor(model);
     let res: Response;
     try {
-      res = await fetch(`${BASE}/${encodeURIComponent(model)}:generateContent`, {
-        method: "POST",
-        headers: { "content-type": "application/json", "x-goog-api-key": key },
-        body,
-        signal: AbortSignal.timeout(timeoutMs),
-      });
+      res = await call(level);
+      if (res.status === 400 && level) res = await call(undefined); // model menolak pengaturan berpikir: ulangi tanpa itu
     } catch {
-      throw new GeminiError("Gemini tidak terjangkau atau terlalu lama (timeout)");
+      attempts.push(`${model}: timeout`);
+      lastError = new GeminiError("Gemini tidak terjangkau atau terlalu lama (timeout)");
+      continue; // coba model berikutnya
     }
+
     if (res.ok) {
       const data = (await res.json()) as { candidates?: { content?: { parts?: { text?: string; thought?: boolean }[] } }[] };
       const parts = data.candidates?.[0]?.content?.parts ?? [];
