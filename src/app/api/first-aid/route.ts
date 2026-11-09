@@ -60,10 +60,15 @@ export async function POST(req: Request) {
   const ctx = cleanContext(body.report);
   const lastUser = [...messages].reverse().find((m) => m.role === "user")?.content ?? "";
 
+  let reason = "no_key";
   if (geminiConfigured()) {
     try {
       return NextResponse.json({ reply: await askModel(messages, ctx), source: "ai" });
-    } catch { /* kuota habis atau gangguan: jatuh ke panduan bawaan */ }
+    } catch (e) {
+      // kuota habis, kunci salah, atau gangguan: jatuh ke panduan bawaan. Penyebab dicatat di log server (Vercel > Logs).
+      reason = e instanceof Error ? e.message : "error";
+      console.error("[first-aid] Gemini gagal:", reason);
+    }
   }
-  return NextResponse.json({ reply: fallbackGuidance(ctx, lastUser), source: "panduan" });
+  return NextResponse.json({ reply: fallbackGuidance(ctx, lastUser), source: "panduan", reason });
 }

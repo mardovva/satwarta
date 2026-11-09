@@ -50,7 +50,8 @@ export async function POST(req: Request) {
     });
     const cleaned = text.replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
     return NextResponse.json({ result: sanitizeIdentification(JSON.parse(cleaned)) });
-  } catch {
+  } catch (e) {
+    console.error("[identify-animal] gagal:", e instanceof Error ? e.message : "error");
     return NextResponse.json({ error: "Foto belum dapat dianalisis saat ini." }, { status: 502 });
   }
 }
