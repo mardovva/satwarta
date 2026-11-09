@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { geminiConfigured, geminiGenerateDetailed, geminiModels } from "@/lib/gemini";
+import { GeminiError, geminiConfigured, geminiGenerateDetailed, geminiModels } from "@/lib/gemini";
 
 export const dynamic = "force-dynamic";
 
@@ -24,9 +24,9 @@ export async function GET(req: Request) {
     hits.push(now);
     try {
       const r = await geminiGenerateDetailed({ contents: [{ role: "user", parts: [{ text: "Balas hanya dengan kata: ok" }] }], maxOutputTokens: 200, temperature: 0, timeoutMs: 15_000 });
-      out.test = { ok: true, model: r.model, reply: r.text.slice(0, 40) };
+      out.test = { ok: true, model: r.model, failedBefore: r.attempts, reply: r.text.slice(0, 40) };
     } catch (e) {
-      out.test = { ok: false, error: e instanceof Error ? e.message : "gagal" };
+      out.test = { ok: false, error: e instanceof Error ? e.message : "gagal", failedBefore: e instanceof GeminiError ? e.attempts : [] };
     }
   }
   return NextResponse.json(out);

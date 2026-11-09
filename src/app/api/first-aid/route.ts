@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { FIRST_AID_SYSTEM_PROMPT, contextBlock, fallbackGuidance, type ChatMessage, type ReportContext } from "@/lib/firstAid";
-import { geminiConfigured, geminiGenerate } from "@/lib/gemini";
+import { geminiConfigured, geminiGenerateDetailed } from "@/lib/gemini";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -39,13 +39,15 @@ function cleanContext(raw: unknown): ReportContext | null {
 }
 
 /** Panggil Gemini bila GEMINI_API_KEY diatur (lihat src/lib/gemini.ts). Peran "assistant" dipetakan ke "model". */
-function askModel(messages: ChatMessage[], ctx: ReportContext | null): Promise<string> {
-  return geminiGenerate({
+async function askModel(messages: ChatMessage[], ctx: ReportContext | null): Promise<string> {
+  const r = await geminiGenerateDetailed({
     system: `${FIRST_AID_SYSTEM_PROMPT}\n\n${contextBlock(ctx)}`,
     contents: messages.map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] })),
     temperature: 0.3,
     maxOutputTokens: 1500,
   });
+  if (r.attempts.length) console.warn(`[first-aid] dijawab oleh ${r.model}; gagal sebelumnya: ${r.attempts.join(", ")}`);
+  return r.text;
 }
 
 export async function POST(req: Request) {

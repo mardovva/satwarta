@@ -12,6 +12,8 @@ export const geminiModels = () => Array.from(new Set([process.env.GEMINI_MODEL |
 
 /** Galat dengan kode singkat yang aman ditampilkan (tidak memuat kunci maupun isi respons). */
 export class GeminiError extends Error {
+  /** Model yang gagal sebelum galat ini, mis. ["gemini-3.8-flash: 404"] */
+  attempts: string[] = [];
   constructor(message: string, public status = 0) { super(message); }
 }
 
@@ -28,7 +30,7 @@ interface GeminiOptions {
   timeoutMs?: number;
 }
 
-export async function geminiGenerateDetailed({ system, contents, json = false, maxOutputTokens = 1500, temperature = 0.3, timeoutMs = 25_000 }: GeminiOptions): Promise<{ text: string; model: string }> {
+export async function geminiGenerateDetailed({ system, contents, json = false, maxOutputTokens = 1500, temperature = 0.3, timeoutMs = 25_000 }: GeminiOptions): Promise<{ text: string; model: string; attempts: string[] }> {
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new GeminiError("GEMINI_API_KEY belum terbaca");
 
@@ -39,6 +41,7 @@ export async function geminiGenerateDetailed({ system, contents, json = false, m
   });
 
   let lastError: GeminiError | null = null;
+  const attempts: string[] = [];
   for (const model of geminiModels()) {
     let res: Response;
     try {
@@ -56,12 +59,15 @@ export async function geminiGenerateDetailed({ system, contents, json = false, m
       const parts = data.candidates?.[0]?.content?.parts ?? [];
       const text = parts.filter((p) => typeof p.text === "string" && !p.thought).map((p) => p.text).join("\n").trim();
       if (!text) throw new GeminiError("Gemini mengembalikan jawaban kosong (mungkin diblokir filter keamanan)");
-      return { text, model };
+      return { text, model, attempts };
     }
+    attempts.push(`${model}: ${res.status}`);
     lastError = new GeminiError(`Gemini ${res.status} (${model})`, res.status); // sengaja tanpa isi respons
     if (![404, 429, 503].includes(res.status)) break; // 400/401/403: masalah kunci atau permintaan, model lain tidak membantu
   }
-  throw lastError ?? new GeminiError("Gemini gagal");
+  const err = lastError ?? new GeminiError("Gemini gagal");
+  err.attempts = attempts;
+  throw err;
 }
 
 export async function geminiGenerate(opts: GeminiOptions): Promise<string> {
