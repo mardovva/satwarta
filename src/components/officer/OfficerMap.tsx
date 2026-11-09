@@ -1,6 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
-import { useEffect, useState, useLayoutEffect } from "react";
+import { useState, useLayoutEffect } from "react";
+import type { StoredReport } from "@/types/report";
 
 const IndonesiaMap = dynamic(() => import("@/components/map/IndonesiaMap"), {
   ssr: false,
@@ -8,7 +9,7 @@ const IndonesiaMap = dynamic(() => import("@/components/map/IndonesiaMap"), {
 });
 
 /** Peta persebaran laporan + hotspot. "Lihat Detail" pada popup membuka laporan di panel petugas. */
-export default function OfficerMap({ onSelect, regions }: { onSelect: (id: string) => void; regions: string[] }) {
+export default function OfficerMap({ onSelect, reports }: { onSelect: (id: string) => void; reports: StoredReport[] }) {
   const [fullscreen, setFullscreen] = useState(false);
 
   // useLayoutEffect: kelas dipasang sebelum frame digambar, sehingga header tidak sempat terlihat di atas peta
@@ -34,7 +35,7 @@ export default function OfficerMap({ onSelect, regions }: { onSelect: (id: strin
     <div className="h-[75svh] min-h-[24rem] max-h-[52rem]">
       <div className={fullscreen ? "fixed inset-0 z-[100] bg-white p-3 sm:p-6" : "h-full overflow-hidden rounded-[1.25rem] shadow-soft"}>
         <div className={fullscreen ? "h-full w-full overflow-hidden rounded-[1.25rem]" : "h-full w-full"}>
-          <IndonesiaMap mode="monitoring" fullscreen={fullscreen} onToggleFullscreen={() => setFullscreen((v) => !v)} onViewDetail={viewDetail} regions={regions} />
+          <IndonesiaMap mode="monitoring" fullscreen={fullscreen} onToggleFullscreen={() => setFullscreen((v) => !v)} onViewDetail={viewDetail} reports={reports} />
         </div>
       </div>
     </div>

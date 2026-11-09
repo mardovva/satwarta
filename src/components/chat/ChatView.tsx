@@ -3,11 +3,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowUp, MessageCircle } from "lucide-react";
 import { AUTO_PROMPT, fallbackGuidance, toContext, type ChatMessage, type ReportContext } from "@/lib/firstAid";
-import { getStoredReports, withUpdates } from "@/lib/reports";
-import { findReport } from "@/lib/tracking";
+import { REPORTS_UPDATED_EVENT } from "@/lib/reports";
+import { getMyReports } from "@/lib/myReports";
+import { lookupReport } from "@/lib/tracking";
 import type { StoredReport } from "@/types/report";
 
-type UiMessage = ChatMessage & { hidden?: boolean };
+type UiMessage = ChatMessage & { hidden?: boolean; note?: string };
 
 const QUICK = ["Apa yang boleh saya lakukan?", "Apa yang tidak boleh dilakukan?", "Kapan petugas datang?"];
 
@@ -39,7 +40,10 @@ export default function ChatView() {
   const ask = useCallback(async (history: UiMessage[], context: ReportContext | null) => {
     setBusy(true);
     const lastUser = [...history].reverse().find((m) => m.role === "user")?.content ?? "";
+    const debug = new URLSearchParams(window.location.search).has("debug"); // /chat?debug=1 menampilkan alasan teknis
+    const base = "Jawaban dari panduan bawaan: AI sedang tidak tersedia.";
     let reply: string;
+    let note = "";
     try {
       const res = await fetch("/api/first-aid", {
         method: "POST",
@@ -47,11 +51,18 @@ export default function ChatView() {
         body: JSON.stringify({ messages: history.map(({ role, content }) => ({ role, content })), report: context }),
       });
       const data = await res.json();
-      reply = res.ok && typeof data.reply === "string" ? data.reply : fallbackGuidance(context, lastUser);
-    } catch {
+      if (res.ok && typeof data.reply === "string") {
+        reply = data.reply;
+        if (data.source === "panduan") note = base + (debug ? ` (${data.reason ?? "tanpa alasan"})` : "");
+      } else {
+        reply = fallbackGuidance(context, lastUser);
+        note = base + (debug ? ` (HTTP ${res.status}${data?.error ? `: ${data.error}` : ""})` : "");
+      }
+    } catch (e) {
       reply = fallbackGuidance(context, lastUser);
+      note = base + (debug ? ` (jaringan: ${e instanceof Error ? e.message : "gagal"})` : "");
     }
-    setMessages((m) => [...m, { role: "assistant", content: reply }]);
+    setMessages((m) => [...m, { role: "assistant", content: reply, note }]);
     setBusy(false);
   }, []);
 
@@ -64,11 +75,15 @@ export default function ChatView() {
   }, [ask]);
 
   useEffect(() => {
-    setMine(getStoredReports().map((r) => withUpdates(r)).reverse().slice(0, 3));
+    // Laporan dimuat dari server (bisa tiba belakangan), jadi daftar diperbarui saat data baru datang
+    const loadMine = () => setMine(getMyReports(3));
+    loadMine();
+    window.addEventListener(REPORTS_UPDATED_EVENT, loadMine);
     const id = new URLSearchParams(window.location.search).get("laporan");
-    const found = id ? findReport(id) : null;
-    if (found) startWith(found.report);
-    else inputRef.current?.focus();
+    if (id) {
+      lookupReport(id).then((found) => { if (found) startWith(found.report); else inputRef.current?.focus(); });
+    } else inputRef.current?.focus();
+    return () => window.removeEventListener(REPORTS_UPDATED_EVENT, loadMine);
   }, [startWith]);
 
   useEffect(() => { endRef.current?.scrollIntoView({ block: "end" }); }, [messages, busy]);
@@ -132,6 +147,7 @@ export default function ChatView() {
             <div key={i} className={m.role === "user" ? "flex justify-end" : "flex"}>
               <div className={`max-w-[90%] space-y-1 rounded-2xl px-4 py-3 ${m.role === "user" ? "rounded-tr-sm bg-primary/90 text-white" : "rounded-tl-sm bg-white/60 backdrop-blur-md"}`}>
                 <Rich text={m.content} />
+                {m.note && <p className="pt-1 text-[0.6875rem] opacity-60">{m.note}</p>}
               </div>
             </div>
           ))}
@@ -160,6 +176,7 @@ export default function ChatView() {
             <ArrowUp size={18} />
           </button>
         </div>
+        <p className="mt-2 text-center text-[0.6875rem] leading-snug opacity-70">Pertanyaan diproses oleh Google Gemini. Jangan memasukkan data pribadi. <a href="/privasi" className="underline">Kebijakan Privasi</a></p>
       </form>
     </section>
   );

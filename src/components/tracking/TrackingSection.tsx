@@ -2,8 +2,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
 import { statusMeta } from "@/data/trackingStatuses";
-import { REPORTS_UPDATED_EVENT, getStoredReports, withUpdates } from "@/lib/reports";
-import { TRACK_EVENT, findReport, formatDate, type TrackingLookup } from "@/lib/tracking";
+import { REPORTS_UPDATED_EVENT } from "@/lib/reports";
+import { getMyReports } from "@/lib/myReports";
+import { TRACK_EVENT, formatDate, lookupReport, type TrackingLookup } from "@/lib/tracking";
 import type { StoredReport } from "@/types/report";
 import Decor from "@/components/layout/Decor";
 import Reveal from "@/components/ui/Reveal";
@@ -11,6 +12,7 @@ import TrackingResult from "./TrackingResult";
 
 type Result =
   | { state: "idle" }
+  | { state: "loading" }
   | { state: "error"; message: string }
   | { state: "notfound"; id: string }
   | { state: "found"; lookup: TrackingLookup };
@@ -22,15 +24,16 @@ export default function TrackingSection() {
   const inputRef = useRef<HTMLInputElement>(null);
   const clear = () => { setInput(""); setResult({ state: "idle" }); inputRef.current?.focus(); };
 
-  const runSearch = useCallback((raw: string) => {
+  const runSearch = useCallback(async (raw: string) => {
     if (!raw.trim()) { setResult({ state: "error", message: "Masukkan ID laporan terlebih dahulu." }); return; }
-    const lookup = findReport(raw);
+    setResult({ state: "loading" });
+    const lookup = await lookupReport(raw); // salinan lokal dulu, lalu bertanya ke server
     setResult(lookup ? { state: "found", lookup } : { state: "notfound", id: raw.trim() });
   }, []);
 
   // Riwayat laporan yang dikirim pengguna di browser ini (terbaru di atas)
   useEffect(() => {
-    const load = () => setRecent(getStoredReports().map((r) => withUpdates(r)).reverse().slice(0, 5));
+    const load = () => setRecent(getMyReports(5));
     load();
     window.addEventListener(REPORTS_UPDATED_EVENT, load);
     window.addEventListener("storage", load);
@@ -106,6 +109,7 @@ export default function TrackingSection() {
         )}
 
         <div aria-live="polite" className="text-left">
+          {result.state === "loading" && <p className="mt-6 text-center text-sm font-medium text-ink/60">Mencari laporan…</p>}
           {result.state === "error" && <p className="mt-6 text-center text-sm font-medium text-red-600">{result.message}</p>}
           {result.state === "notfound" && (
             <div className="mx-auto mt-6 max-w-xl rounded-2xl bg-white p-5 text-center shadow-sm">

@@ -22,7 +22,7 @@ export default function DonateForm({ campaign: c, onShare }: Props) {
   const [error, setError] = useState("");
   const [phase, setPhase] = useState<"form" | "processing" | "done">("form");
   const [receipt, setReceipt] = useState<Pledge | null>(null);
-  const timer = useRef<number>();
+  const timer = useRef<number | undefined>(undefined);
   const amount = Number(raw || 0);
 
   useEffect(() => () => window.clearTimeout(timer.current), []);

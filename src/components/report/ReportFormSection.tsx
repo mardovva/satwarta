@@ -5,20 +5,22 @@ import Decor from "@/components/layout/Decor";
 import Reveal from "@/components/ui/Reveal";
 import type { PhotoItem, ReportFormErrors, ReportFormValues, StoredReport } from "@/types/report";
 import { CONDITION_OTHER } from "@/data/formOptions";
-import { savePhotos } from "@/lib/photoStore";
 import { shrinkImage, type Identification } from "@/lib/identifyAnimal";
-import { REPORTS_UPDATED_EVENT, saveReport } from "@/lib/reports";
-import { normalizePhone, validateReportForm } from "@/lib/validateReport";
+import { submitReport } from "@/lib/submitReport";
+import { rememberMyReport } from "@/lib/myReports";
+import { refreshRemoteReports } from "@/lib/remoteReports";
+import { validateReportForm } from "@/lib/validateReport";
 import AnimalInformationForm from "./AnimalInformationForm";
 import LocationPicker from "./LocationPicker";
 import FileUpload from "./FileUpload";
+import TurnstileWidget, { TURNSTILE_SITE_KEY } from "./TurnstileWidget";
 import SubmissionSuccess from "./SubmissionSuccess";
 import { FormField, fieldProps, inputClass } from "./FormField";
 
 const initialValues: ReportFormValues = {
   animalType: "", animalName: "", count: "", condition: "", conditionOther: "",
   province: "", city: "", location: null,
-  reporterName: "", phone: "", email: "",
+  reporterName: "", phone: "", email: "", consent: false,
 };
 
 type AiState =
@@ -31,9 +33,13 @@ export default function ReportFormSection() {
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
   const [photoError, setPhotoError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaNonce, setCaptchaNonce] = useState(0); // mengganti key widget = meminta token baru (token hanya sekali pakai)
+  const [captchaFailed, setCaptchaFailed] = useState(false);
   const [result, setResult] = useState<{ report: StoredReport; persisted: boolean } | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const timer = useRef<number>();
+  const timer = useRef<number | undefined>(undefined);
   const photosRef = useRef<PhotoItem[]>([]);
   photosRef.current = photos;
   const [ai, setAi] = useState<AiState>({ status: "idle" });
@@ -107,27 +113,37 @@ export default function ReportFormSection() {
       );
       return;
     }
+    if (TURNSTILE_SITE_KEY && !captchaToken) {
+      setSubmitError(captchaFailed ? "Verifikasi keamanan tidak dapat dimuat. Nonaktifkan pemblokir iklan untuk situs ini atau muat ulang halaman, lalu coba lagi." : "Verifikasi keamanan sedang berjalan. Tunggu beberapa detik lalu tekan Kirim lagi.");
+      return;
+    }
     setSubmitting(true);
-    timer.current = window.setTimeout(async () => {
+    setSubmitError("");
+    void (async () => {
+      const res = await submitReport(values, photos, captchaToken);
+      setCaptchaToken(null); setCaptchaNonce((n) => n + 1); // token sudah terpakai: minta yang baru untuk percobaan berikutnya
+      if (!mountedRef.current) return;
+      if (!res.ok) { setSubmitError(res.message); setSubmitting(false); return; } // isian dan foto tetap ada agar bisa dicoba lagi
+
+      rememberMyReport(res.id);
+      void refreshRemoteReports(true); // peta, statistik, dan Lacak memuat laporan baru dari server
       const loc = values.location!;
-      const saved = saveReport({
+      const now = new Date().toISOString();
+      const report: StoredReport = {
+        id: res.id, createdAt: now, status: "Submitted",
         animal: { type: values.animalType, name: values.animalName.trim(), count: Number(values.count), condition: values.condition === CONDITION_OTHER ? values.conditionOther.trim() : values.condition },
         location: { province: values.province, city: values.city, lat: loc.lat, lng: loc.lng },
         photos: photos.map((p) => ({ name: p.file.name, size: p.file.size, type: p.file.type })),
-        reporter: { name: values.reporterName.trim(), phone: normalizePhone(values.phone), email: values.email.trim() },
-      });
-      if (photos.length > 0) {
-        await savePhotos(saved.report.id, photos.map((p) => p.file));
-        // Foto baru tersimpan sekarang: minta peta memuat ulang agar marker dan popup memakai foto tersebut
-        window.dispatchEvent(new Event(REPORTS_UPDATED_EVENT));
-      }
+        reporter: { name: values.reporterName.trim(), phone: values.phone, email: values.email.trim() },
+        history: [{ status: "Submitted", at: now, note: "Laporan berhasil dikirim." }],
+      };
       photos.forEach((p) => URL.revokeObjectURL(p.url));
       setPhotos([]);
       setValues(initialValues);
       setErrors({});
-      setResult(saved);
+      setResult({ report, persisted: true });
       setSubmitting(false);
-    }, 1200);
+    })();
   };
 
   const hasErrors = Object.values(errors).some(Boolean) || !!photoError;
@@ -159,6 +175,7 @@ export default function ReportFormSection() {
               <AnimalInformationForm values={values} errors={errors} onChange={onChange} />
               <div className="mt-5">
                 <FileUpload items={photos} onChange={(items) => { setPhotos(items); if (items.length > 0) setPhotoError(""); }} label="Dokumentasi" optional={false} required error={photoError} labelExtra={aiNotice} />
+                <p className="mt-2 text-xs leading-relaxed text-ink/60">Foto dianalisis oleh AI (Google Gemini) untuk membantu mengisi data satwa. Hindari foto yang memperlihatkan wajah orang; foto laporan dapat dilihat publik.</p>
               </div>
             </div>
             <LocationPicker values={values} errors={errors} onChange={onChange} />
@@ -177,6 +194,19 @@ export default function ReportFormSection() {
           </div>
 
           <div className="flex flex-col gap-3">
+            <label className="flex cursor-pointer items-start gap-3 text-sm text-ink/80">
+              <input
+                type="checkbox" checked={values.consent} aria-invalid={errors.consent ? true : undefined}
+                onChange={(e) => { setValues((v) => ({ ...v, consent: e.target.checked })); if (e.target.checked) setErrors((er) => ({ ...er, consent: undefined })); }}
+                className="mt-0.5 h-4 w-4 flex-none accent-[#345542]"
+              />
+              <span>
+                Saya setuju data saya (nama, nomor telepon, email, dan lokasi) dipakai petugas untuk menindaklanjuti laporan ini. Nomor telepon dan email tidak ditampilkan ke publik, dan lokasi di peta ditampilkan secara perkiraan. Baca <a href="/privasi" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary underline">Kebijakan Privasi</a>.
+                {errors.consent && <span role="alert" className="mt-0.5 block text-xs font-medium text-red-600">{errors.consent}</span>}
+              </span>
+            </label>
+            {TURNSTILE_SITE_KEY && <TurnstileWidget key={captchaNonce} onToken={(t) => { setCaptchaToken(t); if (t) setCaptchaFailed(false); }} onError={() => setCaptchaFailed(true)} />}
+            {submitError && <p className="rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700" role="alert">{submitError}</p>}
             <p className="text-xs font-medium text-red-600" role={hasErrors ? "alert" : undefined}>
               {hasErrors ? "Periksa kembali isian yang ditandai merah." : ""}
             </p>

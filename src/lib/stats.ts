@@ -1,10 +1,10 @@
 import { dummyStats } from "@/data/dummyReports";
-import { getStoredReports, withUpdates } from "./reports";
+import { ensureRemoteReports, getRemoteReports } from "./remoteReports";
 
 export interface ReportStats { dead: number; inCare: number; rescued: number }
 
 /**
- * Angka dasar + satwa dari laporan baru yang dikirim lewat formulir (tersimpan di browser):
+ * Angka dasar + satwa dari laporan yang dikirim lewat formulir (tersimpan di database):
  * - kondisi "Ditemukan mati"           → satwa mati terbakar
  * - status Selesai                      → satwa terselamatkan
  * - laporan aktif (selain di atas, tidak ditolak) → satwa dalam penanganan
@@ -12,8 +12,8 @@ export interface ReportStats { dead: number; inCare: number; rescued: number }
  */
 export function computeStats(): ReportStats {
   const stats: ReportStats = { dead: dummyStats.dead, inCare: dummyStats.inCare, rescued: dummyStats.rescued };
-  for (const raw of getStoredReports()) {
-    const r = withUpdates(raw);
+  ensureRemoteReports();
+  for (const r of getRemoteReports()) {
     const n = r.animal.count;
     if (r.animal.condition === "Ditemukan mati") stats.dead += n;
     else if (r.status === "Resolved") stats.rescued += n;

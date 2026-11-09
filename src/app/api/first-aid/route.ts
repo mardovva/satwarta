@@ -1,19 +1,14 @@
 import { NextResponse } from "next/server";
-import { FIRST_AID_SYSTEM_PROMPT, contextBlock, fallbackGuidance, type ChatMessage, type ReportContext } from "@/lib/firstAid";
-import { geminiConfigured, geminiGenerateDetailed } from "@/lib/gemini";
+import { fallbackGuidance, type ChatMessage, type ReportContext } from "@/lib/firstAid";
+import { geminiConfigured } from "@/lib/gemini";
+import { askFirstAid } from "@/lib/firstAidAI";
+import { allowDaily, allowShared, clientIp, dailyCap } from "@/lib/server/rateLimit";
+
+/** Batas pemanggilan Gemini per hari untuk seluruh pengunjung (ubah lewat AI_DAILY_CHAT; 0 = tanpa batas). */
+const DAILY_CHAT = () => dailyCap("AI_DAILY_CHAT", 800);
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
-
-// Pembatas sederhana per IP (di-reset saat instance serverless dimulai ulang)
-const hits = new Map<string, number[]>();
-function limited(ip: string) {
-  const now = Date.now();
-  const arr = (hits.get(ip) ?? []).filter((t) => now - t < 60_000);
-  arr.push(now);
-  hits.set(ip, arr);
-  return arr.length > 12;
-}
 
 const str = (v: unknown, max: number) => (typeof v === "string" ? v.slice(0, max) : "");
 
@@ -38,21 +33,15 @@ function cleanContext(raw: unknown): ReportContext | null {
   };
 }
 
-/** Panggil Gemini bila GEMINI_API_KEY diatur (lihat src/lib/gemini.ts). Peran "assistant" dipetakan ke "model". */
+/** Panggil Gemini bila GEMINI_API_KEY diatur (lihat src/lib/firstAidAI.ts). */
 async function askModel(messages: ChatMessage[], ctx: ReportContext | null): Promise<string> {
-  const r = await geminiGenerateDetailed({
-    system: `${FIRST_AID_SYSTEM_PROMPT}\n\n${contextBlock(ctx)}`,
-    contents: messages.map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] })),
-    temperature: 0.3,
-    maxOutputTokens: 1500,
-  });
+  const r = await askFirstAid(messages, ctx);
   if (r.attempts.length) console.warn(`[first-aid] dijawab oleh ${r.model}; gagal sebelumnya: ${r.attempts.join(", ")}`);
   return r.text;
 }
 
 export async function POST(req: Request) {
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local";
-  if (limited(ip)) return NextResponse.json({ error: "Terlalu banyak permintaan. Coba lagi sebentar lagi." }, { status: 429 });
+  if (!(await allowShared(`chat:${clientIp(req)}`, 12, 60_000))) return NextResponse.json({ error: "Terlalu banyak permintaan. Coba lagi sebentar lagi." }, { status: 429 });
 
   let body: { messages?: unknown; report?: unknown };
   try { body = await req.json(); } catch { return NextResponse.json({ error: "Permintaan tidak valid" }, { status: 400 }); }
@@ -64,6 +53,10 @@ export async function POST(req: Request) {
 
   let reason = "no_key";
   if (geminiConfigured()) {
+    if (!(await allowDaily("ai-chat-day", DAILY_CHAT()))) {
+      console.warn("[first-aid] batas harian AI tercapai: memakai panduan bawaan");
+      return NextResponse.json({ reply: fallbackGuidance(ctx, lastUser), source: "panduan", reason: "kuota_harian" });
+    }
     try {
       return NextResponse.json({ reply: await askModel(messages, ctx), source: "ai" });
     } catch (e) {

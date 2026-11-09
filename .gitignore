@@ -4,3 +4,6 @@ node_modules
 .DS_Store
 *.tsbuildinfo
 next-env.d.ts
+
+# kata sandi akun petugas (dibuat scripts/seed-officers.mjs): JANGAN di-commit
+officer-accounts.csv

@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useScrolled } from "@/hooks/useHideOnScroll";
 
-export default function OfficerHeader({ onLogout }: { onLogout: () => void }) {
+export default function OfficerHeader({ onLogout, links = [] }: { onLogout: () => void; links?: { href: string; label: string }[] }) {
   const scrolled = useScrolled();
   return (
     <div className={`site-header pointer-events-none fixed inset-x-0 top-0 z-50 transition-[padding] duration-500 ease-out ${scrolled ? "px-3 pt-3 sm:px-6 sm:pt-4" : "px-0 pt-0"}`}>
@@ -16,7 +16,10 @@ export default function OfficerHeader({ onLogout }: { onLogout: () => void }) {
           <Link href="/" aria-label="Satwarta, ke beranda" className="flex items-center">
             <Image src="/images/logo.png" alt="Logo Satwarta" width={40} height={41} className="h-8 w-auto sm:h-10" />
           </Link>
-          <button type="button" onClick={onLogout} className="ml-auto rounded-full border border-white/60 bg-white/55 px-6 py-2 font-semibold text-ink shadow-nav backdrop-blur-xl backdrop-saturate-150 transition hover:bg-white/80">
+          <nav className="ml-auto flex items-center gap-1 pr-2 sm:gap-3">
+            {links.map((l) => <Link key={l.href} href={l.href} className="rounded-full px-3 py-1.5 text-sm font-semibold text-ink/80 transition hover:bg-white/50 hover:text-accent sm:px-4 sm:text-base">{l.label}</Link>)}
+          </nav>
+          <button type="button" onClick={onLogout} className=" rounded-full border border-white/60 bg-white/55 px-6 py-2 font-semibold text-ink shadow-nav backdrop-blur-xl backdrop-saturate-150 transition hover:bg-white/80">
             Keluar
           </button>
         </div>

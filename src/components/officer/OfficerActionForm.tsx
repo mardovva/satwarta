@@ -5,13 +5,12 @@ import FileUpload from "@/components/report/FileUpload";
 import { inputClass } from "@/components/report/FormField";
 import { statusMeta } from "@/data/trackingStatuses";
 import { workflow } from "@/data/officerWorkflow";
-import { savePhotos } from "@/lib/photoStore";
 import { getHandler } from "@/lib/handler";
-import type { OfficerSession } from "@/lib/auth";
-import { addStatusUpdate } from "@/lib/reports";
+import { officerFetch, type OfficerSession } from "@/lib/auth";
+import { compressPhotos } from "@/lib/submitReport";
 import type { PhotoItem, StoredReport } from "@/types/report";
 
-export default function OfficerActionForm({ report, session }: { report: StoredReport; session: OfficerSession }) {
+export default function OfficerActionForm({ report, session, onDone }: { report: StoredReport; session: OfficerSession; onDone: () => void }) {
   const actions = workflow[report.status];
   const [index, setIndex] = useState(0);
   const [note, setNote] = useState("");
@@ -43,7 +42,7 @@ export default function OfficerActionForm({ report, session }: { report: StoredR
   }
 
   const handler = getHandler(report);
-  if (handler && handler.username !== session.username) {
+  if (session.role !== "admin" && handler && handler.username !== session.username) {
     return (
       <p className="rounded-2xl bg-white px-4 py-3 text-sm text-ink/70 ring-1 ring-black/5">
         Laporan ini ditangani oleh <strong>{handler.name}</strong> ({handler.agency}). Hanya petugas penanggung jawab yang dapat memperbarui statusnya.
@@ -61,21 +60,38 @@ export default function OfficerActionForm({ report, session }: { report: StoredR
 
     setBusy(true);
     setError("");
-    const at = new Date().toISOString();
-    const files = photos.map((p) => p.file);
-    if (files.length > 0 && !(await savePhotos(`${report.id}:o:${at}`, files))) {
-      setError("Foto tidak dapat disimpan di browser ini. Coba lagi.");
+    let blobs: Blob[] = [];
+    if (photos.length > 0) {
+      const compressed = await compressPhotos(photos.map((p) => p.file));
+      if (!compressed) { setError("Foto tidak dapat diproses atau terlalu besar. Gunakan foto JPG, PNG, atau WebP."); setBusy(false); return; }
+      blobs = compressed;
+    }
+    const fd = new FormData();
+    fd.append("data", JSON.stringify({ to: action.to, note: note.trim() }));
+    blobs.forEach((b, i) => fd.append("photos", b, `foto-${i + 1}.jpg`));
+
+    try {
+      const res = await officerFetch(`/api/petugas/reports/${report.id}/actions`, { method: "POST", body: fd });
+      const data = (await res.json().catch(() => ({}))) as { error?: string; photosSaved?: boolean };
+      if (!res.ok) {
+        setError(data.error ?? "Tindakan belum dapat disimpan. Silakan coba lagi.");
+        if (res.status === 409 || res.status === 403) onDone(); // data sudah berubah: muat ulang agar tampilan sesuai
+        setBusy(false);
+        return;
+      }
+      if (data.photosSaved === false) setError("Status diperbarui, tetapi foto belum tersimpan. Coba unggah ulang lewat \"Perbarui progres\".");
+    } catch {
+      setError("Tidak dapat terhubung ke server. Periksa koneksi lalu coba lagi.");
       setBusy(false);
       return;
     }
-    const ok = addStatusUpdate(report.id, { status: action.to, at, note: note.trim(), officer: { username: session.username, name: session.name, agency: session.agency }, ...(files.length > 0 ? { storedPhotos: files.length } : {}) });
-    if (!ok) { setError("Pembaruan tidak dapat disimpan. Coba lagi."); setBusy(false); return; }
 
     photos.forEach((p) => URL.revokeObjectURL(p.url));
     setPhotos([]);
     setNote("");
     setBusy(false);
     setMessage(`${report.id} diperbarui: ${statusMeta[action.to].label}.`);
+    onDone();
   };
 
   return (

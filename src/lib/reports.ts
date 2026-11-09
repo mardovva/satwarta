@@ -53,7 +53,8 @@ export function saveReport(input: NewReportInput): { report: StoredReport; persi
 }
 
 // ---------- Pembaruan oleh petugas ----------
-const UPDATES_KEY = "satwarta:officer-updates:v1";
+// v2: data lokal lama (v1) tidak dipakai lagi agar tidak bertabrakan dengan ID laporan dari database
+const UPDATES_KEY = "satwarta:officer-updates:v2";
 type UpdatesMap = Record<string, StatusHistoryEntry[]>;
 
 export function getUpdates(): UpdatesMap {

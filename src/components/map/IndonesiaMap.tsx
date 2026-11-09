@@ -6,6 +6,7 @@ import { Maximize2, X } from "lucide-react";
 import type { HotspotFeed } from "@/lib/firms";
 import { REPORTS_UPDATED_EVENT } from "@/lib/reports";
 import { getAllReports } from "@/lib/tracking";
+import type { StoredReport } from "@/types/report";
 import type { LatLng, MapMode } from "@/types/report";
 import { loadPhotos } from "@/lib/photoStore";
 import { createMarkerElement, setMarkerPhoto } from "./MapMarker";
@@ -21,6 +22,8 @@ interface IndonesiaMapProps {
   onViewDetail?: (reportId: string) => void;
   /** Hanya tampilkan laporan dari provinsi ini (mis. wilayah kerja petugas). Kosongkan untuk semua. */
   regions?: string[];
+  /** Bila diisi, peta menampilkan laporan ini (mis. versi petugas dengan lokasi tepat) menggantikan data publik. */
+  reports?: StoredReport[];
   /** Hanya mode location-picker. Simpan nilai persis seperti yang diberikan onPick (jangan dibulatkan). */
   pickedLocation?: LatLng | null;
   onPick?: (p: LatLng) => void;
@@ -63,12 +66,13 @@ const locale = {
 
 const emptyFC: FeatureCollection = { type: "FeatureCollection", features: [] };
 
-export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, onToggleFullscreen, onViewDetail, regions, pickedLocation = null, onPick }: IndonesiaMapProps) {
+export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, onToggleFullscreen, onViewDetail, regions, reports, pickedLocation = null, onPick }: IndonesiaMapProps) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markers = useRef<maplibregl.Marker[]>([]);
   const onViewDetailRef = useRef(onViewDetail);
   const regionsRef = useRef(regions);
+  const reportsRef = useRef(reports);
   const renderRef = useRef<(() => void) | null>(null);
   const photoUrls = useRef<string[]>([]);
   const renderGen = useRef(0);
@@ -83,6 +87,7 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
   useEffect(() => { onPickRef.current = onPick; }, [onPick]);
   useEffect(() => { onViewDetailRef.current = onViewDetail; }, [onViewDetail]);
   useEffect(() => { regionsRef.current = regions; renderRef.current?.(); }, [regionKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { reportsRef.current = reports; renderRef.current?.(); }, [reports]);
 
   // Inisialisasi peta (sekali per mode) + cleanup.
   useEffect(() => {
@@ -129,7 +134,7 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
         photoUrls.current.forEach((u) => URL.revokeObjectURL(u));
         photoUrls.current = [];
         const scope = regionsRef.current;
-        markers.current = getAllReports()
+        markers.current = (reportsRef.current ?? getAllReports())
           .filter((r) => !scope || scope.includes(r.location.province))
           .map((r) => {
             const el = createMarkerElement(r);

@@ -2,12 +2,11 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { UserRound, UserRoundCheck, X } from "lucide-react";
-import { enterAsOfficer } from "@/lib/auth";
 import { setRole } from "@/lib/role";
 
 interface LoginModalProps { open: boolean; onClose: () => void }
 
-/** Pilihan masuk: Pelapor (kiri) tetap di halaman ini, Petugas (kanan) langsung ke dasbor. Tanpa login. */
+/** Pilihan masuk: Pelapor (kiri) tetap di halaman ini tanpa login; Petugas (kanan) menuju halaman login petugas. */
 export default function LoginModal({ open, onClose }: LoginModalProps) {
   const router = useRouter();
 
@@ -21,7 +20,7 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
   if (!open) return null;
 
   const asPelapor = () => { setRole("pelapor"); onClose(); };
-  const asPetugas = () => { enterAsOfficer(); onClose(); router.push("/petugas"); };
+  const asPetugas = () => { onClose(); router.push("/petugas"); };
 
   const card = "flex flex-col items-center gap-3 rounded-2xl bg-cream p-5 text-center ring-1 ring-black/5 transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md hover:ring-primary/40";
 

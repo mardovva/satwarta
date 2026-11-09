@@ -9,7 +9,7 @@ import { handlerLabel } from "@/lib/handler";
 import type { OfficerSession } from "@/lib/auth";
 import OfficerActionForm from "./OfficerActionForm";
 
-export default function ReportDetail({ report, session }: { report: StoredReport | null; session: OfficerSession }) {
+export default function ReportDetail({ report, session, onChanged }: { report: StoredReport | null; session: OfficerSession; onChanged: () => void }) {
   if (!report) {
     return (
       <section id="detail" className="flex min-h-[16.25rem] items-center justify-center rounded-[1.25rem] bg-white p-8 text-center text-sm text-ink/60 shadow-soft">
@@ -17,10 +17,10 @@ export default function ReportDetail({ report, session }: { report: StoredReport
       </section>
     );
   }
-  return <Detail key={report.id} report={report} session={session} />;
+  return <Detail key={report.id} report={report} session={session} onChanged={onChanged} />;
 }
 
-function Detail({ report, session }: { report: StoredReport; session: OfficerSession }) {
+function Detail({ report, session, onChanged }: { report: StoredReport; session: OfficerSession; onChanged: () => void }) {
   const meta = statusMeta[report.status];
   const { history, reporterPhotos } = useReportPhotos(report);
   const { lat, lng } = report.location;
@@ -58,7 +58,7 @@ function Detail({ report, session }: { report: StoredReport; session: OfficerSes
 
       <div className="mt-8 rounded-2xl bg-cream p-4 sm:p-5">
         <h4 className="mb-3 text-lg font-bold text-primary">Tindak lanjut</h4>
-        <OfficerActionForm report={report} session={session} />
+        <OfficerActionForm report={report} session={session} onDone={onChanged} />
       </div>
 
       {/* foto pelapor dan foto tiap tindakan tampil di sebelah kanan riwayat, seperti di halaman Lacak */}

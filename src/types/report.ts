@@ -61,6 +61,8 @@ export interface ReportFormValues {
   reporterName: string;
   phone: string;
   email: string;
+  /** Persetujuan penggunaan data pribadi (wajib) */
+  consent: boolean;
 }
 export type ReportFormErrors = Partial<Record<keyof ReportFormValues, string>>;
 

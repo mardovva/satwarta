@@ -79,7 +79,7 @@ export default function Footer() {
 
           <Reveal edge delay={0.2}>
           <div className="flex items-center justify-between gap-4 border-t border-primary/10 py-6">
-            <p className="text-xs text-primary/60">Copyright Satwarta 2026</p>
+            <p className="text-xs text-primary/60">Copyright Satwarta 2026 · <Link href="/privasi" className="underline-offset-2 hover:text-primary hover:underline">Kebijakan Privasi</Link></p>
             <ul className="flex items-center gap-3">
               {social.map(({ label, href, Icon }) => (
                 <li key={label}>

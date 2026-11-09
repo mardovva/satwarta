@@ -18,5 +18,6 @@ export function validateReportForm(v: ReportFormValues): ReportFormErrors {
   if (v.reporterName.trim().length < 2) e.reporterName = "Nama pelapor wajib diisi.";
   if (!/^(\+62|62|0)8[1-9][0-9]{6,10}$/.test(normalizePhone(v.phone))) e.phone = "Nomor tidak valid. Contoh: 081234567890.";
   if (v.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email.trim())) e.email = "Format email tidak valid.";
+  if (!v.consent) e.consent = "Centang persetujuan untuk melanjutkan.";
   return e;
 }

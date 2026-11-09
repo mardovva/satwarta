@@ -1,20 +1,14 @@
 import { NextResponse } from "next/server";
 import { geminiConfigured, geminiGenerate } from "@/lib/gemini";
+import { allowDaily, allowShared, clientIp, dailyCap } from "@/lib/server/rateLimit";
+
+/** Batas analisis foto per hari untuk seluruh pengunjung (ubah lewat AI_DAILY_PHOTO; 0 = tanpa batas). */
+const DAILY_PHOTO = () => dailyCap("AI_DAILY_PHOTO", 200);
 import { sanitizeIdentification } from "@/lib/identifyAnimal";
 import { animalConditions, animalTypes } from "@/data/formOptions";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
-
-// Pembatas sederhana per IP (di-reset saat instance serverless dimulai ulang)
-const hits = new Map<string, number[]>();
-function limited(ip: string) {
-  const now = Date.now();
-  const arr = (hits.get(ip) ?? []).filter((t) => now - t < 60_000);
-  arr.push(now);
-  hits.set(ip, arr);
-  return arr.length > 8;
-}
 
 const PROMPT = `Kamu membantu petugas mengisi formulir laporan satwa liar yang terdampak kebakaran hutan dan lahan di Indonesia, berdasarkan SATU foto dari pelapor.
 
@@ -32,8 +26,7 @@ Jangan menebak berlebihan: bila foto buram atau tidak jelas, gunakan "Tidak dike
 export async function POST(req: Request) {
   if (!geminiConfigured()) return NextResponse.json({ error: "off" }, { status: 503 });
 
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local";
-  if (limited(ip)) return NextResponse.json({ error: "Terlalu banyak permintaan. Coba lagi sebentar lagi." }, { status: 429 });
+  if (!(await allowShared(`identify:${clientIp(req)}`, 8, 60_000))) return NextResponse.json({ error: "Terlalu banyak permintaan. Coba lagi sebentar lagi." }, { status: 429 });
 
   let body: { image?: unknown; mimeType?: unknown };
   try { body = await req.json(); } catch { return NextResponse.json({ error: "Permintaan tidak valid" }, { status: 400 }); }
@@ -43,6 +36,7 @@ export async function POST(req: Request) {
   if (!["image/jpeg", "image/png", "image/webp"].includes(mimeType)) return NextResponse.json({ error: "Format gambar tidak didukung" }, { status: 400 });
   if (!/^[A-Za-z0-9+/=]+$/.test(data) || data.length < 100 || data.length > 2_800_000) return NextResponse.json({ error: "Ukuran atau isi gambar tidak valid" }, { status: 400 });
 
+  if (!(await allowDaily("ai-photo-day", DAILY_PHOTO()))) return NextResponse.json({ error: "Kuota analisis foto hari ini habis. Silakan isi data satwa secara manual." }, { status: 429 });
   try {
     const text = await geminiGenerate({
       contents: [{ role: "user", parts: [{ inlineData: { mimeType, data } }, { text: PROMPT }] }], // teks setelah gambar (anjuran dokumentasi)
