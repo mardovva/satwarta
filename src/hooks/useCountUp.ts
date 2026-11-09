@@ -3,11 +3,11 @@ import { useEffect, useRef, useState } from "react";
 
 /**
  * Angka naik dari 0 (atau dari nilai terakhir bila `value` berubah) sampai `value`, lalu berhenti.
- * Dengan prefers-reduced-motion, angka akhir langsung ditampilkan.
+ * Dengan prefers-reduced-motion atau `instant`, angka akhir langsung ditampilkan.
  */
-export function useCountUp(value: number, active: boolean, duration = 1600, delay = 0) {
-  const [display, setDisplay] = useState(0);
-  const current = useRef(0);
+export function useCountUp(value: number, active: boolean, duration = 1600, delay = 0, instant = false) {
+  const [display, setDisplay] = useState(instant ? value : 0);
+  const current = useRef(instant ? value : 0);
 
   useEffect(() => {
     if (!active) return;

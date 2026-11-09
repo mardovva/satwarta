@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { BACKGROUND_SWITCH_MS } from "@/lib/intro";
+import { BACKGROUND_SWITCH_MS, introPlayed, markIntroPlayed, trackSeenDepth } from "@/lib/intro";
 
 // Gambar hero berada di bagian atas halaman dan ikut tergulir. Di bagian bawahnya gambar memudar ke warna solid
 // (#EDF2EC, sama dengan warna body). Dengan `morph`, setelah animasi peta selesai latar perlahan berganti ke
@@ -12,13 +12,17 @@ const base = "hero-bg pointer-events-none absolute inset-x-0 top-0 bg-cover bg-[
 
 /** `burnt`: langsung memakai hero-2 (sama dengan keadaan akhir Beranda), mis. untuk halaman AI Chat. */
 export default function PageBackground({ children, morph = false, burnt: staticBurnt = false }: { children: React.ReactNode; morph?: boolean; burnt?: boolean }) {
-  const [burnt, setBurnt] = useState(false);
+  // Bila Beranda pernah tampil di sesi ini, langsung hero-2 tanpa transisi
+  const [burnt, setBurnt] = useState(() => morph && introPlayed());
 
   useEffect(() => {
     if (!morph) return;
+    markIntroPlayed();
+    trackSeenDepth();
+    if (burnt) return;
     const t = window.setTimeout(() => setBurnt(true), BACKGROUND_SWITCH_MS);
     return () => window.clearTimeout(t);
-  }, [morph]);
+  }, [morph, burnt]);
 
   // overflow-clip (bukan hidden) agar wrapper tidak menjadi scroll container yang ikut tergulir saat anchor.
   return (

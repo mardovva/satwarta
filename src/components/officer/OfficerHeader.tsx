@@ -16,7 +16,7 @@ export default function OfficerHeader({ onLogout }: { onLogout: () => void }) {
           <Link href="/" aria-label="Satwarta, ke beranda" className="flex items-center">
             <Image src="/images/logo.png" alt="Logo Satwarta" width={40} height={41} className="h-8 w-auto sm:h-10" />
           </Link>
-          <button type="button" onClick={onLogout} className="ml-auto rounded-full bg-primary px-6 py-2 font-semibold text-white transition hover:bg-primary-dark">
+          <button type="button" onClick={onLogout} className="ml-auto rounded-full border border-white/60 bg-white/55 px-6 py-2 font-semibold text-ink shadow-nav backdrop-blur-xl backdrop-saturate-150 transition hover:bg-white/80">
             Keluar
           </button>
         </div>

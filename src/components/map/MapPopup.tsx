@@ -22,6 +22,13 @@ function infoGrid(rows: [string, Node | string][]) {
   return grid;
 }
 
+/** Satu baris: label "Status" di kiri, keterangan status mepet kanan. */
+function statusRow(chip: HTMLElement) {
+  const row = el("div", "display:flex;align-items:center;justify-content:space-between;gap:10px");
+  row.append(el("div", "font-weight:700", "Status"), chip);
+  return row;
+}
+
 /** Popup ringkas: foto, ID laporan, status, dan tombol Lihat Detail. Dibangun dengan DOM (textContent) agar aman dari XSS. */
 export function createReportPopupContent(r: StoredReport, onDetail: () => void): HTMLElement {
   const root = el("div", "width:220px;max-width:100%;font-size:13px;line-height:1.5;color:#0F1F17;text-align:left");
@@ -34,14 +41,14 @@ export function createReportPopupContent(r: StoredReport, onDetail: () => void):
   const m = statusMeta[r.status];
   const chip = el("span", `display:inline-block;border-radius:999px;padding:2px 12px;font-size:12px;font-weight:600;background:${m.bg};color:${m.fg}`, m.label);
 
-  const btn = el("button", "margin-top:12px;background:#345542;color:#fff;border:0;border-radius:999px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer", "Lihat Detail");
+  const btn = el("button", "display:block;width:100%;margin-top:12px;background:#345542;color:#fff;border:0;border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer", "Lihat Detail");
   btn.type = "button";
   btn.addEventListener("click", onDetail);
 
   root.append(
     photo,
     el("strong", "display:block;font-size:15px;margin-bottom:6px;padding-right:26px", r.id),
-    infoGrid([["Status", chip]]),
+    statusRow(chip),
     btn
   );
   return root;

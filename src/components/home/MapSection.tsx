@@ -1,6 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useLayoutEffect } from "react";
 import { goToTracking } from "@/lib/tracking";
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
@@ -18,7 +18,7 @@ export function CtaRow() {
   return (
     <Reveal initialDelay={INTRO.nextDelay}>
       <div className="mt-6 flex flex-wrap items-center justify-center gap-3 px-4">
-        <Link href="/chat" className="inline-flex w-full max-w-[19rem] items-center justify-center gap-2 rounded-full border border-white/50 bg-white/40 px-7 py-3 text-base font-semibold text-primary shadow-nav backdrop-blur-xl backdrop-saturate-150 transition hover:-translate-y-0.5 hover:bg-white/60 hover:shadow-lg sm:w-[19rem]">
+        <Link href="/chat" className="inline-flex w-full max-w-[21rem] items-center justify-center gap-2 rounded-full border border-white/50 bg-white/40 px-7 py-3 text-base font-semibold text-primary shadow-nav backdrop-blur-xl backdrop-saturate-150 transition hover:-translate-y-0.5 hover:bg-white/60 hover:shadow-lg sm:w-[21rem] sm:whitespace-nowrap">
           <MessageCircle size={20} /> Tanya Satwarta AI
         </Link>
         <ReportButton />
@@ -37,7 +37,8 @@ export default function MapSection() {
     window.setTimeout(() => goToTracking(id), 80);
   };
 
-  useEffect(() => {
+  // useLayoutEffect: kelas dipasang sebelum frame digambar, sehingga header tidak sempat terlihat di atas peta
+  useLayoutEffect(() => {
     if (!fullscreen) return;
     document.body.classList.add("map-fullscreen"); // menyembunyikan navbar (lihat globals.css)
     document.body.style.overflow = "hidden";

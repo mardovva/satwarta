@@ -22,7 +22,7 @@ const linkCls = "text-primary/75 transition hover:text-primary";
  */
 export default function Footer() {
   return (
-    <div className="bg-gradient-to-b from-[#EDF2EC] via-[#E3EBE4] to-[#D0DDD3]">
+    <div className="overflow-clip bg-gradient-to-b from-[#EDF2EC] via-[#E3EBE4] to-[#D0DDD3]">
       {/* ajakan */}
       <section id="ajakan" className="relative px-4 pb-20 pt-16">
         <div className="mx-auto grid max-w-6xl items-center md:grid-cols-[3fr_2fr]">
@@ -45,9 +45,7 @@ export default function Footer() {
         </div>
         {/* branches-with-animal menempel di tepi kanan, dicerminkan */}
         <div aria-hidden className="pointer-events-none absolute right-0 top-1/2 hidden w-[24rem] -translate-y-1/2 md:block lg:w-[34rem]">
-          <Reveal variant="right" edge delay={0.1}>
-            <Image src="/images/branches/branches-with-animal.png" alt="" width={606} height={208} className="block h-auto w-full -scale-x-100 select-none" />
-          </Reveal>
+          <Image src="/images/branches/branches-with-animal.png" alt="" width={606} height={208} className="block h-auto w-full -scale-x-100 select-none" />
         </div>
       </section>
 

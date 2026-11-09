@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { dummyStats } from "@/data/dummyReports";
 import Reveal from "@/components/ui/Reveal";
-import { INTRO } from "@/lib/intro";
+import { INTRO, introPlayed } from "@/lib/intro";
 import { useInView } from "@/hooks/useInView";
 import { useCountUp } from "@/hooks/useCountUp";
 import { REPORTS_UPDATED_EVENT } from "@/lib/reports";
@@ -12,7 +12,8 @@ interface StatProps { value: number; label: string; color?: string; active: bool
 
 function Stat({ value, label, active, index }: StatProps) {
   // Angka muncul bersama judul, lalu menghitung setelah terlihat
-  const display = useCountUp(value, active, INTRO.countDurationMs, INTRO.countDelayMs + index * INTRO.countStaggerMs);
+  const [instant] = useState(() => introPlayed());
+  const display = useCountUp(value, active, INTRO.countDurationMs, INTRO.countDelayMs + index * INTRO.countStaggerMs, instant);
   return (
     <Reveal initialDelay={INTRO.titleDelay} delay={index * 0.1}>
       <div className="flex shrink-0 items-center text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.12)]" role="group" aria-label={`${value} ${label}`}>

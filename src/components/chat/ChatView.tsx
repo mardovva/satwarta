@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, MessageCircle, Send } from "lucide-react";
+import { ArrowLeft, ArrowUp, MessageCircle } from "lucide-react";
 import { AUTO_PROMPT, fallbackGuidance, toContext, type ChatMessage, type ReportContext } from "@/lib/firstAid";
 import { getStoredReports, withUpdates } from "@/lib/reports";
 import { findReport } from "@/lib/tracking";
@@ -94,9 +94,9 @@ export default function ChatView() {
         <button
           type="button" aria-label="Kembali"
           onClick={() => (window.history.length > 1 ? router.back() : router.push("/"))}
-          className="inline-flex items-center gap-1.5 rounded-full border border-white/50 bg-white/40 px-3 py-1.5 text-sm font-semibold backdrop-blur-xl transition hover:bg-white/65"
+          className="flex h-9 w-9 flex-none items-center justify-center rounded-full border border-white/50 bg-white/40 backdrop-blur-xl transition hover:bg-white/65"
         >
-          <ArrowLeft size={16} /> Kembali
+          <ArrowLeft size={18} />
         </button>
         <h1 className="flex items-center gap-2 text-lg font-bold"><MessageCircle size={20} /> Tanya Satwarta AI</h1>
       </header>
@@ -157,7 +157,7 @@ export default function ChatView() {
             className="min-w-0 flex-1 rounded-full bg-white/60 px-5 py-2.5 text-sm text-primary outline-none ring-1 ring-white/60 backdrop-blur-md placeholder:text-primary/50 focus:bg-white/75"
           />
           <button type="submit" disabled={busy || !input.trim()} aria-label="Kirim" className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-primary text-white transition hover:bg-primary-dark disabled:opacity-50">
-            <Send size={17} />
+            <ArrowUp size={18} />
           </button>
         </div>
       </form>

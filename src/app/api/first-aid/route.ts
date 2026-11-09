@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { FIRST_AID_SYSTEM_PROMPT, contextBlock, fallbackGuidance, type ChatMessage, type ReportContext } from "@/lib/firstAid";
+import { geminiConfigured, geminiGenerate } from "@/lib/gemini";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -37,24 +38,14 @@ function cleanContext(raw: unknown): ReportContext | null {
   };
 }
 
-/** Panggil Claude bila ANTHROPIC_API_KEY diatur. Ganti fungsi ini untuk memakai penyedia AI lain. */
-async function askModel(messages: ChatMessage[], ctx: ReportContext | null, key: string): Promise<string> {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
-    body: JSON.stringify({
-      model: process.env.ANTHROPIC_MODEL || "claude-haiku-5-5",
-      max_tokens: 700,
-      system: `${FIRST_AID_SYSTEM_PROMPT}\n\n${contextBlock(ctx)}`,
-      messages,
-    }),
-    signal: AbortSignal.timeout(25_000),
+/** Panggil Gemini bila GEMINI_API_KEY diatur (lihat src/lib/gemini.ts). Peran "assistant" dipetakan ke "model". */
+function askModel(messages: ChatMessage[], ctx: ReportContext | null): Promise<string> {
+  return geminiGenerate({
+    system: `${FIRST_AID_SYSTEM_PROMPT}\n\n${contextBlock(ctx)}`,
+    contents: messages.map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] })),
+    temperature: 0.3,
+    maxOutputTokens: 1500,
   });
-  if (!res.ok) throw new Error(`AI ${res.status}`);
-  const data = (await res.json()) as { content?: { type: string; text?: string }[] };
-  const text = (data.content ?? []).filter((b) => b.type === "text").map((b) => b.text ?? "").join("\n").trim();
-  if (!text) throw new Error("AI kosong");
-  return text;
 }
 
 export async function POST(req: Request) {
@@ -69,11 +60,10 @@ export async function POST(req: Request) {
   const ctx = cleanContext(body.report);
   const lastUser = [...messages].reverse().find((m) => m.role === "user")?.content ?? "";
 
-  const key = process.env.ANTHROPIC_API_KEY;
-  if (key) {
+  if (geminiConfigured()) {
     try {
-      return NextResponse.json({ reply: await askModel(messages, ctx, key), source: "ai" });
-    } catch { /* jatuh ke panduan bawaan */ }
+      return NextResponse.json({ reply: await askModel(messages, ctx), source: "ai" });
+    } catch { /* kuota habis atau gangguan: jatuh ke panduan bawaan */ }
   }
   return NextResponse.json({ reply: fallbackGuidance(ctx, lastUser), source: "panduan" });
 }

@@ -1,6 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useLayoutEffect } from "react";
 
 const IndonesiaMap = dynamic(() => import("@/components/map/IndonesiaMap"), {
   ssr: false,
@@ -11,7 +11,8 @@ const IndonesiaMap = dynamic(() => import("@/components/map/IndonesiaMap"), {
 export default function OfficerMap({ onSelect, regions }: { onSelect: (id: string) => void; regions: string[] }) {
   const [fullscreen, setFullscreen] = useState(false);
 
-  useEffect(() => {
+  // useLayoutEffect: kelas dipasang sebelum frame digambar, sehingga header tidak sempat terlihat di atas peta
+  useLayoutEffect(() => {
     if (!fullscreen) return;
     document.body.classList.add("map-fullscreen");
     document.body.style.overflow = "hidden";
@@ -30,7 +31,7 @@ export default function OfficerMap({ onSelect, regions }: { onSelect: (id: strin
   };
 
   return (
-    <div className="h-[21.25rem] sm:h-[26.25rem]">
+    <div className="h-[75svh] min-h-[24rem] max-h-[52rem]">
       <div className={fullscreen ? "fixed inset-0 z-[100] bg-white p-3 sm:p-6" : "h-full overflow-hidden rounded-[1.25rem] shadow-soft"}>
         <div className={fullscreen ? "h-full w-full overflow-hidden rounded-[1.25rem]" : "h-full w-full"}>
           <IndonesiaMap mode="monitoring" fullscreen={fullscreen} onToggleFullscreen={() => setFullscreen((v) => !v)} onViewDetail={viewDetail} regions={regions} />

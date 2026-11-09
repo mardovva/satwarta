@@ -31,7 +31,7 @@ export default function DonationSection() {
   return (
     <section id="donasi" className="relative min-h-[100svh] pb-12 pt-24">
       {/* ranting sejajar dengan judul "Donasi" */}
-      <Decor flip src="/images/branches/dry-branch.png" width={192} height={140} sway="right top" className="left-0 top-16 w-[6.875rem] sm:top-12 sm:w-[10rem] lg:top-8 lg:w-[13.125rem]" />
+      <Decor flip src="/images/branches/dry-branch.png" width={192} height={140} sway="right top" className="-left-3 top-16 w-[6.875rem] sm:-left-4 sm:top-12 sm:w-[10rem] lg:-left-6 lg:top-8 lg:w-[13.125rem]" />
       <Reveal><h2 className="relative z-10 px-4 text-center text-3xl font-bold tracking-tight text-primary sm:text-5xl">Donasi</h2></Reveal>
 
       {/* selebar peta dan formulir; kartu turun ke baris berikutnya */}

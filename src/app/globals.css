@@ -28,7 +28,8 @@ body { background-color: #EDF2EC; }
 .maplibregl-popup-content .maplibregl-popup-close-button:hover { background: rgba(255,255,255,.9); }
 
 /* Navbar disembunyikan saat peta fullscreen */
-body.map-fullscreen .site-header { visibility: hidden; }
+/* display:none (bukan visibility) agar tidak ikut ter-transisi oleh `transition-all` pada elemen header */
+body.map-fullscreen .site-header { display: none !important; }
 
 /* Animasi muncul saat scroll (komponen Reveal) */
 .reveal {
@@ -44,6 +45,8 @@ body.map-fullscreen .site-header { visibility: hidden; }
 /* menempel ke layar: mulai membesar (seolah dekat dengan mata), lalu mengecil dan mengunci; durasi dibuat setara tombol CTA */
 .reveal[data-variant="stick"] { transform: scale(1.22); transform-origin: 50% 35%; transition-timing-function: ease-out, cubic-bezier(0.22, 1, 0.36, 1); } /* hanya ubah easing: jangan pakai shorthand `transition` karena akan mereset transition-delay */
 .reveal[data-in="true"] { opacity: 1; transform: none; will-change: auto; }
+/* bagian yang sudah pernah dilihat saat Beranda dibuka lagi: langsung tampil, tanpa transisi dan tanpa jeda */
+.reveal[data-instant="true"] { transition: none !important; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
 }

@@ -50,7 +50,8 @@ function DashboardContent({ session, onLogout, onSwitch }: { session: OfficerSes
   return (
     <div className="min-h-screen bg-cream">
       <OfficerHeader onLogout={onLogout} />
-      <main className="mx-auto max-w-7xl px-4 pb-20 pt-24 sm:px-8 sm:pt-28">
+      <main className="pb-20 pt-24 sm:pt-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-8">
         <section className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
@@ -73,13 +74,20 @@ function DashboardContent({ session, onLogout, onSwitch }: { session: OfficerSes
 
         <div className="mt-6"><OfficerStats reports={reports} filter={filter} onFilter={setFilter} /></div>
 
-        <h2 className="mb-3 mt-8 text-xl font-bold">Peta persebaran</h2>
-        <OfficerMap regions={regions} onSelect={(id) => select(id, true)} />
+        </div>
 
+        {/* peta selebar peta di Beranda (pelapor) */}
+        <div className="mx-auto mt-8 w-[92%] max-w-[83.125rem] md:w-[84%]">
+          <h2 className="mb-3 text-xl font-bold">Peta persebaran</h2>
+          <OfficerMap regions={regions} onSelect={(id) => select(id, true)} />
+        </div>
+
+        <div className="mx-auto max-w-7xl px-4 sm:px-8">
         <h2 className="mb-3 mt-10 text-xl font-bold">Laporan masuk</h2>
         <div className="grid items-start gap-6 lg:grid-cols-[380px_1fr]">
           <ReportQueue reports={visible} selectedId={selectedId} query={query} onQuery={setQuery} onSelect={(id) => select(id, false)} />
           <ReportDetail report={selected} session={session} />
+        </div>
         </div>
       </main>
       {pickerOpen && (

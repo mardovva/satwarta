@@ -39,6 +39,9 @@ export default function Navbar() {
     isHome && id === active ? "font-semibold text-accent" : "transition-colors hover:text-accent";
   const chatCls = pathname === "/chat" ? "font-semibold text-accent" : "transition-colors hover:text-accent";
   const hashHref = (id: string) => `${isHome ? "" : "/"}#${id}`;
+  // Di Beranda: tautan anchor biasa. Dari halaman lain: Link (navigasi di dalam aplikasi), sehingga Beranda tidak dimuat ulang
+  // dan tidak mengulang animasi untuk bagian yang sudah pernah dilihat.
+  const Anchor = (isHome ? "a" : Link) as typeof Link;
 
   const openLogin = () => { setMenuOpen(false); setLoginOpen(true); };
 
@@ -53,14 +56,14 @@ export default function Navbar() {
         }`}
       >
         <nav className="relative mx-auto flex h-14 items-center px-5 sm:h-16 sm:px-7" aria-label="Navigasi utama">
-          <a href={isHome ? "#beranda" : "/"} className="flex items-center gap-2 sm:gap-3">
+          <Anchor href={isHome ? "#beranda" : "/"} className="flex items-center gap-2 sm:gap-3">
             <Image src="/images/logo.png" alt="Logo Satwarta" width={40} height={41} className="h-8 w-auto sm:h-10" />
-          </a>
+          </Anchor>
 
           <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-6 text-base lg:flex xl:gap-9 xl:text-lg">
             {links.map((l) => (
               <li key={l.id}>
-                <a href={hashHref(l.id)} aria-current={isHome && l.id === active ? "page" : undefined} className={linkCls(l.id)}>{l.label}</a>
+                <Anchor href={hashHref(l.id)} aria-current={isHome && l.id === active ? "page" : undefined} className={linkCls(l.id)}>{l.label}</Anchor>
               </li>
             ))}
             <li><Link href="/chat" aria-current={pathname === "/chat" ? "page" : undefined} className={chatCls}>AI Chat</Link></li>
@@ -79,7 +82,7 @@ export default function Navbar() {
             <ul className="space-y-1 text-lg">
               {links.map((l) => (
                 <li key={l.id}>
-                  <a href={hashHref(l.id)} onClick={() => setMenuOpen(false)} className={`block rounded-xl px-3 py-2 ${linkCls(l.id)}`}>{l.label}</a>
+                  <Anchor href={hashHref(l.id)} onClick={() => setMenuOpen(false)} className={`block rounded-xl px-3 py-2 ${linkCls(l.id)}`}>{l.label}</Anchor>
                 </li>
               ))}
               <li><Link href="/chat" onClick={() => setMenuOpen(false)} className={`block rounded-xl px-3 py-2 ${chatCls}`}>AI Chat</Link></li>
