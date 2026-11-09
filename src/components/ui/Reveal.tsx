@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { REVISIT_ANIMATE, introPlayed, seenDepthY } from "@/lib/intro";
+import { usePathname } from "next/navigation";
+import { REVISIT_ANIMATE, markPathVisited, pathVisited, seenDepthY, trackSeenDepth } from "@/lib/intro";
 
 const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
@@ -24,8 +25,10 @@ interface RevealProps {
 export default function Reveal({ children, delay = 0, variant = "up", className = "", initialDelay, edge = false }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
-  // Ditetapkan saat render pertama (stabil walau efek dijalankan dua kali oleh StrictMode di mode dev)
-  const [revisit] = useState(() => introPlayed());
+  const pathname = usePathname();
+  // Halaman ini pernah dibuka di sesi ini? Ditetapkan saat render pertama (stabil walau efek dijalankan dua kali oleh StrictMode)
+  const [revisit] = useState(() => pathVisited(pathname));
+  useEffect(() => { markPathVisited(pathname); trackSeenDepth(); }, [pathname]);
   // Dibuka lagi pada bagian yang sudah pernah dilihat: tanpa jeda awal (dan tanpa transisi bila REVISIT_ANIMATE = false)
   const [skipped, setSkipped] = useState(false);
   const [shownOnce, setShownOnce] = useState(false);
@@ -36,8 +39,8 @@ export default function Reveal({ children, delay = 0, variant = "up", className 
     const el = ref.current;
     // Catatan: membaca posisi memaksa browser menghitung gaya tersembunyi lebih dulu, sehingga perubahan ke tampil akan
     // memicu transisi (beserta transition-delay). Karena itu transisi dimatikan lewat data-instant, bukan hanya jeda 0.
-    if (el && el.getBoundingClientRect().top + window.scrollY < seenDepthY()) { setSkipped(true); setInView(true); }
-  }, [revisit]);
+    if (el && el.getBoundingClientRect().top + window.scrollY < seenDepthY(pathname)) { setSkipped(true); setInView(true); }
+  }, [revisit, pathname]);
 
   useEffect(() => {
     if (inView) return; // sudah tampil: tidak perlu mengamati lagi

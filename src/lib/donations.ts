@@ -1,7 +1,15 @@
 import type { StoredReport } from "@/types/report";
 
 export interface DonationNeed { id: string; label: string; target: number; collected: number }
-export interface Pledge { code: string; reportId: string; needId: string; amount: number; name: string; contact: string; at: string }
+export interface Pledge {
+  code: string; reportId: string; needId: string; amount: number; name: string; contact: string; at: string;
+  /** Donasi anonim: nama tidak ditampilkan */
+  anonymous?: boolean;
+  /** Doa atau pesan dukungan dari donatur */
+  message?: string;
+  /** Metode pembayaran yang dipilih (simulasi) */
+  method?: string;
+}
 
 const KEY = "satwarta:pledges:v1";
 export const PLEDGES_EVENT = "satwarta:pledges-updated";

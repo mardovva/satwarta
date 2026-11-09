@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { BACKGROUND_SWITCH_MS, introPlayed, markIntroPlayed, trackSeenDepth } from "@/lib/intro";
+import { BACKGROUND_SWITCH_MS, introPlayed, markIntroPlayed } from "@/lib/intro";
 
 // Gambar hero berada di bagian atas halaman dan ikut tergulir. Di bagian bawahnya gambar memudar ke warna solid
 // (#EDF2EC, sama dengan warna body). Dengan `morph`, setelah animasi peta selesai latar perlahan berganti ke
@@ -18,7 +18,6 @@ export default function PageBackground({ children, morph = false, burnt: staticB
   useEffect(() => {
     if (!morph) return;
     markIntroPlayed();
-    trackSeenDepth();
     if (burnt) return;
     const t = window.setTimeout(() => setBurnt(true), BACKGROUND_SWITCH_MS);
     return () => window.clearTimeout(t);

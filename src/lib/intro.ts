@@ -21,16 +21,22 @@ let played = false;
 export const introPlayed = () => played;
 export const markIntroPlayed = () => { played = true; };
 
-// Kedalaman terjauh yang pernah dilihat di Beranda (px dari atas dokumen). Saat Beranda dibuka lagi (mis. dari AI Chat
-// lewat header), elemen yang letaknya di atas batas ini langsung tampil tanpa animasi; bagian yang belum pernah
-// dilihat tetap beranimasi saat pertama kali di-scroll.
-let seenDepth = 0;
+// Ingatan per halaman (menurut pathname). Halaman yang pernah dibuka dan seberapa jauh ia pernah di-scroll disimpan, sehingga
+// saat halaman itu dibuka lagi (mis. dari AI Chat), elemen yang letaknya di atas batas tersebut langsung tampil tanpa animasi;
+// bagian yang belum pernah dilihat tetap beranimasi sekali saat pertama kali di-scroll. Halaman lain tidak terpengaruh.
+const visited = new Set<string>();
+const depths: Record<string, number> = {};
 let tracking = false;
-export const seenDepthY = () => seenDepth;
+export const pathVisited = (path: string) => visited.has(path);
+export const markPathVisited = (path: string) => { visited.add(path); };
+export const seenDepthY = (path: string) => depths[path] ?? 0;
 export function trackSeenDepth() {
   if (tracking || typeof window === "undefined") return;
   tracking = true;
-  const update = () => { seenDepth = Math.max(seenDepth, window.scrollY + window.innerHeight); };
+  const update = () => {
+    const path = window.location.pathname;
+    depths[path] = Math.max(depths[path] ?? 0, window.scrollY + window.innerHeight);
+  };
   update();
   window.addEventListener("scroll", update, { passive: true });
   window.addEventListener("resize", update);

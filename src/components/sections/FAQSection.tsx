@@ -11,7 +11,25 @@ const faqs = [
   { q: "Apa yang terjadi setelah laporan diverifikasi?", a: "Laporan yang valid berstatus Terverifikasi, lalu ditindaklanjuti petugas atau tim lapangan (Sedang Ditangani) sampai selesai (Selesai). Laporan yang tidak dapat diverifikasi berstatus Ditolak beserta alasannya." },
 ];
 
-export default function FAQSection() {
+export interface FaqItem { q: string; a: string }
+interface FaqProps {
+  id?: string;
+  title?: string;
+  subtitle?: string;
+  items?: FaqItem[];
+  className?: string;
+  /** Awalan id tombol dan panel; harus unik bila ada lebih dari satu FAQ di halaman */
+  idPrefix?: string;
+}
+
+export default function FAQSection({
+  id = "faq",
+  title = "Pertanyaan yang sering ditanyakan",
+  subtitle = "Temukan jawaban dari pertanyaan umum seputar pelaporan, pelacakan, dan penanganan satwa.",
+  items = faqs,
+  className = "px-4 pb-6 pt-24",
+  idPrefix = "faq",
+}: FaqProps) {
   const [open, setOpen] = useState<number | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   // Ruang yang dipesan: tinggi daftar saat semua tertutup + tinggi jawaban terpanjang, agar membesarnya kartu
@@ -38,7 +56,7 @@ export default function FAQSection() {
   }, []);
 
   return (
-    <section id="faq" className="px-4 pb-6 pt-16">
+    <section id={id} className={className}>
       <div
         className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:gap-14"
         style={{ "--faq-extra": `${reserve?.extra ?? 0}px` } as CSSProperties}
@@ -46,23 +64,21 @@ export default function FAQSection() {
         {/* tengah vertikal terhadap kartu-kartu (ruang cadangan di bawah daftar dikompensasi) */}
         <Reveal variant="left" className="md:mb-[var(--faq-extra)]">
           <div>
-            <h2 className="text-4xl font-bold leading-tight tracking-tight text-primary sm:text-5xl">Pertanyaan yang sering ditanyakan</h2>
-            <p className="mt-4 max-w-md text-base leading-relaxed text-primary/80 sm:text-lg">
-              Temukan jawaban dari pertanyaan umum seputar pelaporan, pelacakan, dan penanganan satwa.
-            </p>
+            <h2 className="text-4xl font-bold leading-tight tracking-tight text-primary sm:text-5xl">{title}</h2>
+            <p className="mt-4 max-w-md text-base leading-relaxed text-primary/80 sm:text-lg">{subtitle}</p>
           </div>
         </Reveal>
 
         <div style={reserve ? { minHeight: reserve.min } : undefined}>
           <div ref={listRef} className="space-y-4">
-            {faqs.map((f, i) => {
+            {items.map((f, i) => {
               const isOpen = open === i;
               return (
                 <Reveal key={f.q} delay={i * 0.07}>
                   <div className={`rounded-[1.75rem] bg-white transition-shadow duration-500 ${isOpen ? "shadow-[0_12px_28px_rgba(0,0,0,0.14)]" : "shadow-[0_6px_18px_rgba(0,0,0,0.08)] hover:shadow-[0_10px_24px_rgba(0,0,0,0.12)]"}`}>
                     <h3>
                       <button
-                        type="button" aria-expanded={isOpen} aria-controls={`faq-panel-${i}`} id={`faq-btn-${i}`}
+                        type="button" aria-expanded={isOpen} aria-controls={`${idPrefix}-panel-${i}`} id={`${idPrefix}-btn-${i}`}
                         onClick={() => setOpen(isOpen ? null : i)}
                         className="flex w-full items-center justify-between gap-4 px-6 py-4 text-left font-medium text-primary sm:px-8"
                       >
@@ -71,7 +87,7 @@ export default function FAQSection() {
                       </button>
                     </h3>
                     <div
-                      id={`faq-panel-${i}`} role="region" aria-labelledby={`faq-btn-${i}`} aria-hidden={!isOpen}
+                      id={`${idPrefix}-panel-${i}`} role="region" aria-labelledby={`${idPrefix}-btn-${i}`} aria-hidden={!isOpen}
                       className={`grid transition-[grid-template-rows,opacity] duration-500 ease-out ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
                     >
                       <div data-faq-inner className="overflow-hidden">

@@ -4,8 +4,8 @@ import Link from "next/link";
 import Reveal from "@/components/ui/Reveal";
 
 const columns = [
-  { title: "Menu", links: [{ label: "Beranda", href: "#beranda" }, { label: "Lapor", href: "#lapor" }, { label: "Lacak", href: "#track" }, { label: "Donasi", href: "#donasi" }] },
-  { title: "Bantuan", links: [{ label: "FAQ", href: "#faq" }] },
+  { title: "Menu", links: [{ label: "Beranda", href: "/#beranda" }, { label: "Lapor", href: "/#lapor" }, { label: "Lacak", href: "/#track" }, { label: "FAQ", href: "/#faq" }] },
+  { title: "Bantuan", links: [{ label: "Tanya Satwarta AI", href: "/chat" }, { label: "Donasi", href: "/donasi" }] },
   { title: "Ikuti", links: [{ label: "Instagram", href: "https://www.instagram.com/mardovva", external: true }, { label: "LinkedIn", href: "https://www.linkedin.com/in/mardova-fadhilah-11b920395", external: true }] },
 ];
 const social = [
@@ -34,12 +34,12 @@ export default function Footer() {
               </h2>
             </Reveal>
             <Reveal edge delay={0.15}>
-              <a
-                href="#lapor"
+              <Link
+                href="/#lapor"
                 className="mt-8 inline-flex rounded-full border border-white/40 bg-primary/80 px-7 py-3 font-semibold text-white shadow-nav backdrop-blur-xl transition hover:-translate-y-0.5 hover:bg-primary/95"
               >
                 Buat laporan satwa terdampak
-              </a>
+              </Link>
             </Reveal>
           </div>
         </div>
@@ -62,10 +62,11 @@ export default function Footer() {
                 <ul className="mt-4 space-y-3 text-sm">
                   {c.links.map((l) => (
                     <li key={l.label}>
-                      <a href={l.href} className={linkCls} {...("external" in l ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{l.label}</a>
+                      {"external" in l
+                        ? <a href={l.href} target="_blank" rel="noopener noreferrer" className={linkCls}>{l.label}</a>
+                        : <Link href={l.href} className={linkCls}>{l.label}</Link>}
                     </li>
                   ))}
-                  {c.title === "Bantuan" && <li><Link href="/chat" className={linkCls}>Tanya Satwarta AI</Link></li>}
                 </ul>
               </nav>
               </Reveal>

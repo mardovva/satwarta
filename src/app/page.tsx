@@ -7,7 +7,6 @@ import MapSection, { CtaRow } from "@/components/home/MapSection";
 import PhotoCarousel from "@/components/home/PhotoCarousel";
 import ReportFormSection from "@/components/report/ReportFormSection";
 import TrackingSection from "@/components/tracking/TrackingSection";
-import DonationSection from "@/components/donation/DonationSection";
 import FAQSection from "@/components/sections/FAQSection";
 import Footer from "@/components/layout/Footer";
 
@@ -37,7 +36,6 @@ export default function Home() {
         <PhotoCarousel />
         <ReportFormSection />
         <TrackingSection />
-        <DonationSection />
         <FAQSection />
       </PageBackground>
       <Footer />
