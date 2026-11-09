@@ -5,7 +5,7 @@ import PageBackground from "@/components/layout/PageBackground";
 import DonationPage from "@/components/donation/DonationPage";
 
 export const metadata: Metadata = {
-  title: "Donasi — Satwarta",
+  title: "Donasi | Satwarta",
   description: "Bantu penanganan satwa liar korban karhutla. Terbuka untuk publik.",
 };
 

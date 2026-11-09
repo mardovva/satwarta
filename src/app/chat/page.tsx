@@ -4,7 +4,7 @@ import PageBackground from "@/components/layout/PageBackground";
 import ChatView from "@/components/chat/ChatView";
 
 export const metadata: Metadata = {
-  title: "Tanya Satwarta AI — Satwarta",
+  title: "AI Chat | Satwarta",
   description: "Panduan pertolongan pertama satwa terdampak sambil menunggu petugas.",
 };
 
