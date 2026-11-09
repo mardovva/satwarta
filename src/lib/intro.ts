@@ -5,9 +5,9 @@ export const INTRO = {
   /** hitungan angka mulai setelah angka terlihat; tiap angka tertunda sedikit */
   countDelayMs: 700,
   countStaggerMs: 150,
-  countDurationMs: 3500,
+  countDurationMs: 2800,
   /** dua tombol CTA dan peta muncul bersamaan setelah hitungan selesai (selesai ~4,5 dtk) */
-  nextDelay: 4.6,
+  nextDelay: 3.5,
   /** lama animasi muncul peta (sama dengan tombol CTA) */
   mapDurationMs: 900,
 } as const;
