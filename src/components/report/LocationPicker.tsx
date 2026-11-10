@@ -116,7 +116,7 @@ export default function LocationPicker({ values, errors, onChange }: Props) {
         </p>
       )}
 
-      <FormField id="field-locationDetail" label="Detail lokasi" error={errors.locationDetail} hint="Patokan terdekat, nama jalan, desa, atau ciri tempat. Hanya dilihat petugas.">
+      <FormField id="field-locationDetail" label="Detail lokasi" error={errors.locationDetail}>
         <textarea
           id="field-locationDetail" rows={3} maxLength={300} value={values.locationDetail}
           onChange={(e) => onChange("locationDetail", e.target.value)}
