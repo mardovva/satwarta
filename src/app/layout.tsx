@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./globals.css";
+import { HOME_SCROLL_RESET } from "@/lib/homeScrollReset";
 
 export const metadata: Metadata = {
-  title: "Satwarta | Pelaporan & Penyelamatan Satwa",
+  title: "Satwarta — Jaga Satwa, Jaga Kita",
   description: "Platform pelaporan masyarakat untuk satwa liar yang terdampak karhutla di Indonesia.",
 };
 
@@ -11,6 +12,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="id">
       <head>
+        {/* Beranda yang di-refresh selalu mulai dari paling atas (lihat src/lib/homeScrollReset.ts) */}
+        <script dangerouslySetInnerHTML={{ __html: HOME_SCROLL_RESET }} />
         {/* Satoshi dari Fontshare (gratis untuk penggunaan komersial). Untuk produksi, unduh dan host sendiri bila perlu. */}
         <link rel="preconnect" href="https://api.fontshare.com" />
         <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
