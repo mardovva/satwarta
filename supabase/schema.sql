@@ -58,6 +58,7 @@ create table if not exists public.reports (
   condition       text not null check (char_length(condition) between 1 and 120),
   province        text not null check (char_length(province) between 1 and 60),
   city            text not null check (char_length(city) between 1 and 80),
+  location_detail text not null default '' check (char_length(location_detail) <= 300),   -- patokan/alamat tambahan dari pelapor; hanya untuk petugas
   lat             double precision not null check (lat between -11.5 and 6.5),
   lng             double precision not null check (lng between 94.5 and 141.5),
   reporter_name   text not null check (char_length(reporter_name) between 1 and 80),

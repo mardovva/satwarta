@@ -5,7 +5,7 @@ import { Loader2, LocateFixed } from "lucide-react";
 import type { LatLng, ReportFormErrors, ReportFormValues } from "@/types/report";
 import { provinceNames, provinces } from "@/data/locations";
 import { reverseRegion } from "@/lib/geocode";
-import { FormField, SelectField } from "./FormField";
+import { FormField, SelectField, inputClass } from "./FormField";
 
 const IndonesiaMap = dynamic(() => import("@/components/map/IndonesiaMap"), {
   ssr: false,
@@ -115,6 +115,15 @@ export default function LocationPicker({ values, errors, onChange }: Props) {
           {geo === "partial" ? "Kabupaten/kota belum terdeteksi, pilih secara manual." : "Wilayah belum terdeteksi, pilih provinsi dan kabupaten/kota secara manual."}
         </p>
       )}
+
+      <FormField id="field-locationDetail" label="Detail lokasi" error={errors.locationDetail} hint="Patokan terdekat, nama jalan, desa, atau ciri tempat. Hanya dilihat petugas.">
+        <textarea
+          id="field-locationDetail" rows={3} maxLength={300} value={values.locationDetail}
+          onChange={(e) => onChange("locationDetail", e.target.value)}
+          placeholder="Contoh: dekat jembatan, di tepi kebun sawit"
+          className={`${inputClass(!!errors.locationDetail)} resize-y`}
+        />
+      </FormField>
     </div>
   );
 }

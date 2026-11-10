@@ -19,7 +19,7 @@ import { FormField, fieldProps, inputClass } from "./FormField";
 
 const initialValues: ReportFormValues = {
   animalType: "", animalName: "", count: "", condition: "", conditionOther: "",
-  province: "", city: "", location: null,
+  province: "", city: "", locationDetail: "", location: null,
   reporterName: "", phone: "", email: "", consent: false,
 };
 

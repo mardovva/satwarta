@@ -31,6 +31,7 @@ function Detail({ report, session, onChanged }: { report: StoredReport; session:
     ["Jumlah", `${report.animal.count} ekor`],
     ["Kondisi", report.animal.condition],
     ["Lokasi", `${report.location.city}, ${report.location.province}`],
+    ...(report.location.detail ? [["Detail lokasi", report.location.detail] as [string, React.ReactNode]] : []),
     ["Tanggal laporan", formatDate(report.createdAt)],
     ["Ditangani oleh", handlerLabel(report)],
     ["Koordinat", (

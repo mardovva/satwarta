@@ -130,7 +130,9 @@ export default function DonationPage() {
         </Reveal>
 
         {/* semua kartu */}
-        <p className="mt-6 text-sm font-semibold text-ink/70" aria-live="polite">{visible.length} penggalangan ditampilkan</p>
+        <Reveal initialDelay={0.95} className="mt-6">
+          <p className="text-sm font-semibold text-ink/70" aria-live="polite"><CountUp value={visible.length} duration={900} delay={1000} /> penggalangan ditampilkan</p>
+        </Reveal>
         <ul className="mt-3 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {visible.map((c, i) => (
             <li key={c.id} className="flex">

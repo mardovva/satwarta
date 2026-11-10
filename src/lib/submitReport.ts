@@ -44,7 +44,7 @@ export async function submitReport(v: ReportFormValues, photos: PhotoItem[], cap
   fd.append("data", JSON.stringify({
     animalType: v.animalType, animalName: v.animalName.trim(), count: Number(v.count),
     condition: v.condition === CONDITION_OTHER ? v.conditionOther.trim() : v.condition,
-    province: v.province, city: v.city, lat: v.location?.lat, lng: v.location?.lng,
+    province: v.province, city: v.city, locationDetail: v.locationDetail.trim(), lat: v.location?.lat, lng: v.location?.lng,
     reporterName: v.reporterName.trim(), phone: v.phone, email: v.email.trim(), consent: v.consent,
   }));
   blobs.forEach((b, i) => fd.append("photos", b, `foto-${i + 1}.jpg`));

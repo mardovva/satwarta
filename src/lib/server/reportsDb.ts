@@ -14,7 +14,7 @@ export interface DbReportRow {
   id: string; animal_type: string; animal_name: string; animal_count: number; condition: string; province: string; city: string;
   lat: number; lng: number; status: TrackingStatus; created_at: string;
   /** Hanya ada pada kueri petugas */
-  reporter_name?: string; reporter_phone?: string; reporter_email?: string | null; handled_by?: string | null; anonymized_at?: string | null;
+  reporter_name?: string; reporter_phone?: string; reporter_email?: string | null; handled_by?: string | null; anonymized_at?: string | null; location_detail?: string;
   report_history: DbHistoryRow[]; report_photos: DbPhotoRow[];
 }
 
@@ -46,7 +46,10 @@ function toReport(row: DbReportRow, photoUrl: (path: string) => string, view: Vi
   return {
     id: row.id, createdAt: iso(row.created_at), status: row.status,
     animal: { type: row.animal_type, name: row.animal_name, count: row.animal_count, condition: row.condition },
-    location: { province: row.province, city: row.city, lat: officerView ? row.lat : round(row.lat), lng: officerView ? row.lng : round(row.lng) },
+    location: {
+      province: row.province, city: row.city, lat: officerView ? row.lat : round(row.lat), lng: officerView ? row.lng : round(row.lng),
+      ...(officerView && row.location_detail ? { detail: row.location_detail } : {}), // detail lokasi: hanya untuk petugas
+    },
     photos: [],
     // laporan yang sudah dianonimkan (lihat supabase/schema.sql 8e): nama tampil "Dianonimkan", tanpa telepon dan email
     reporter: officerView ? (row.anonymized_at ? { name: row.reporter_name ?? "Dianonimkan", phone: "", email: "" } : { name: row.reporter_name ?? "", phone: row.reporter_phone ?? "", email: row.reporter_email ?? "" }) : { name: "", phone: "", email: "" },
@@ -79,7 +82,7 @@ export async function getPublicReport(id: string): Promise<StoredReport | null> 
 export async function insertReport(i: ReportInput): Promise<string> {
   const { data, error } = await supabaseAdmin().from("reports").insert({
     animal_type: i.animalType, animal_name: i.animalName, animal_count: i.count, condition: i.condition,
-    province: i.province, city: i.city, lat: i.lat, lng: i.lng,
+    province: i.province, city: i.city, location_detail: i.locationDetail, lat: i.lat, lng: i.lng,
     reporter_name: i.reporterName, reporter_phone: i.phone, reporter_email: i.email, consent: true,
   }).select("id").single();
   if (error || !data) throw new Error(`insert: ${error?.code ?? ""} ${error?.message ?? "kosong"}`);

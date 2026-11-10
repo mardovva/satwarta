@@ -6,7 +6,7 @@ import type { Officer } from "./officerAuth";
 import { PHOTO_BUCKET, toOfficerReport, urlOf, type DbReportRow } from "./reportsDb";
 
 const SELECT_OFFICER =
-  "id, animal_type, animal_name, animal_count, condition, province, city, lat, lng, status, created_at, reporter_name, reporter_phone, reporter_email, handled_by, anonymized_at, " +
+  "id, animal_type, animal_name, animal_count, condition, province, city, lat, lng, status, created_at, reporter_name, reporter_phone, reporter_email, handled_by, anonymized_at, location_detail, " +
   "report_history(id, status, note, officer_id, officer_name, officer_agency, created_at), report_photos(history_id, storage_path, caption)";
 
 /** Laporan dalam wilayah kerja petugas (semua laporan untuk peran national dan admin), lengkap dengan kontak pelapor dan lokasi tepat. */

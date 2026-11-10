@@ -11,6 +11,8 @@ export interface ReportInput {
   condition: string;
   province: string;
   city: string;
+  /** Patokan atau alamat tambahan; boleh kosong */
+  locationDetail: string;
   lat: number;
   lng: number;
   reporterName: string;
@@ -47,6 +49,9 @@ export function parseReportInput(raw: unknown): ParseResult {
   if (!Object.prototype.hasOwnProperty.call(provinces, province)) errors.province = "Provinsi tidak valid.";
   else if (!provinces[province].includes(city)) errors.city = "Kabupaten/kota tidak sesuai dengan provinsi.";
 
+  const locationDetail = str(r.locationDetail);
+  if (locationDetail.length > 300) errors.locationDetail = "Detail lokasi maksimal 300 karakter.";
+
   const lat = num(r.lat);
   const lng = num(r.lng);
   if (!Number.isFinite(lat) || lat < -11.5 || lat > 6.5 || !Number.isFinite(lng) || lng < 94.5 || lng > 141.5) errors.location = "Lokasi harus berada di wilayah Indonesia.";
@@ -63,7 +68,7 @@ export function parseReportInput(raw: unknown): ParseResult {
   if (r.consent !== true) errors.consent = "Persetujuan penggunaan data wajib dicentang.";
 
   if (Object.keys(errors).length > 0) return { ok: false, errors };
-  return { ok: true, value: { animalType, animalName, count, condition, province, city, lat, lng, reporterName, phone, email: emailRaw || null } };
+  return { ok: true, value: { animalType, animalName, count, condition, province, city, locationDetail, lat, lng, reporterName, phone, email: emailRaw || null } };
 }
 
 // ---------- Foto ----------

@@ -37,7 +37,7 @@ export default function PrivacyPage() {
           <p className={P}><strong>Saat Anda mengirim laporan:</strong></p>
           <ul className={UL}>
             <li>Nama pelapor, nomor telepon, dan email (opsional).</li>
-            <li>Jenis, jumlah, nama, dan kondisi satwa; provinsi, kabupaten/kota, dan titik koordinat lokasi.</li>
+            <li>Jenis, jumlah, nama, dan kondisi satwa; provinsi, kabupaten/kota, titik koordinat lokasi, dan detail lokasi (patokan atau alamat tambahan, bila Anda isi).</li>
             <li>Foto dokumentasi (maksimal 8). Metadata foto, termasuk koordinat GPS di dalamnya, dihapus di perangkat Anda sebelum foto diunggah.</li>
             <li>Waktu pengiriman dan persetujuan Anda atas penggunaan data.</li>
           </ul>
@@ -57,8 +57,8 @@ export default function PrivacyPage() {
           <div className="mt-2 overflow-x-auto">
             <table className="w-full text-sm">
               <tbody>
-                <Row who="Publik (siapa saja)" sees="Jenis, jumlah, dan kondisi satwa; foto; status dan riwayat penanganan beserta nama dan instansi petugas yang menangani; lokasi perkiraan (dibulatkan sekitar 1 km). Tidak termasuk nama, telepon, dan email pelapor." />
-                <Row who="Petugas regional" sees="Laporan lengkap di wilayah kerjanya, termasuk kontak pelapor dan lokasi tepat." />
+                <Row who="Publik (siapa saja)" sees="Jenis, jumlah, dan kondisi satwa; foto; status dan riwayat penanganan beserta nama dan instansi petugas yang menangani; lokasi perkiraan (dibulatkan sekitar 1 km). Tidak termasuk nama, telepon, email pelapor, maupun detail lokasi." />
+                <Row who="Petugas regional" sees="Laporan lengkap di wilayah kerjanya, termasuk kontak pelapor, lokasi tepat, dan detail lokasi." />
                 <Row who="Petugas lembaga pusat (nasional)" sees="Laporan lengkap dari semua wilayah." />
                 <Row who="Admin Satwarta" sees="Seluruh laporan, serta pengelolaan akun petugas dan log kegiatan." />
               </tbody>

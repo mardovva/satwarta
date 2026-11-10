@@ -43,7 +43,8 @@ export interface StoredReport {
   createdAt: string; // ISO
   status: TrackingStatus;
   animal: { type: string; name: string; count: number; condition: string };
-  location: { province: string; city: string; lat: number; lng: number };
+  /** detail hanya ada pada versi petugas (tidak pernah dikirim ke publik) */
+  location: { province: string; city: string; lat: number; lng: number; detail?: string };
   photos: StoredPhoto[]; // hanya metadata; file belum diunggah ke server
   reporter: { name: string; phone: string; email: string };
   history: StatusHistoryEntry[];
@@ -57,6 +58,8 @@ export interface ReportFormValues {
   conditionOther: string;
   province: string;
   city: string;
+  /** Patokan atau alamat tambahan (opsional) */
+  locationDetail: string;
   location: LatLng | null;
   reporterName: string;
   phone: string;
