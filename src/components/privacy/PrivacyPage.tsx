@@ -79,7 +79,7 @@ export default function PrivacyPage() {
           </ul>
 
           <h2 className={H2}>6. Fitur kecerdasan buatan (AI)</h2>
-          <p className={P}>Dua fitur memakai Google Gemini API: asisten &ldquo;Tanya Satwarta AI&rdquo; (teks pertanyaan Anda dan, bila Anda memilih, keterangan status laporan) dan analisis foto pada formulir laporan (foto yang Anda pilih, untuk membantu mengisi jenis dan kondisi satwa). Kami tidak menyimpan percakapan AI di server kami.</p>
+          <p className={P}>Dua fitur memakai Google Gemini API: asisten &ldquo;Satwarta AI&rdquo; (teks pertanyaan Anda dan, bila Anda memilih, keterangan status laporan) dan analisis foto pada formulir laporan (foto yang Anda pilih, untuk membantu mengisi jenis dan kondisi satwa). Kami tidak menyimpan percakapan AI di server kami.</p>
           <p className={P}>Menurut ketentuan layanan Google, bergantung pada paket yang digunakan pengelola, Google dapat memakai masukan dan jawaban untuk meningkatkan produknya, termasuk peninjauan oleh manusia. Karena itu, <strong>jangan memasukkan data pribadi (nama, telepon, alamat rumah) ke dalam percakapan AI dan hindari mengunggah foto yang memperlihatkan wajah orang.</strong> Jawaban AI bersifat panduan umum dan tidak menggantikan petugas atau dokter hewan.</p>
 
           <h2 className={H2}>7. Lama penyimpanan</h2>

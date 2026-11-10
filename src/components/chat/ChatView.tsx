@@ -137,7 +137,7 @@ export default function ChatView() {
 
   return (
     <section
-      aria-label="Tanya Satwarta AI"
+      aria-label="Satwarta AI"
       className="mx-auto flex h-[calc(100svh-8rem)] min-h-[26rem] w-full max-w-3xl flex-col overflow-hidden rounded-[2rem] border border-white/50 bg-white/35 text-primary backdrop-blur-xl backdrop-saturate-150"
     >
       <header className="flex items-center gap-3 border-b border-white/40 px-4 py-3">
@@ -148,7 +148,7 @@ export default function ChatView() {
         >
           <ArrowLeft size={18} />
         </button>
-        <h1 className="flex items-center gap-2 text-lg font-bold"><MessageCircle size={20} /> Tanya Satwarta AI</h1>
+        <h1 className="flex items-center gap-2 text-lg font-bold"><MessageCircle size={20} /> Satwarta AI</h1>
         {visible.length > 0 && (
           <button type="button" onClick={resetChat} className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-white/50 bg-white/40 px-3 py-1.5 text-xs font-semibold backdrop-blur-xl transition hover:bg-white/65">
             <RotateCcw size={14} />Chat baru
