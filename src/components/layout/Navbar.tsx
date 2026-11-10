@@ -87,7 +87,11 @@ export default function Navbar() {
       >
         <nav className="relative mx-auto flex h-14 items-center px-5 sm:h-16 sm:px-7" aria-label="Navigasi utama">
           <Anchor href={isHome ? "#beranda" : "/"} className="flex items-center gap-2 sm:gap-3">
-            <Image src="/images/logo.png" alt="Logo Satwarta" width={40} height={41} className="h-8 w-auto sm:h-10" />
+            {/* Dua logo bertumpuk yang saling memudar, selaras dengan perubahan warna teks header (putih di atas, gelap saat melayang) */}
+            <span className="relative block">
+              <Image src="/images/logo-dark.svg" alt="Logo Satwarta" width={714} height={160} loading="eager" unoptimized className={`h-7 w-auto transition-opacity duration-500 ease-out motion-reduce:transition-none sm:h-8 ${floating ? "opacity-100" : "opacity-0"}`} />
+              <Image src="/images/logo-white.svg" alt="" aria-hidden width={714} height={160} priority unoptimized className={`absolute left-0 top-0 h-7 w-auto transition-opacity duration-500 ease-out motion-reduce:transition-none sm:h-8 ${floating ? "opacity-0" : "opacity-100"}`} />
+            </span>
           </Anchor>
 
           <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-6 text-base lg:flex xl:gap-9 xl:text-lg">

@@ -9,7 +9,7 @@ export default function OfficerLoginScreen({ notice }: { notice?: string }) {
     <div className="flex min-h-screen items-center justify-center bg-cream px-4 py-10">
       <div className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-soft ring-1 ring-black/5 sm:p-8">
         <Link href="/" aria-label="Satwarta, ke beranda" className="mb-5 flex justify-center">
-          <Image src="/images/logo.png" alt="Logo Satwarta" width={48} height={49} className="h-12 w-auto" />
+          <Image src="/images/logo-dark.svg" alt="Logo Satwarta" width={714} height={160} priority unoptimized className="h-9 w-auto" />
         </Link>
         <h1 className="text-center text-2xl font-bold tracking-tight text-primary">Masuk Petugas</h1>
         <p className="mb-6 mt-1 text-center text-sm text-ink/65">Khusus petugas penanganan satwa. Akun dibuat oleh admin; tidak ada pendaftaran mandiri.</p>

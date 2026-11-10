@@ -57,7 +57,7 @@ export default function Footer() {
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 border-t border-primary/10 py-12 sm:grid-cols-2 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
             <Reveal edge>
-              <Image src="/images/logo.png" alt="Logo Satwarta" width={40} height={41} className="h-8 w-auto" />
+              <Image src="/images/logo-dark.svg" alt="Logo Satwarta" width={714} height={160} unoptimized className="h-8 w-auto" />
             </Reveal>
             {columns.map((c, i) => (
               <Reveal key={c.title} edge delay={0.08 * (i + 1)}>
