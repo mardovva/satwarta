@@ -1,8 +1,6 @@
 import Link from "next/link";
 import Decor from "@/components/layout/Decor";
 
-/** Terakhir diubah. Perbarui tanggal ini setiap kali isi kebijakan berubah. */
-export const PRIVACY_UPDATED = "9 November 2026";
 /** Lama data kontak pelapor disimpan setelah laporan final (harus sama dengan angka pada jadwal pg_cron di supabase/migrations/004). */
 const RETENTION_MONTHS = 12;
 
@@ -29,21 +27,9 @@ export default function PrivacyPage() {
       <div className="relative z-10 mx-auto w-[92%] max-w-3xl">
         <header className="text-center">
           <h1 className="text-3xl font-bold tracking-tight text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.12)] sm:text-5xl">Kebijakan Privasi</h1>
-          <p className="mt-2 text-sm font-medium text-white/90">Terakhir diperbarui: {PRIVACY_UPDATED}</p>
         </header>
 
         <article className="mt-8 rounded-3xl bg-white/90 p-6 text-[0.9375rem] shadow-sm ring-1 ring-black/5 backdrop-blur-xl sm:p-9">
-          <section aria-labelledby="ringkas" className="rounded-2xl bg-cream p-5">
-            <h2 id="ringkas" className="text-lg font-bold text-primary">Ringkasan</h2>
-            <ul className={UL}>
-              <li>Saat melapor, kami meminta nama, nomor telepon, email (opsional), lokasi, foto, dan keterangan satwa.</li>
-              <li><strong>Nama, telepon, dan email Anda tidak ditampilkan ke publik.</strong> Hanya petugas yang berwenang dan admin yang dapat melihatnya.</li>
-              <li>Publik melihat keterangan satwa, foto, status penanganan, dan lokasi perkiraan (dibulatkan sekitar 1 km).</li>
-              <li>Data kontak dianonimkan {RETENTION_MONTHS} bulan setelah laporan selesai atau ditolak.</li>
-              <li>Kami tidak memasang iklan, pelacak, maupun alat analitik pihak ketiga.</li>
-            </ul>
-          </section>
-
           <h2 className={H2}>1. Tentang Satwarta</h2>
           <p className={P}>Satwarta adalah platform untuk melaporkan dan memantau penanganan satwa liar yang terdampak kebakaran hutan dan lahan. Kebijakan ini menjelaskan data pribadi apa yang kami proses, untuk apa, siapa yang dapat melihatnya, dan hak Anda atas data tersebut, sesuai Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi.</p>
 
@@ -119,7 +105,7 @@ export default function PrivacyPage() {
           <p className={P}>Jika Anda berusia di bawah 18 tahun, mintalah orang tua atau wali untuk mendampingi Anda saat mengirim laporan.</p>
 
           <h2 className={H2}>11. Perubahan kebijakan</h2>
-          <p className={P}>Kebijakan ini dapat diperbarui. Tanggal pembaruan terakhir tercantum di bagian atas halaman ini.</p>
+          <p className={P}>Kebijakan ini dapat diperbarui sewaktu-waktu. Versi terbaru selalu tersedia di halaman ini.</p>
 
           <p className="mt-8 text-sm text-ink/60">Kembali ke <Link href="/" className="font-semibold text-primary underline">beranda</Link>.</p>
         </article>

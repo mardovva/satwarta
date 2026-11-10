@@ -69,7 +69,7 @@ export default function TrackingSection() {
             <div className="relative flex-1">
               <input
                 id="track-id" ref={inputRef} value={input} onChange={(e) => setInput(e.target.value)}
-                placeholder="Masukkan ID laporan SWT-2026-0000" autoComplete="off" spellCheck={false}
+                placeholder="SWT-2026-XXXX" autoComplete="off" spellCheck={false}
                 className="w-full rounded-xl bg-white py-3 pl-4 pr-10 text-[0.9375rem] shadow-sm outline-none ring-1 ring-black/5 placeholder:text-ink/40 focus:ring-2 focus:ring-primary"
               />
               {input && (

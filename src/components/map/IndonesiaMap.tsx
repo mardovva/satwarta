@@ -94,7 +94,6 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
     if (!container.current) return;
     let cancelled = false;
     let removeReportListeners = () => {};
-    const coarse = window.matchMedia("(pointer: coarse)").matches;
     const map = new maplibregl.Map({
       container: container.current,
       style,
@@ -102,7 +101,7 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
       fitBoundsOptions: { padding: 8 },
       minZoom: 2,
       maxZoom: 18,
-      cooperativeGestures: mode === "location-picker" || coarse,
+      cooperativeGestures: true, // scroll halaman tidak ikut memperbesar peta: zoom lewat Ctrl/Cmd + scroll (layar penuh: bebas, lihat efek di bawah)
       locale,
       attributionControl: false,
     });
@@ -268,6 +267,14 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
       map.flyTo({ center: [pickedLocation.lng, pickedLocation.lat], zoom: Math.max(map.getZoom(), 12) });
     }
   }, [pickedLocation, mode]);
+
+  // Layar penuh: peta bebas di-scroll dan di-zoom (seperti kontrol layar penuh bawaan MapLibre).
+  // Di halaman biasa: Ctrl/Cmd + scroll (dua jari di layar sentuh), supaya scroll halaman tidak malah memperbesar peta.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || mode !== "monitoring") return;
+    if (fullscreen) map.cooperativeGestures.disable(); else map.cooperativeGestures.enable();
+  }, [fullscreen, mode]);
 
   return (
     <div className="relative h-full w-full" data-basemap={basemap}>

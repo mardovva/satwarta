@@ -1,11 +1,12 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowUp, MessageCircle } from "lucide-react";
+import { ArrowLeft, ArrowUp, MessageCircle, RotateCcw } from "lucide-react";
 import { AUTO_PROMPT, fallbackGuidance, toContext, type ChatMessage, type ReportContext } from "@/lib/firstAid";
 import { REPORTS_UPDATED_EVENT } from "@/lib/reports";
 import { getMyReports } from "@/lib/myReports";
 import { lookupReport } from "@/lib/tracking";
+import { clearChat, loadChat, needsReply, saveChat } from "@/lib/chatHistory";
 import type { StoredReport } from "@/types/report";
 
 type UiMessage = ChatMessage & { hidden?: boolean; note?: string };
@@ -34,6 +35,8 @@ export default function ChatView() {
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [mine, setMine] = useState<StoredReport[]>([]);
+  const [hydrated, setHydrated] = useState(false); // riwayat sudah dibaca dari perangkat
+  const booted = useRef(false);
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -74,17 +77,49 @@ export default function ChatView() {
     ask([first], context);
   }, [ask]);
 
+  // Daftar laporan milik perangkat ini: dimuat dari server (bisa tiba belakangan), jadi diperbarui saat data baru datang
   useEffect(() => {
-    // Laporan dimuat dari server (bisa tiba belakangan), jadi daftar diperbarui saat data baru datang
     const loadMine = () => setMine(getMyReports(3));
     loadMine();
     window.addEventListener(REPORTS_UPDATED_EVENT, loadMine);
-    const id = new URLSearchParams(window.location.search).get("laporan");
-    if (id) {
-      lookupReport(id).then((found) => { if (found) startWith(found.report); else inputRef.current?.focus(); });
-    } else inputRef.current?.focus();
     return () => window.removeEventListener(REPORTS_UPDATED_EVENT, loadMine);
-  }, [startWith]);
+  }, []);
+
+  // Awal: pulihkan riwayat yang tersimpan; ?laporan=ID memulai (atau melanjutkan) percakapan tentang laporan itu
+  useEffect(() => {
+    if (booted.current) return; // React Strict Mode menjalankan efek dua kali saat pengembangan
+    booted.current = true;
+    const saved = loadChat();
+    const id = new URLSearchParams(window.location.search).get("laporan");
+    const restore = () => {
+      if (!saved) { inputRef.current?.focus(); return; }
+      setCtx(saved.ctx);
+      setMessages(saved.messages);
+      if (needsReply(saved.messages)) ask(saved.messages, saved.ctx); // pindah halaman saat AI menjawab: minta ulang jawabannya
+    };
+    if (id && saved?.ctx && saved.ctx.id.toUpperCase() === id.trim().toUpperCase()) { restore(); setHydrated(true); return; }
+    if (id) {
+      lookupReport(id).then((found) => { if (found) startWith(found.report); else restore(); setHydrated(true); });
+      return;
+    }
+    restore();
+    setHydrated(true);
+  }, [ask, startWith]);
+
+  // Simpan setiap perubahan (setelah riwayat awal dibaca, supaya tidak menimpa dengan data kosong)
+  useEffect(() => {
+    if (!hydrated) return;
+    saveChat({ ctx, messages });
+  }, [ctx, messages, hydrated]);
+
+  const resetChat = () => {
+    clearChat();
+    setMessages([]);
+    setCtx(null);
+    setInput("");
+    window.history.replaceState(null, "", "/chat"); // agar muat ulang tidak memulai ulang percakapan laporan
+    inputRef.current?.focus();
+  };
 
   useEffect(() => { endRef.current?.scrollIntoView({ block: "end" }); }, [messages, busy]);
 
@@ -98,7 +133,7 @@ export default function ChatView() {
   };
 
   const visible = messages.filter((m) => !m.hidden);
-  const showGreeting = visible.length === 0 && !busy;
+  const showGreeting = hydrated && visible.length === 0 && !busy;
 
   return (
     <section
@@ -114,6 +149,11 @@ export default function ChatView() {
           <ArrowLeft size={18} />
         </button>
         <h1 className="flex items-center gap-2 text-lg font-bold"><MessageCircle size={20} /> Tanya Satwarta AI</h1>
+        {visible.length > 0 && (
+          <button type="button" onClick={resetChat} className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-white/50 bg-white/40 px-3 py-1.5 text-xs font-semibold backdrop-blur-xl transition hover:bg-white/65">
+            <RotateCcw size={14} />Chat baru
+          </button>
+        )}
       </header>
 
       {ctx && (
@@ -176,7 +216,7 @@ export default function ChatView() {
             <ArrowUp size={18} />
           </button>
         </div>
-        <p className="mt-2 text-center text-[0.6875rem] leading-snug opacity-70">Pertanyaan diproses oleh Google Gemini. Jangan memasukkan data pribadi. <a href="/privasi" className="underline">Kebijakan Privasi</a></p>
+        <p className="mt-2 text-center text-[0.6875rem] leading-snug opacity-70">Jangan memasukkan data pribadi. Riwayat chat tersimpan di perangkat ini. <a href="/privasi" className="underline">Kebijakan Privasi</a></p>
       </form>
     </section>
   );

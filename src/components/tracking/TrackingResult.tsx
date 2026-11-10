@@ -17,7 +17,8 @@ export default function TrackingResult({ lookup, onClose }: { lookup: TrackingLo
 
   const rows: [string, string][] = [
     ["Nama satwa", report.animal.name ? `${report.animal.name} (${report.animal.type})` : `Tidak disebutkan (${report.animal.type})`],
-    ["Jumlah / kondisi", `${report.animal.count} ekor · ${report.animal.condition}`],
+    ["Jumlah", `${report.animal.count} ekor`],
+    ["Kondisi", report.animal.condition],
     ["Lokasi", `${report.location.city}, ${report.location.province}`],
     ["Tanggal laporan", formatDate(report.createdAt)],
     ["Ditangani oleh", handlerLabel(report)],

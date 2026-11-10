@@ -28,7 +28,8 @@ function Detail({ report, session, onChanged }: { report: StoredReport; session:
   // Baris informasi sama dengan hasil Lacak, ditambah data khusus petugas (koordinat dan kontak pelapor)
   const rows: [string, React.ReactNode][] = [
     ["Nama satwa", report.animal.name ? `${report.animal.name} (${report.animal.type})` : `Tidak disebutkan (${report.animal.type})`],
-    ["Jumlah / kondisi", `${report.animal.count} ekor · ${report.animal.condition}`],
+    ["Jumlah", `${report.animal.count} ekor`],
+    ["Kondisi", report.animal.condition],
     ["Lokasi", `${report.location.city}, ${report.location.province}`],
     ["Tanggal laporan", formatDate(report.createdAt)],
     ["Ditangani oleh", handlerLabel(report)],

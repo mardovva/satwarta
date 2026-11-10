@@ -6,7 +6,7 @@ import DonationPage from "@/components/donation/DonationPage";
 
 export const metadata: Metadata = {
   title: "Donasi | Satwarta",
-  description: "Bantu penanganan satwa liar korban karhutla. Terbuka untuk publik.",
+  description: "Bantuanmu sangat berharga untuk kehidupan satwa. Terbuka untuk publik.",
 };
 
 export default function DonasiPage() {

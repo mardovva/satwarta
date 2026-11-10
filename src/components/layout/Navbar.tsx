@@ -2,9 +2,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useScrolled } from "@/hooks/useHideOnScroll";
+import { pickActive, spyLine } from "@/lib/scrollSpy";
 import LoginModal from "./LoginModal";
 
 const links = [
@@ -23,15 +24,43 @@ export default function Navbar() {
   const scrolled = useScrolled();
   const floating = scrolled || menuOpen;
 
+  // Bagian yang dipilih lewat klik menu "dikunci" sebagai yang aktif sampai pengguna menggulir sendiri. Tanpa ini, bagian pendek
+  // (mis. Lacak saat belum ada hasil) membuat bagian di bawahnya (FAQ) ikut masuk garis penentu dan menu salah menyorot.
+  const lockRef = useRef<string | null>(null);
+  const pick = (id: string) => { lockRef.current = id; setActive(id); };
+
   useEffect(() => {
     if (!isHome) return;
-    const els = links.map((l) => document.getElementById(l.id)).filter((e): e is HTMLElement => !!e);
-    const observer = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.isIntersecting && setActive(e.target.id)),
-      { rootMargin: "-40% 0px -55% 0px" }
-    );
-    els.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+    const ids = links.map((l) => l.id);
+    let raf = 0;
+    const compute = () => {
+      raf = 0;
+      if (lockRef.current) return;
+      // Bagian aktif = yang batas atasnya terakhir melewati garis penentu dekat bagian atas layar (bukan garis di tengah layar)
+      const tops = ids.map((id) => document.getElementById(id)?.getBoundingClientRect().top ?? null);
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      setActive(pickActive(ids, tops, spyLine(window.innerHeight), atBottom));
+    };
+    const schedule = () => { if (!raf) raf = window.requestAnimationFrame(compute); };
+    const unlock = () => { lockRef.current = null; }; // pengguna mengambil alih: roda mouse, sentuhan, atau tombol keyboard
+
+    const hash = window.location.hash.slice(1);
+    if (ids.includes(hash)) { lockRef.current = hash; setActive(hash); } // dibuka lewat tautan /#bagian
+    else compute();
+
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    window.addEventListener("wheel", unlock, { passive: true });
+    window.addEventListener("touchstart", unlock, { passive: true });
+    window.addEventListener("keydown", unlock);
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      window.removeEventListener("wheel", unlock);
+      window.removeEventListener("touchstart", unlock);
+      window.removeEventListener("keydown", unlock);
+    };
   }, [isHome]);
 
   const linkCls = (id: string) =>
@@ -64,7 +93,7 @@ export default function Navbar() {
           <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-6 text-base lg:flex xl:gap-9 xl:text-lg">
             {links.map((l) => (
               <li key={l.id}>
-                <Anchor href={hashHref(l.id)} aria-current={isHome && l.id === active ? "page" : undefined} className={linkCls(l.id)}>{l.label}</Anchor>
+                <Anchor href={hashHref(l.id)} onClick={() => pick(l.id)} aria-current={isHome && l.id === active ? "page" : undefined} className={linkCls(l.id)}>{l.label}</Anchor>
               </li>
             ))}
             <li><Link href="/chat" aria-current={pathname === "/chat" ? "page" : undefined} className={chatCls}>AI Chat</Link></li>
@@ -85,7 +114,7 @@ export default function Navbar() {
             <ul className="space-y-1 text-lg">
               {links.map((l) => (
                 <li key={l.id}>
-                  <Anchor href={hashHref(l.id)} onClick={() => setMenuOpen(false)} className={`block rounded-xl px-3 py-2 ${linkCls(l.id)}`}>{l.label}</Anchor>
+                  <Anchor href={hashHref(l.id)} onClick={() => { pick(l.id); setMenuOpen(false); }} className={`block rounded-xl px-3 py-2 ${linkCls(l.id)}`}>{l.label}</Anchor>
                 </li>
               ))}
               <li><Link href="/chat" onClick={() => setMenuOpen(false)} className={`block rounded-xl px-3 py-2 ${chatCls}`}>AI Chat</Link></li>

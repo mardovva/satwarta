@@ -36,7 +36,7 @@ export default function Home() {
         <PhotoCarousel />
         <ReportFormSection />
         <TrackingSection />
-        <FAQSection />
+        <FAQSection className="px-4 pb-6 pt-40" />
       </PageBackground>
       <Footer />
       </main>

@@ -1,4 +1,5 @@
 "use client";
+import ProgressFill from "@/components/ui/ProgressFill";
 import { ShieldCheck } from "lucide-react";
 import { handleImgError } from "@/lib/placeholderPhoto";
 import { useReportPhotos } from "@/hooks/useReportPhotos";
@@ -47,7 +48,7 @@ export default function CampaignCard({ campaign: c, onOpen }: Props) {
             <span className="text-ink/60"> terkumpul</span>
           </p>
           <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-mist" role="progressbar" aria-valuenow={c.pct} aria-valuemin={0} aria-valuemax={100} aria-label={`Progres donasi ${c.title}`}>
-            <div className="h-full rounded-full bg-accent transition-all duration-700" style={{ width: `${c.pct}%` }} />
+            <ProgressFill pct={c.pct} className="h-full rounded-full bg-accent" delay={150} />
           </div>
           <div className="mt-1.5 flex items-center justify-between text-xs text-ink/60">
             <span>{c.pct}% dari {formatRupiah(c.target)}</span>

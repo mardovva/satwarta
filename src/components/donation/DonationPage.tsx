@@ -2,6 +2,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
 import Decor from "@/components/layout/Decor";
+import CountUp from "@/components/ui/CountUp";
+import Reveal from "@/components/ui/Reveal";
 import FAQSection, { type FaqItem } from "@/components/sections/FAQSection";
 import { useAllReports } from "@/hooks/useAllReports";
 import { usePledges } from "@/hooks/usePledges";
@@ -76,23 +78,28 @@ export default function DonationPage() {
       <div className="relative z-10 mx-auto w-[92%] max-w-[83.125rem] md:w-[84%]">
         {/* judul dan ringkasan */}
         <header className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.12)] sm:text-5xl">Donasi untuk Satwa Terdampak</h1>
-          <p className="mx-auto mt-3 max-w-2xl text-base text-white/95 drop-shadow-[0_1px_4px_rgba(0,0,0,0.15)] sm:text-lg">Bantu penanganan satwa liar korban karhutla. Terbuka untuk siapa saja.</p>
+          <Reveal initialDelay={0.1}>
+            <h1 className="text-3xl font-bold tracking-tight text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.12)] sm:text-5xl">Donasi untuk Satwa Terdampak</h1>
+          </Reveal>
+          <Reveal initialDelay={0.25}>
+            <p className="mx-auto mt-3 max-w-2xl text-base text-white/95 drop-shadow-[0_1px_4px_rgba(0,0,0,0.15)] sm:text-lg">Bantuanmu sangat berharga untuk kehidupan satwa</p>
+          </Reveal>
           <dl className="mx-auto mt-6 grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3">
             {[
-              { label: "Total terkumpul", value: formatRupiah(stats.collected) },
-              { label: "Donatur", value: new Intl.NumberFormat("id-ID").format(stats.donors) },
-              { label: "Penggalangan aktif", value: String(stats.active) },
-            ].map((s) => (
-              <div key={s.label} className="rounded-2xl border border-white/50 bg-white/25 px-5 py-4 text-white backdrop-blur-xl backdrop-saturate-150">
-                <dd className="text-2xl font-bold tabular-nums">{s.value}</dd>
+              { label: "Total terkumpul", value: stats.collected, format: (n: number) => formatRupiah(Math.round(n)) },
+              { label: "Donatur", value: stats.donors, format: (n: number) => new Intl.NumberFormat("id-ID").format(Math.round(n)) },
+              { label: "Penggalangan aktif", value: stats.active, format: (n: number) => String(Math.round(n)) },
+            ].map((s, i) => (
+              <Reveal key={s.label} initialDelay={0.4 + i * 0.12} className="rounded-2xl border border-white/50 bg-white/25 px-5 py-4 text-white backdrop-blur-xl backdrop-saturate-150">
+                <dd className="text-2xl font-bold tabular-nums"><CountUp value={s.value} format={s.format} duration={1600} delay={Math.round((0.45 + i * 0.12) * 1000)} /></dd>
                 <dt className="text-sm font-semibold text-white/90">{s.label}</dt>
-              </div>
+              </Reveal>
             ))}
           </dl>
         </header>
 
         {/* pencarian, filter, urutan */}
+        <Reveal initialDelay={0.85}>
         <section aria-label="Cari dan saring penggalangan" className="mt-8 space-y-3 rounded-2xl bg-white/80 p-3 shadow-sm ring-1 ring-black/5 backdrop-blur-xl sm:p-4">
           <div className="flex flex-col gap-3 lg:flex-row">
             <div className="relative flex-1">
@@ -120,11 +127,19 @@ export default function DonationPage() {
             ))}
           </div>
         </section>
+        </Reveal>
 
         {/* semua kartu */}
         <p className="mt-6 text-sm font-semibold text-ink/70" aria-live="polite">{visible.length} penggalangan ditampilkan</p>
         <ul className="mt-3 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {visible.map((c) => <li key={c.id} className="flex"><CampaignCard campaign={c} onOpen={() => open(c.id)} /></li>)}
+          {visible.map((c, i) => (
+            <li key={c.id} className="flex">
+              {/* baris pertama menyusul urutan pembuka halaman; selebihnya bergantian saat masuk layar */}
+              <Reveal className="flex w-full" initialDelay={i < 4 ? 1.05 + i * 0.09 : undefined} delay={(i % 4) * 0.07}>
+                <CampaignCard campaign={c} onOpen={() => open(c.id)} />
+              </Reveal>
+            </li>
+          ))}
         </ul>
         {ready && visible.length === 0 && (
           <div className="mt-6 rounded-2xl bg-white/80 px-6 py-12 text-center ring-1 ring-black/5">

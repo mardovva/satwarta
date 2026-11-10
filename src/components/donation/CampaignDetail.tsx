@@ -1,4 +1,5 @@
 "use client";
+import ProgressFill from "@/components/ui/ProgressFill";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { Check, Share2, ShieldCheck, X } from "lucide-react";
@@ -54,8 +55,8 @@ export default function CampaignDetail({ campaign: c, pledges, onClose }: Props)
   ];
 
   return createPortal(
-    <div className="fixed inset-0 z-[120] overflow-y-auto bg-black/50 p-3 sm:p-6" onClick={onClose}>
-      <div role="dialog" aria-modal="true" aria-label={`Donasi untuk ${c.title}`} className="relative mx-auto my-2 w-full max-w-5xl rounded-3xl bg-white shadow-soft" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-[120] animate-fade-in overflow-y-auto bg-black/50 p-3 motion-reduce:animate-none sm:p-6" onClick={onClose}>
+      <div role="dialog" aria-modal="true" aria-label={`Donasi untuk ${c.title}`} className="relative mx-auto my-2 w-full max-w-5xl animate-pop-in rounded-3xl bg-white shadow-soft motion-reduce:animate-none" onClick={(e) => e.stopPropagation()}>
         <div className="absolute right-3 top-3 z-10 flex gap-2">
           <button type="button" onClick={share} className="inline-flex h-9 items-center gap-1.5 rounded-full bg-white/90 px-3 text-sm font-semibold text-primary shadow hover:bg-white">
             {copied ? <Check size={16} /> : <Share2 size={16} />} {copied ? "Tautan disalin" : "Bagikan"}
@@ -93,7 +94,7 @@ export default function CampaignDetail({ campaign: c, pledges, onClose }: Props)
             <div className="mt-5 rounded-2xl bg-cream p-4 ring-1 ring-black/5">
               <p><span className="text-2xl font-bold text-primary">{formatRupiah(c.collected)}</span> <span className="text-sm text-ink/60">terkumpul dari {formatRupiah(c.target)}</span></p>
               <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-white" role="progressbar" aria-valuenow={c.pct} aria-valuemin={0} aria-valuemax={100} aria-label="Progres donasi">
-                <div className="h-full rounded-full bg-accent transition-all duration-700" style={{ width: `${c.pct}%` }} />
+                <ProgressFill pct={c.pct} className="h-full rounded-full bg-accent" delay={350} />
               </div>
               <div className="mt-2 flex justify-between text-xs text-ink/60"><span>{c.pct}% tercapai</span><span>{c.donors} donatur</span></div>
             </div>
@@ -115,7 +116,7 @@ export default function CampaignDetail({ campaign: c, pledges, onClose }: Props)
               ))}
             </div>
 
-            <div role="tabpanel" className="pt-4 text-[0.9375rem] leading-relaxed text-ink/85">
+            <div role="tabpanel" key={tab} className="animate-tab-in pt-4 text-[0.9375rem] leading-relaxed text-ink/85 motion-reduce:animate-none">
               {tab === "cerita" && (
                 <div className="space-y-3">
                   {campaignStory(c, formatDate(c.report.createdAt)).map((p, i) => <p key={i}>{p}</p>)}
@@ -158,7 +159,7 @@ export default function CampaignDetail({ campaign: c, pledges, onClose }: Props)
                       return (
                         <li key={n.id}>
                           <div className="flex items-baseline justify-between gap-3"><span className="font-semibold">{n.label}</span><span className="whitespace-nowrap font-semibold text-primary">{formatRupiah(n.target)}</span></div>
-                          <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-mist"><div className="h-full rounded-full bg-primary/60" style={{ width: `${share}%` }} /></div>
+                          <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-mist"><ProgressFill pct={share} className="h-full rounded-full bg-primary/60" /></div>
                         </li>
                       );
                     })}

@@ -149,6 +149,12 @@ export default function ReportFormSection() {
   const hasErrors = Object.values(errors).some(Boolean) || !!photoError;
 
   // Status analisis AI: tampil di sebelah kanan label "Dokumentasi"
+  // Keterangan tetap di kanan label "Dokumentasi"; berganti menjadi status analisis saat AI bekerja. Disembunyikan bila fitur AI mati.
+  const aiHint = ai.status === "off" ? null : (
+    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary">
+      <Sparkles size={13} className="flex-none" />AI membantu mendeteksi satwa melalui gambar
+    </span>
+  );
   const aiNotice = ai.status === "idle" || ai.status === "off" ? null : (
     <span role="status" className="inline-flex items-center gap-1.5 text-xs font-medium text-primary">
       {ai.status === "loading" ? <Loader2 size={13} className="flex-none animate-spin" /> : <Sparkles size={13} className="flex-none" />}
@@ -160,7 +166,7 @@ export default function ReportFormSection() {
   );
 
   return (
-    <section id="lapor" className="relative min-h-[100svh] pb-12 pt-16">
+    <section id="lapor" className="relative pb-12 pt-16">
       <Decor src="/images/branches/dry-leaf.png" width={218} height={239} sway="left top" className="-left-2 top-4 hidden w-[5.625rem] sm:block lg:-left-3 lg:top-2 lg:w-[7.3125rem]" />
       <Decor src="/images/branches/dry-leaf-2.png" width={117} height={125} sway="right top" className="-right-2 top-4 hidden w-[5.625rem] sm:block lg:-right-3 lg:top-2 lg:w-[7.3125rem]" />
       <div className="relative z-10">
@@ -172,10 +178,11 @@ export default function ReportFormSection() {
         <form ref={formRef} noValidate onSubmit={handleSubmit} className="mx-auto mt-6 w-[92%] max-w-[83.125rem] space-y-4 rounded-[1.25rem] bg-white/60 p-5 shadow-soft ring-1 ring-black/5 backdrop-blur-sm sm:p-6 md:w-[84%] md:p-7">
           <div className="grid gap-x-12 gap-y-6 md:grid-cols-2">
             <div className="md:border-r md:border-ink/10 md:pr-12">
-              <AnimalInformationForm values={values} errors={errors} onChange={onChange} />
+              <div>
+                <FileUpload items={photos} onChange={(items) => { setPhotos(items); if (items.length > 0) setPhotoError(""); }} label="Dokumentasi" optional={false} required error={photoError} labelExtra={aiNotice ?? aiHint} />
+              </div>
               <div className="mt-5">
-                <FileUpload items={photos} onChange={(items) => { setPhotos(items); if (items.length > 0) setPhotoError(""); }} label="Dokumentasi" optional={false} required error={photoError} labelExtra={aiNotice} />
-                <p className="mt-2 text-xs leading-relaxed text-ink/60">Foto dianalisis oleh AI (Google Gemini) untuk membantu mengisi data satwa. Hindari foto yang memperlihatkan wajah orang; foto laporan dapat dilihat publik.</p>
+                <AnimalInformationForm values={values} errors={errors} onChange={onChange} />
               </div>
             </div>
             <LocationPicker values={values} errors={errors} onChange={onChange} />
@@ -186,7 +193,7 @@ export default function ReportFormSection() {
               <input {...fieldProps("field-reporterName", errors.reporterName)} autoComplete="name" value={values.reporterName} onChange={(e) => onChange("reporterName", e.target.value)} placeholder="Masukkan nama" className={inputClass(!!errors.reporterName)} />
             </FormField>
             <FormField id="field-phone" label="Nomor telepon/WhatsApp" required error={errors.phone}>
-              <input {...fieldProps("field-phone", errors.phone)} type="tel" inputMode="tel" autoComplete="tel" value={values.phone} onChange={(e) => onChange("phone", e.target.value)} placeholder="08XXXXXXXXXX" className={inputClass(!!errors.phone)} />
+              <input {...fieldProps("field-phone", errors.phone)} type="tel" inputMode="tel" autoComplete="tel" value={values.phone} onChange={(e) => onChange("phone", e.target.value)} placeholder="08" className={inputClass(!!errors.phone)} />
             </FormField>
             <FormField id="field-email" label="Email" error={errors.email}>
               <input {...fieldProps("field-email", errors.email)} type="email" autoComplete="email" value={values.email} onChange={(e) => onChange("email", e.target.value)} placeholder="nama@email.com" className={inputClass(!!errors.email)} />
@@ -201,7 +208,7 @@ export default function ReportFormSection() {
                 className="mt-0.5 h-4 w-4 flex-none accent-[#345542]"
               />
               <span>
-                Saya setuju data saya (nama, nomor telepon, email, dan lokasi) dipakai petugas untuk menindaklanjuti laporan ini. Nomor telepon dan email tidak ditampilkan ke publik, dan lokasi di peta ditampilkan secara perkiraan. Baca <a href="/privasi" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary underline">Kebijakan Privasi</a>.
+                Saya setuju data saya (nama, nomor telepon, email, dan lokasi) dipakai petugas untuk menindaklanjuti laporan ini. Baca <a href="/privasi" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary underline">Kebijakan Privasi</a>.
                 {errors.consent && <span role="alert" className="mt-0.5 block text-xs font-medium text-red-600">{errors.consent}</span>}
               </span>
             </label>
