@@ -120,7 +120,6 @@ export default function CampaignDetail({ campaign: c, pledges, onClose }: Props)
               {tab === "cerita" && (
                 <div className="space-y-3">
                   {campaignStory(c, formatDate(c.report.createdAt)).map((p, i) => <p key={i}>{p}</p>)}
-                  <p className="text-sm text-ink/55">Cerita ini disusun otomatis dari data laporan. Perkembangan penanganan dicatat petugas di tab Kabar Terbaru.</p>
                 </div>
               )}
 
@@ -165,7 +164,6 @@ export default function CampaignDetail({ campaign: c, pledges, onClose }: Props)
                     })}
                   </ul>
                   <div className="mt-4 flex justify-between border-t border-black/10 pt-3 font-bold"><span>Total target</span><span className="text-primary">{formatRupiah(c.target)}</span></div>
-                  <p className="mt-3 text-sm text-ink/55">Rincian ini adalah rencana awal yang disusun dari kondisi dan jumlah satwa. Bukti penggunaan dana dilampirkan petugas pada Kabar Terbaru.</p>
                 </div>
               )}
 
