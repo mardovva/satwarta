@@ -6,18 +6,21 @@ interface Props {
   values: ReportFormValues;
   errors: ReportFormErrors;
   onChange: <K extends keyof ReportFormValues>(key: K, value: ReportFormValues[K]) => void;
+  /** Mengunci semua kolom (mis. saat AI sedang menganalisis foto, agar hasilnya tidak bentrok dengan isian pengguna) */
+  disabled?: boolean;
 }
 
-export default function AnimalInformationForm({ values, errors, onChange }: Props) {
+export default function AnimalInformationForm({ values, errors, onChange, disabled = false }: Props) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-3" aria-busy={disabled || undefined} title={disabled ? "Menunggu analisis foto oleh AI selesai" : undefined}>
       <FormField id="field-animalType" label="Jenis satwa" required error={errors.animalType}>
-        <SelectField id="field-animalType" value={values.animalType} onChange={(v) => onChange("animalType", v)} placeholder="Pilih jenis satwa" options={animalTypes} error={errors.animalType} />
+        <SelectField id="field-animalType" value={values.animalType} onChange={(v) => onChange("animalType", v)} placeholder="Pilih jenis satwa" options={animalTypes} error={errors.animalType} disabled={disabled} />
       </FormField>
 
       <FormField id="field-animalName" label="Nama satwa">
         <input
           {...fieldProps("field-animalName")}
+          disabled={disabled}
           value={values.animalName}
           onChange={(e) => onChange("animalName", e.target.value)}
           placeholder="Contoh: Orangutan Kalimantan"
@@ -28,6 +31,7 @@ export default function AnimalInformationForm({ values, errors, onChange }: Prop
       <FormField id="field-count" label="Jumlah satwa" required error={errors.count}>
         <input
           {...fieldProps("field-count", errors.count)}
+          disabled={disabled}
           type="number" inputMode="numeric" min={1} max={9999}
           value={values.count}
           onChange={(e) => onChange("count", e.target.value)}
@@ -38,12 +42,13 @@ export default function AnimalInformationForm({ values, errors, onChange }: Prop
 
       <div className="space-y-3">
         <FormField id="field-condition" label="Kondisi satwa" required error={errors.condition}>
-          <SelectField id="field-condition" value={values.condition} onChange={(v) => onChange("condition", v)} placeholder="Pilih kondisi satwa" options={[...animalConditions, CONDITION_OTHER]} error={errors.condition} />
+          <SelectField id="field-condition" value={values.condition} onChange={(v) => onChange("condition", v)} placeholder="Pilih kondisi satwa" options={[...animalConditions, CONDITION_OTHER]} error={errors.condition} disabled={disabled} />
         </FormField>
         {values.condition === CONDITION_OTHER && (
           <FormField id="field-conditionOther" label="Tulis kondisi satwa" required error={errors.conditionOther}>
             <input
               {...fieldProps("field-conditionOther", errors.conditionOther)}
+              disabled={disabled}
               autoFocus maxLength={120}
               value={values.conditionOther}
               onChange={(e) => onChange("conditionOther", e.target.value)}

@@ -59,11 +59,11 @@ export default function ReportFormSection() {
       setAi({ status: "loading" });
       try {
         const img = await shrinkImage(first.file);
-        const res = await fetch("/api/identify-animal", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: img.data, mimeType: img.mimeType }) });
-        if (!mountedRef.current) return;
+        const res = await fetch("/api/identify-animal", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: img.data, mimeType: img.mimeType }), signal: AbortSignal.timeout(40_000) }); // batas waktu: kolom tidak boleh terkunci selamanya
+        if (!mountedRef.current || photosRef.current[0]?.id !== first.id) return; // foto sudah dihapus atau diganti: abaikan hasil lama
         if (res.status === 503) { setAi({ status: "off" }); return; }  // kunci Gemini belum diatur: fitur dimatikan
         const data = await res.json();
-        if (!mountedRef.current) return;
+        if (!mountedRef.current || photosRef.current[0]?.id !== first.id) return;
         if (!res.ok || !data.result) { setAi({ status: "error" }); return; }
         const r = data.result as Identification;
         if (!r.isAnimal) { setAi({ status: "none" }); return; }
@@ -85,7 +85,7 @@ export default function ReportFormSection() {
         setErrors((e) => ({ ...e, ...(filled.includes("jenis") ? { animalType: undefined } : {}), ...(filled.includes("jumlah") ? { count: undefined } : {}), ...(filled.includes("kondisi") ? { condition: undefined, conditionOther: undefined } : {}) }));
         setAi({ status: "done", filled });
       } catch {
-        if (mountedRef.current) setAi({ status: "error" });
+        if (mountedRef.current && photosRef.current[0]?.id === first.id) setAi({ status: "error" });
       }
     })();
   }, [photos, ai.status]);
@@ -103,6 +103,8 @@ export default function ReportFormSection() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (submitting) return;
+    // Saat AI masih menganalisis foto, kolom satwa terkunci dan masih kosong: jangan tampilkan galat "wajib diisi" yang menyesatkan
+    if (ai.status === "loading") { setSubmitError("Analisis foto oleh AI masih berjalan. Tunggu sebentar sampai selesai, lalu tekan Kirim lagi."); return; }
     const found = validateReportForm(values);
     const missingPhoto = photos.length === 0;
     setErrors(found);
@@ -182,7 +184,7 @@ export default function ReportFormSection() {
                 <FileUpload items={photos} onChange={(items) => { setPhotos(items); if (items.length > 0) setPhotoError(""); }} label="Dokumentasi" optional={false} required error={photoError} labelExtra={aiNotice ?? aiHint} />
               </div>
               <div className="mt-5">
-                <AnimalInformationForm values={values} errors={errors} onChange={onChange} />
+                <AnimalInformationForm values={values} errors={errors} onChange={onChange} disabled={ai.status === "loading"} />
               </div>
             </div>
             <LocationPicker values={values} errors={errors} onChange={onChange} />
