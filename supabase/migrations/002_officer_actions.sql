@@ -1,16 +1,3 @@
--- Migrasi 002 (Tahap 2): fungsi tindakan petugas.
--- Untuk database yang SUDAH menjalankan schema.sql versi sebelumnya: tempel isi file ini di SQL Editor lalu Run.
--- (schema.sql versi terbaru sudah memuat fungsi yang sama; proyek baru cukup menjalankan schema.sql.)
-
--- 8c. TINDAKAN PETUGAS (dipaksakan di database) -------------------------------------------------------
--- Satu-satunya jalan mengubah status laporan. Berjalan dalam SATU transaksi dengan kunci baris (FOR UPDATE), sehingga
--- dua petugas yang bertindak bersamaan tidak bisa saling menimpa: yang pertama berhasil, yang kedua ditolak.
--- Mengembalikan id baris riwayat bila berhasil, atau NULL bila ditolak karena salah satu aturan ini dilanggar:
---   * laporan atau petugas tidak ditemukan
---   * status laporan saat ini bukan p_expected (sudah diubah petugas lain)
---   * perpindahan status tidak termasuk alur yang diizinkan
---   * petugas (non-admin) bertindak di luar wilayah kerjanya
---   * laporan sudah ditangani petugas lain (petugas pertama yang bertindak menjadi penanggung jawab)
 create or replace function public.apply_officer_action(
   p_report text, p_officer uuid, p_expected text, p_new text, p_note text
 )

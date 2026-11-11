@@ -33,17 +33,6 @@ function Slide({ file, alt, decorative }: { file: string; alt: string; decorativ
   );
 }
 
-/**
- * Carousel foto yang bergeser terus (infinite), foto berimpitan tanpa jarak dan tanpa sudut membulat.
- * Berada di belakang dekorasi ranting (z lebih rendah). Diam bila reduce-motion aktif.
- *
- * Agar tidak berkedip:
- *  - foto dilayani next/image dalam ukuran tampil (sekitar 700 px, WebP), bukan foto asli yang bisa berukuran beberapa MB
- *    sehingga decoding-nya tidak menyusul di tengah animasi;
- *  - semua foto dimuat langsung dan di-decode sinkron;
- *  - jalur foto dan tiap foto punya lapisan GPU sendiri (translateZ, backface-visibility) yang tetap, dan tidak dibungkus
- *    elemen yang transform/opacity-nya berubah (sebelumnya dibungkus animasi muncul "Reveal").
- */
 export default function PhotoCarousel() {
   return (
     <section aria-label="Dokumentasi lapangan" className="relative z-10 pb-8 pt-20">

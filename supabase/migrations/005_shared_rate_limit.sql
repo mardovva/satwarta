@@ -1,11 +1,3 @@
--- Migrasi 005: pembatas permintaan bersama (lintas server) dan batas harian fitur AI.
--- Untuk database yang SUDAH berjalan: tempel isi file ini di SQL Editor lalu Run. (schema.sql terbaru sudah memuatnya.)
--- Tanpa migrasi ini aplikasi tetap berjalan, tetapi memakai pembatas di memori (per server, lebih lemah).
-
--- 8f. PEMBATAS PERMINTAAN BERSAMA ---------------------------------------------------------------------------
--- Penghitung per kunci (mis. "submit:203.0.113.9" atau "ai-chat-day:2026-11-09") dengan jendela waktu tetap. Berbeda dengan
--- penghitung di memori server, ini berlaku untuk semua instance Vercel sekaligus. Satu pernyataan upsert = atomik: dua permintaan
--- bersamaan tidak bisa sama-sama lolos melewati batas. Hanya service_role yang boleh memakai.
 create table if not exists public.rate_limits (
   key          text primary key,
   window_start timestamptz not null,
@@ -34,7 +26,6 @@ begin
         hits         = case when r.window_start <= now() - make_interval(secs => p_window_seconds) then 1 else r.hits + 1 end
   returning hits into v_hits;
 
-  -- bersih-bersih ringan: sesekali buang kunci yang sudah lama tidak dipakai
   if random() < 0.01 then
     delete from public.rate_limits where window_start < now() - interval '2 days';
   end if;

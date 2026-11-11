@@ -12,9 +12,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="id">
       <head>
-        {/* Beranda yang di-refresh selalu mulai dari paling atas (lihat src/lib/homeScrollReset.ts) */}
+        {}
         <script dangerouslySetInnerHTML={{ __html: HOME_SCROLL_RESET }} />
-        {/* Satoshi dari Fontshare (gratis untuk penggunaan komersial). Untuk produksi, unduh dan host sendiri bila perlu. */}
+        {}
         <link rel="preconnect" href="https://api.fontshare.com" />
         <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
         <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" />

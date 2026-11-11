@@ -24,8 +24,7 @@ export default function Navbar() {
   const scrolled = useScrolled();
   const floating = scrolled || menuOpen;
 
-  // Bagian yang dipilih lewat klik menu "dikunci" sebagai yang aktif sampai pengguna menggulir sendiri. Tanpa ini, bagian pendek
-  // (mis. Lacak saat belum ada hasil) membuat bagian di bawahnya (FAQ) ikut masuk garis penentu dan menu salah menyorot.
+  
   const lockRef = useRef<string | null>(null);
   const pick = (id: string) => { lockRef.current = id; setActive(id); };
 

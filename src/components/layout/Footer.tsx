@@ -15,11 +15,6 @@ const social = [
 
 const linkCls = "text-primary/75 transition hover:text-primary";
 
-/**
- * Bagian ajakan (bagian dari halaman, setelah FAQ) dan footer berada di atas satu gradasi yang dimulai dari warna
- * halaman, jadi tidak ada sambungan yang kontras. id="site-footer" hanya pada footer (mulai dari garis di atas logo),
- * sehingga tombol AI Chat melayang berhenti di garis itu.
- */
 export default function Footer() {
   return (
     <div

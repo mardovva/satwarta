@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { geminiConfigured, geminiGenerate } from "@/lib/gemini";
 import { allowDaily, allowShared, clientIp, dailyCap } from "@/lib/server/rateLimit";
 
-/** Batas analisis foto per hari untuk seluruh pengunjung (ubah lewat AI_DAILY_PHOTO; 0 = tanpa batas). */
+/** Batas analisis foto per hari untuk seluruh pengunjung. */
 const DAILY_PHOTO = () => dailyCap("AI_DAILY_PHOTO", 200);
 import { sanitizeIdentification } from "@/lib/identifyAnimal";
 import { animalConditions, animalTypes } from "@/data/formOptions";

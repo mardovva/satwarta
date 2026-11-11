@@ -35,7 +35,7 @@ export default function ChatView() {
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [mine, setMine] = useState<StoredReport[]>([]);
-  const [hydrated, setHydrated] = useState(false); // riwayat sudah dibaca dari perangkat
+  const [hydrated, setHydrated] = useState(false); 
   const booted = useRef(false);
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -43,7 +43,7 @@ export default function ChatView() {
   const ask = useCallback(async (history: UiMessage[], context: ReportContext | null) => {
     setBusy(true);
     const lastUser = [...history].reverse().find((m) => m.role === "user")?.content ?? "";
-    const debug = new URLSearchParams(window.location.search).has("debug"); // /chat?debug=1 menampilkan alasan teknis
+    const debug = new URLSearchParams(window.location.search).has("debug"); 
     const base = "Jawaban dari panduan bawaan: AI sedang tidak tersedia.";
     let reply: string;
     let note = "";

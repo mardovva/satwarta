@@ -1,32 +1,13 @@
--- =====================================================================================================
--- SATWARTA: skema database untuk Supabase (PostgreSQL)
---
--- Cara memakai:
---   Supabase Dashboard > SQL Editor > New query > tempel SELURUH isi file ini > Run.
--- Aman dijalankan ulang (memakai IF NOT EXISTS / OR REPLACE), jadi tidak merusak data yang sudah ada.
---
--- Prinsip keamanan (penting):
---   * Semua tabel memakai Row Level Security (RLS) TANPA policy untuk pengunjung (anon/authenticated).
---     Artinya: dari browser, tabel tidak bisa dibaca atau ditulis sama sekali, walaupun kunci publik bocor.
---   * Semua akses data lewat server Next.js (API route) memakai SECRET KEY, yang melewati RLS.
---     Server-lah yang memeriksa siapa boleh melakukan apa dan memvalidasi isian.
---   * Data kontak pelapor (nama, telepon, email) tidak pernah dikirim ke publik: server hanya mengirim kolom aman.
--- =====================================================================================================
-
--- 1. PETUGAS -----------------------------------------------------------------------------------------
--- Satu baris per akun petugas. Akunnya dibuat di Authentication > Users; baris ini menambah peran dan wilayah kerja.
 create table if not exists public.officers (
   id          uuid primary key references auth.users (id) on delete cascade,
   full_name   text not null check (char_length(full_name) between 1 and 80),
   agency      text not null check (char_length(agency) between 1 and 120),
-  role        text not null default 'officer' check (role in ('officer', 'national', 'admin')),   -- national = lembaga pusat, semua wilayah
-  active      boolean not null default true,                                                       -- false = dinonaktifkan
-  regions     text[] not null default '{}',            -- provinsi wilayah kerja, mis. {'Riau','Jambi'}
+  role        text not null default 'officer' check (role in ('officer', 'national', 'admin')),   
+  active      boolean not null default true,                                                      
+  regions     text[] not null default '{}',           
   created_at  timestamptz not null default now()
 );
 
--- 2. NOMOR LAPORAN -----------------------------------------------------------------------------------
--- ID berbentuk SWT-TAHUN-NNNN, dibuat oleh database agar tidak ada nomor ganda walau dua orang melapor bersamaan.
 create table if not exists public.report_counters (
   year        integer primary key,
   last_value  integer not null default 0
@@ -49,7 +30,6 @@ begin
 end;
 $$;
 
--- 3. LAPORAN -----------------------------------------------------------------------------------------
 create table if not exists public.reports (
   id              text primary key default public.next_report_id(),
   animal_type     text not null check (animal_type in ('Mamalia', 'Burung', 'Reptil', 'Amfibi', 'Lainnya', 'Tidak diketahui')),
@@ -58,7 +38,7 @@ create table if not exists public.reports (
   condition       text not null check (char_length(condition) between 1 and 120),
   province        text not null check (char_length(province) between 1 and 60),
   city            text not null check (char_length(city) between 1 and 80),
-  location_detail text not null default '' check (char_length(location_detail) <= 300),   -- patokan/alamat tambahan dari pelapor; hanya untuk petugas
+  location_detail text not null default '' check (char_length(location_detail) <= 300),  
   lat             double precision not null check (lat between -11.5 and 6.5),
   lng             double precision not null check (lng between 94.5 and 141.5),
   reporter_name   text not null check (char_length(reporter_name) between 1 and 80),
@@ -66,8 +46,8 @@ create table if not exists public.reports (
   reporter_email  text check (reporter_email is null or char_length(reporter_email) <= 120),
   status          text not null default 'Submitted'
                   check (status in ('Submitted', 'Under Review', 'Verified', 'In Progress', 'Resolved', 'Rejected')),
-  handled_by      uuid references public.officers (id) on delete set null,   -- petugas pertama yang menindaklanjuti
-  consent         boolean not null default false,                            -- pelapor menyetujui penggunaan datanya
+  handled_by      uuid references public.officers (id) on delete set null,   
+  consent         boolean not null default false,                            
   created_at      timestamptz not null default now(),
   updated_at      timestamptz not null default now()
 );
@@ -75,7 +55,6 @@ create index if not exists reports_province_idx on public.reports (province);
 create index if not exists reports_status_idx   on public.reports (status);
 create index if not exists reports_created_idx  on public.reports (created_at desc);
 
--- 4. RIWAYAT STATUS ----------------------------------------------------------------------------------
 create table if not exists public.report_history (
   id              bigint generated always as identity primary key,
   report_id       text not null references public.reports (id) on delete cascade,
@@ -88,9 +67,6 @@ create table if not exists public.report_history (
 );
 create index if not exists report_history_report_idx on public.report_history (report_id, created_at);
 
--- 5. FOTO --------------------------------------------------------------------------------------------
--- File fotonya ada di Storage (bucket report-photos); tabel ini hanya mencatat lokasinya.
--- history_id kosong = foto dari pelapor; terisi = foto tindakan petugas pada langkah riwayat tersebut.
 create table if not exists public.report_photos (
   id            uuid primary key default gen_random_uuid(),
   report_id     text not null references public.reports (id) on delete cascade,
@@ -101,7 +77,6 @@ create table if not exists public.report_photos (
 );
 create index if not exists report_photos_report_idx on public.report_photos (report_id);
 
--- 6. DONASI (dipakai pada tahap pembayaran) ----------------------------------------------------------
 create table if not exists public.pledges (
   code        text primary key default ('DNS-' || upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 8))),
   report_id   text not null references public.reports (id) on delete cascade,
@@ -115,7 +90,6 @@ create table if not exists public.pledges (
 );
 create index if not exists pledges_report_idx on public.pledges (report_id);
 
--- 7. PEMICU OTOMATIS ---------------------------------------------------------------------------------
 create or replace function public.set_updated_at()
 returns trigger language plpgsql as $$
 begin
@@ -128,7 +102,6 @@ drop trigger if exists reports_set_updated_at on public.reports;
 create trigger reports_set_updated_at before update on public.reports
   for each row execute function public.set_updated_at();
 
--- Setiap laporan baru otomatis punya langkah pertama "Terkirim" di riwayat.
 create or replace function public.log_initial_status()
 returns trigger language plpgsql as $$
 begin
@@ -141,7 +114,6 @@ drop trigger if exists reports_log_initial_status on public.reports;
 create trigger reports_log_initial_status after insert on public.reports
   for each row execute function public.log_initial_status();
 
--- 8. KEAMANAN: RLS AKTIF, TANPA AKSES DARI BROWSER ----------------------------------------------------
 alter table public.officers        enable row level security;
 alter table public.report_counters enable row level security;
 alter table public.reports         enable row level security;
@@ -149,33 +121,17 @@ alter table public.report_history  enable row level security;
 alter table public.report_photos   enable row level security;
 alter table public.pledges         enable row level security;
 
--- Cabut hak bawaan Supabase untuk pengunjung (anon) dan pengguna masuk (authenticated).
--- Catatan: bila nanti membuat tabel baru, ulangi langkah RLS, pencabutan hak, dan pemberian izin service_role untuk tabel itu.
 revoke all on public.officers, public.report_counters, public.reports, public.report_history, public.report_photos, public.pledges
   from anon, authenticated;
 revoke all on function public.next_report_id() from public, anon, authenticated;
 
--- 8b. HAK AKSES UNTUK SERVER (service_role) ------------------------------------------------------------
--- Sejak 2026, Supabase TIDAK lagi memberi hak akses otomatis ke tabel baru di schema public, bahkan untuk secret key:
--- service_role melewati RLS, tetapi tetap membutuhkan GRANT. Tanpa baris-baris ini server menerima galat 42501
--- "permission denied for table ...". Hak diberikan seperlunya saja, dan hanya untuk service_role (server kita).
--- anon dan authenticated tetap tidak punya hak apa pun.
+
 grant usage on schema public to service_role;
 grant select, insert, update, delete on public.officers, public.reports, public.report_history, public.report_photos, public.pledges to service_role;
-grant select on public.report_counters to service_role;          -- penghitung diubah oleh fungsi next_report_id(), bukan langsung
+grant select on public.report_counters to service_role;          
 grant usage, select on sequence public.report_history_id_seq to service_role;
 grant execute on function public.next_report_id() to service_role;
 
--- 8c. TINDAKAN PETUGAS (dipaksakan di database) -------------------------------------------------------
--- Satu-satunya jalan mengubah status laporan. Berjalan dalam SATU transaksi dengan kunci baris (FOR UPDATE), sehingga
--- dua petugas yang bertindak bersamaan tidak bisa saling menimpa: yang pertama berhasil, yang kedua ditolak.
--- Mengembalikan id baris riwayat bila berhasil, atau NULL bila ditolak karena salah satu aturan ini dilanggar:
---   * laporan atau petugas tidak ditemukan
---   * status laporan saat ini bukan p_expected (sudah diubah petugas lain)
---   * perpindahan status tidak termasuk alur yang diizinkan
---   * akun petugas dinonaktifkan
---   * petugas berperan 'officer' bertindak di luar wilayah kerjanya (peran 'national' dan 'admin' berwenang di semua wilayah)
---   * laporan sudah ditangani petugas lain (petugas pertama yang bertindak menjadi penanggung jawab; admin boleh menimpa)
 create or replace function public.apply_officer_action(
   p_report text, p_officer uuid, p_expected text, p_new text, p_note text
 )
@@ -222,9 +178,6 @@ $$;
 revoke all on function public.apply_officer_action(text, uuid, text, text, text) from public, anon, authenticated;
 grant execute on function public.apply_officer_action(text, uuid, text, text, text) to service_role;
 
--- 8d. LOG AUDIT PENGELOLAAN PETUGAS --------------------------------------------------------------------
--- Dicatat server setiap admin menambah, mengubah, menonaktifkan, atau menghapus akun petugas. Tidak memakai foreign key
--- ke akun yang dituju agar jejaknya tetap ada setelah akun itu dihapus. Tidak pernah memuat kata sandi.
 create table if not exists public.officer_audit (
   id           bigint generated always as identity primary key,
   at           timestamptz not null default now(),
@@ -241,11 +194,6 @@ revoke all on public.officer_audit from anon, authenticated;
 grant select, insert on public.officer_audit to service_role;
 grant usage, select on sequence public.officer_audit_id_seq to service_role;
 
--- 8e. PENGANONIMAN DATA PELAPOR ---------------------------------------------------------------------------
--- Kebijakan Privasi menyatakan data kontak pelapor (nama, telepon, email) tidak disimpan selamanya. Dua fungsi ini
--- menjalankannya: anonymize_old_reports membersihkan laporan yang sudah final (Resolved/Rejected) lebih dari N bulan
--- (bawaan 12), dan anonymize_report membersihkan satu laporan seketika (mis. atas permintaan pelapor). Isi laporan lain
--- (satwa, lokasi, foto, riwayat) tidak berubah. Hanya service_role yang boleh menjalankan.
 alter table public.reports add column if not exists anonymized_at timestamptz;
 
 create or replace function public.anonymize_report(p_id text)
@@ -286,16 +234,6 @@ revoke all on function public.anonymize_old_reports(integer) from public, anon, 
 grant execute on function public.anonymize_report(text) to service_role;
 grant execute on function public.anonymize_old_reports(integer) to service_role;
 
--- Penjadwalan otomatis (sekali sehari). Butuh ekstensi pg_cron: Dashboard > Database > Extensions > aktifkan "pg_cron".
--- Setelah aktif, jalankan baris berikut SEKALI (20:00 UTC = 03:00 WIB). Ubah angka 12 untuk lama penyimpanan lain.
---   select cron.schedule('anonimkan-laporan-lama', '0 20 * * *', $$select public.anonymize_old_reports(12)$$);
--- Memeriksa jadwal:  select jobname, schedule, active from cron.job;
--- Menghapus jadwal:  select cron.unschedule('anonimkan-laporan-lama');
-
--- 8f. PEMBATAS PERMINTAAN BERSAMA ---------------------------------------------------------------------------
--- Penghitung per kunci (mis. "submit:203.0.113.9" atau "ai-chat-day:2026-11-09") dengan jendela waktu tetap. Berbeda dengan
--- penghitung di memori server, ini berlaku untuk semua instance Vercel sekaligus. Satu pernyataan upsert = atomik: dua permintaan
--- bersamaan tidak bisa sama-sama lolos melewati batas. Hanya service_role yang boleh memakai.
 create table if not exists public.rate_limits (
   key          text primary key,
   window_start timestamptz not null,
@@ -324,7 +262,6 @@ begin
         hits         = case when r.window_start <= now() - make_interval(secs => p_window_seconds) then 1 else r.hits + 1 end
   returning hits into v_hits;
 
-  -- bersih-bersih ringan: sesekali buang kunci yang sudah lama tidak dipakai
   if random() < 0.01 then
     delete from public.rate_limits where window_start < now() - interval '2 days';
   end if;
@@ -336,9 +273,6 @@ $$;
 revoke all on function public.rate_limit_hit(text, integer, integer) from public, anon, authenticated;
 grant execute on function public.rate_limit_hit(text, integer, integer) to service_role;
 
--- 9. PENYIMPANAN FOTO --------------------------------------------------------------------------------
--- Bucket publik: foto dapat ditampilkan di peta dan halaman Lacak lewat alamat unik (nama berkas acak).
--- Unggahan hanya lewat server (secret key), jadi tidak ada policy unggah untuk pengunjung.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('report-photos', 'report-photos', true, 5242880, array['image/jpeg', 'image/png', 'image/webp'])
 on conflict (id) do update
