@@ -1,6 +1,6 @@
 # 🐾 Satwarta
 
-**Satwarta (Satwa Warta)** adalah platform digital terintegrasi untuk membantu penanganan satwa liar terdampak kebakaran hutan dan lahan (karhutla). Menghubungkan masyarakat dengan lembaga penyelamat melalui pelaporan, pemantauan, dan koordinasi penyelamatan berbantuan AI.
+**Satwarta** adalah platform digital terintegrasi untuk membantu penanganan satwa liar terdampak kebakaran hutan dan lahan (karhutla). Menghubungkan masyarakat dengan lembaga penyelamat melalui pelaporan, pemantauan, dan koordinasi penyelamatan berbantuan AI.
 
 **Website:** https://satwarta.vercel.app
 
@@ -35,6 +35,5 @@
 4. Petugas memperbarui status penyelamatan.
 5. Masyarakat memantau perkembangan melalui fitur Tracking.
 
-## Vision
-
-Membangun ekosistem digital yang menghubungkan masyarakat dan lembaga penyelamat untuk mewujudkan penanganan satwa terdampak karhutla yang lebih terkoordinasi, responsif, dan transparan.
+Satwarta for the Animals!
+Thanks.
