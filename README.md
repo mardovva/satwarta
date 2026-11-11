@@ -29,13 +29,12 @@
 
 ## Alur Sistem
 
-1. Masyarakat memantau peta dan mengirimkan laporan satwa terdampak.
-2. AI membantu proses pelaporan dan memberikan panduan awal.
-3. Lembaga penyelamat menerima, memverifikasi, dan menangani laporan.
-4. Petugas memperbarui status penyelamatan.
-5. Masyarakat memantau perkembangan melalui fitur Tracking.
+1. Masyarakat memantau peta persebaran hotspot dan laporan satwa.
+2. Masyarakat melaporkan satwa terdampak melalui formulir berbantuan AI.
+3. Laporan diterima lembaga penyelamat untuk diverifikasi dan ditangani.
+4. Petugas memperbarui status penyelamatan yang dapat dipantau masyarakat melalui fitur Lacak.
+5. Masyarakat juga dapat berkonsultasi melalui AI Chat, berdonasi, dan mengakses informasi lembaga penyelamat.
 
 #
 Satwarta for the Animals!
-
 Thanks.
