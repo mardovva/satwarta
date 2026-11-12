@@ -1,13 +1,21 @@
+const TITLE_DELAY = 0.2;
+const COUNT_DURATION_MS = 2800;
+/**
+ * Hitungan memakai easeOutQuint (sangat melambat di akhir): angka bulat praktis berhenti berubah sekitar 75% durasi,
+ * sisanya hanya pecahan yang tidak terlihat. CTA dan peta muncul pada titik itu agar tidak ada jeda kosong.
+ */
+const COUNT_VISIBLE_END = 0.75;
+
 /** Waktu urutan animasi saat halaman pertama kali dibuka (detik, kecuali disebut lain). */
 export const INTRO = {
   /** judul dan angka statistik muncul bersamaan */
-  titleDelay: 0.2,
+  titleDelay: TITLE_DELAY,
   /** hitungan angka mulai begitu angka mulai muncul (lihat StatNumber) */
-  countDurationMs: 2800,
-  /** dua tombol CTA dan peta muncul bersamaan setelah hitungan selesai (selesai ~4,5 dtk) */
-  nextDelay: 3.5,
-  /** lama animasi muncul peta (sama dengan tombol CTA) */
-  mapDurationMs: 900,
+  countDurationMs: COUNT_DURATION_MS,
+  /** dua tombol CTA dan peta muncul bersamaan begitu angka berhenti berubah (~2,3 dtk) */
+  nextDelay: TITLE_DELAY + (COUNT_DURATION_MS * COUNT_VISIBLE_END) / 1000,
+  /** lama animasi muncul peta (sama dengan tombol CTA; lihat transisi .reveal di globals.css) */
+  mapDurationMs: 550,
 } as const;
 
 /** Latar berganti ke hero-2 setelah animasi peta selesai (ms sejak halaman dibuka) */
