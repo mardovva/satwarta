@@ -36,5 +36,5 @@
 5. Masyarakat juga dapat berkonsultasi melalui AI Chat, berdonasi, dan mengakses informasi lembaga penyelamat.
 
 #
-Satwarta for the Animals!
+Satwarta for the Animals!<br>
 Thanks.
