@@ -56,8 +56,8 @@ export default function MapSection() {
       {/* tinggi = 75% layar (svh); inset-0 agar tinggi peta tidak bergantung persen */}
       <Reveal variant="stick" initialDelay={INTRO.nextDelay} className="relative h-[75svh] min-h-[24rem] max-h-[52rem]">
         <div className="absolute inset-0">
-          <div className={fullscreen ? "fixed inset-0 z-[100] bg-white p-3 sm:p-6" : "h-full overflow-hidden rounded-[1.25rem] shadow-[0_30px_80px_-12px_rgba(10,30,20,0.40)]"}>
-            <div className={fullscreen ? "h-full w-full overflow-hidden rounded-[1.25rem]" : "h-full w-full"}>
+          <div className={fullscreen ? "fixed inset-0 z-[100] bg-[#DCE6DC]" : "h-full overflow-hidden rounded-[1.25rem] shadow-[0_30px_80px_-12px_rgba(10,30,20,0.40)]"}>
+            <div className={"h-full w-full"}>
               <IndonesiaMap mode="monitoring" fullscreen={fullscreen} onToggleFullscreen={() => setFullscreen((v) => !v)} onViewDetail={viewDetail} />
             </div>
           </div>

@@ -35,7 +35,7 @@ export default function ChatView() {
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [mine, setMine] = useState<StoredReport[]>([]);
-  const [hydrated, setHydrated] = useState(false); 
+  const [hydrated, setHydrated] = useState(false); // riwayat sudah dibaca dari perangkat
   const booted = useRef(false);
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -43,7 +43,7 @@ export default function ChatView() {
   const ask = useCallback(async (history: UiMessage[], context: ReportContext | null) => {
     setBusy(true);
     const lastUser = [...history].reverse().find((m) => m.role === "user")?.content ?? "";
-    const debug = new URLSearchParams(window.location.search).has("debug"); 
+    const debug = new URLSearchParams(window.location.search).has("debug"); // /chat?debug=1 menampilkan alasan teknis
     const base = "Jawaban dari panduan bawaan: AI sedang tidak tersedia.";
     let reply: string;
     let note = "";
@@ -216,7 +216,7 @@ export default function ChatView() {
             <ArrowUp size={18} />
           </button>
         </div>
-        <p className="mt-2 text-center text-[0.6875rem] leading-snug opacity-70">Jangan memasukkan data pribadi. Riwayat chat tersimpan di perangkat ini. <a href="/privasi" className="underline">Kebijakan Privasi</a></p>
+        <p className="mt-2 text-center text-[0.6875rem] leading-snug opacity-70">Jangan memasukkan data pribadi. <a href="/privasi" className="underline">Kebijakan Privasi</a></p>
       </form>
     </section>
   );

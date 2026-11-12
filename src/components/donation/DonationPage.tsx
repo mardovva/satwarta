@@ -91,8 +91,8 @@ export default function DonationPage() {
               { label: "Penggalangan aktif", value: stats.active, format: (n: number) => String(Math.round(n)) },
             ].map((s, i) => (
               <Reveal key={s.label} initialDelay={0.4 + i * 0.12} className="rounded-2xl border border-white/50 bg-white/25 px-5 py-4 text-white backdrop-blur-xl backdrop-saturate-150">
-                <dd className="text-2xl font-bold tabular-nums"><CountUp value={s.value} format={s.format} duration={1600} delay={Math.round((0.45 + i * 0.12) * 1000)} /></dd>
-                <dt className="text-sm font-semibold text-white/90">{s.label}</dt>
+                <dd className="text-2xl font-bold tabular-nums text-primary"><CountUp value={s.value} format={s.format} duration={1600} delay={Math.round((0.45 + i * 0.12) * 1000)} /></dd>
+                <dt className="text-sm font-semibold text-primary">{s.label}</dt>
               </Reveal>
             ))}
           </dl>

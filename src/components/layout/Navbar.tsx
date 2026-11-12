@@ -24,7 +24,8 @@ export default function Navbar() {
   const scrolled = useScrolled();
   const floating = scrolled || menuOpen;
 
-  
+  // Bagian yang dipilih lewat klik menu "dikunci" sebagai yang aktif sampai pengguna menggulir sendiri. Tanpa ini, bagian pendek
+  // (mis. Lacak saat belum ada hasil) membuat bagian di bawahnya (FAQ) ikut masuk garis penentu dan menu salah menyorot.
   const lockRef = useRef<string | null>(null);
   const pick = (id: string) => { lockRef.current = id; setActive(id); };
 
@@ -93,7 +94,7 @@ export default function Navbar() {
             </span>
           </Anchor>
 
-          <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-6 text-base lg:flex xl:gap-9 xl:text-lg">
+          <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-6 whitespace-nowrap text-base lg:flex xl:gap-9 xl:text-lg">
             {links.map((l) => (
               <li key={l.id}>
                 <Anchor href={hashHref(l.id)} onClick={() => pick(l.id)} aria-current={isHome && l.id === active ? "page" : undefined} className={linkCls(l.id)}>{l.label}</Anchor>

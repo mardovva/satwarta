@@ -21,7 +21,7 @@ function Stat({ value, label, active, index }: StatProps) {
           <span className="invisible">{value}</span>
           <span className="absolute inset-0 text-right">{display}</span>
         </span>
-        <span aria-hidden className="ml-3 whitespace-nowrap text-sm font-semibold text-white sm:text-base">{label}</span>
+        <span aria-hidden className="ml-3 whitespace-nowrap text-base font-semibold text-white">{label}</span>
       </div>
     </Reveal>
   );

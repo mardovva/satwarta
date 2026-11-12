@@ -45,7 +45,6 @@ export default function FileUpload({ items, onChange, label = "Dokumentasi", opt
       >
         <UploadCloud size={34} strokeWidth={1.5} className="text-ink/70" />
         <span className="text-base text-ink/80">Unggah foto dokumentasi</span>
-        <span className="text-xs text-ink/55">Seret &amp; lepas atau klik untuk memilih · maks. {MAX_FILES} foto, {MAX_MB} MB per foto</span>
         <input
           id="field-photos" type="file" accept="image/*" multiple className="sr-only" aria-invalid={error ? true : undefined} aria-describedby={error ? "field-photos-error" : undefined}
           onChange={(e) => { if (e.target.files) addFiles(e.target.files); e.target.value = ""; }}

@@ -5,7 +5,7 @@ import Reveal from "@/components/ui/Reveal";
 
 const columns = [
   { title: "Menu", links: [{ label: "Beranda", href: "/#beranda" }, { label: "Lapor", href: "/#lapor" }, { label: "Lacak", href: "/#track" }, { label: "FAQ", href: "/#faq" }] },
-  { title: "Bantuan", links: [{ label: "Tanya Satwarta AI", href: "/chat" }, { label: "Donasi", href: "/donasi" }, { label: "Lembaga", href: "/lembaga" }] },
+  { title: "Bantuan", links: [{ label: "Tanya Satwarta AI", href: "/chat" }, { label: "Donasi", href: "/donasi" }, { label: "Lembaga", href: "/lembaga" }, { label: "Kebijakan Privasi", href: "/privasi" }] },
   { title: "Ikuti", links: [{ label: "Instagram", href: "https://www.instagram.com/mardovva", external: true }, { label: "LinkedIn", href: "https://www.linkedin.com/in/mardova-fadhilah-11b920395", external: true }] },
 ];
 const social = [
@@ -15,6 +15,11 @@ const social = [
 
 const linkCls = "text-primary/75 transition hover:text-primary";
 
+/**
+ * Bagian ajakan (bagian dari halaman, setelah FAQ) dan footer berada di atas satu gradasi yang dimulai dari warna
+ * halaman, jadi tidak ada sambungan yang kontras. id="site-footer" hanya pada footer (mulai dari garis di atas logo),
+ * sehingga tombol AI Chat melayang berhenti di garis itu.
+ */
 export default function Footer() {
   return (
     <div
@@ -50,7 +55,7 @@ export default function Footer() {
 
       <footer id="site-footer" className="px-4 text-primary">
         <div className="mx-auto max-w-6xl">
-          <div className="grid gap-10 border-t border-primary/10 py-12 sm:grid-cols-2 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
+          <div className="grid gap-10 border-t border-primary/10 py-12 sm:grid-cols-2 md:grid-cols-[1fr_auto_auto_auto] md:gap-x-16 lg:gap-x-24">
             <Reveal edge>
               <Image src="/images/logo-dark.svg" alt="Logo Satwarta" width={714} height={160} unoptimized className="h-8 w-auto" />
             </Reveal>
@@ -74,11 +79,11 @@ export default function Footer() {
 
           <Reveal edge delay={0.2}>
           <div className="flex items-center justify-between gap-4 border-t border-primary/10 py-6">
-            <p className="text-xs text-primary/60">Copyright Satwarta 2026 · <Link href="/privasi" className="underline-offset-2 hover:text-primary hover:underline">Kebijakan Privasi</Link></p>
+            <p className="text-xs text-primary/60">© Copyright Satwarta 2026</p>
             <ul className="flex items-center gap-3">
               {social.map(({ label, href, Icon }) => (
                 <li key={label}>
-                  <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="flex h-9 w-9 items-center justify-center rounded-full text-primary/75 transition hover:bg-white/60 hover:text-primary">
+                  <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="flex h-9 w-9 items-center justify-center text-primary/75 transition-colors hover:text-white focus-visible:text-white">
                     <Icon size={19} />
                   </a>
                 </li>

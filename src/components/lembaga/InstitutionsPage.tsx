@@ -1,7 +1,6 @@
 "use client";
 import { useMemo } from "react";
 import { Globe, Mail, MessageCircle, Phone } from "lucide-react";
-import Decor from "@/components/layout/Decor";
 import Reveal from "@/components/ui/Reveal";
 import { contactHref, groupInstitutions, mapsHref, type Contact, type Institution } from "@/data/institutions";
 
@@ -16,8 +15,6 @@ export default function InstitutionsPage() {
 
   return (
     <div className="relative pb-24 pt-24 sm:pt-28">
-      <Decor flip src="/images/branches/dry-branch.png" width={192} height={140} sway="right top" className="-left-3 top-24 hidden w-[8rem] md:block lg:-left-5 lg:w-[13.125rem]" />
-      <Decor src="/images/branches/dry-branch.png" width={192} height={140} sway="right top" className="-right-3 top-24 hidden w-[8rem] md:block lg:-right-5 lg:w-[13.125rem]" />
 
       <div className="relative z-10 mx-auto w-[92%] max-w-[83.125rem] md:w-[84%]">
         <header className="text-center">

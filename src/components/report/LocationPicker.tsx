@@ -87,7 +87,7 @@ export default function LocationPicker({ values, errors, onChange }: Props) {
             Gunakan lokasi saya
           </button>
           <span className="text-xs text-ink/65" aria-live="polite">
-            {loc ? `Koordinat: ${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}` : "Klik peta untuk menandai lokasi (gunakan Ctrl/⌘ + scroll untuk zoom)."}
+            {loc ? `Koordinat: ${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}` : ""}
           </span>
         </div>
         <p className="mt-1 text-xs font-medium text-red-600" aria-live="polite">
