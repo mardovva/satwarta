@@ -41,4 +41,3 @@ export default function OfficerMap({ onSelect, reports }: { onSelect: (id: strin
     </div>
   );
 }
-

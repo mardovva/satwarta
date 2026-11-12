@@ -11,4 +11,3 @@ export function browserSupabase(): SupabaseClient | null {
   client = url && key ? createClient(url, key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } }) : null;
   return client;
 }
-

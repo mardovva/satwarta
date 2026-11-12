@@ -38,4 +38,3 @@ export async function GET() {
   if (lastGood && Date.now() - lastGood.at < 6 * 3600_000) return NextResponse.json(lastGood.body, { headers: { "X-Hotspot-Stale": "1" } });
   return NextResponse.json({ error: "Gagal mengambil data NASA FIRMS", detail: errors.join(" | ") }, { status: 502 });
 }
-

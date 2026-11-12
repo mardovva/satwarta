@@ -97,4 +97,3 @@ export async function listAudit(limit = 30): Promise<AuditItem[]> {
   if (error) throw new Error(`audit: ${error.code ?? ""} ${error.message}`);
   return (data as { id: number; at: string; actor_name: string; action: AuditAction; target_label: string; details: Record<string, unknown> }[]).map((r) => ({ id: r.id, at: r.at, actorName: r.actor_name, action: r.action, targetLabel: r.target_label, details: r.details }));
 }
-

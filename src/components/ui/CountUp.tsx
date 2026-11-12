@@ -79,4 +79,3 @@ export default function CountUp({ value, format = (n) => String(Math.round(n)), 
     </>
   );
 }
-

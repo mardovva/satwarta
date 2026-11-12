@@ -34,4 +34,3 @@ export async function verifyTurnstile(token: unknown, ip: string): Promise<Captc
     return { ok: true, skipped: "provider-down" };
   }
 }
-

@@ -107,4 +107,3 @@ export async function rollbackReport(reportId: string, paths: string[]): Promise
   try { if (paths.length) await db.storage.from(PHOTO_BUCKET).remove(paths); } catch { /* abaikan */ }
   try { await db.from("reports").delete().eq("id", reportId); } catch { /* abaikan */ }
 }
-

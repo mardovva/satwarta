@@ -37,4 +37,3 @@ export function useCountUp(value: number, active: boolean, duration = 1600, dela
 
   return display;
 }
-

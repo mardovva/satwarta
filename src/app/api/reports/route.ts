@@ -72,4 +72,3 @@ export async function POST(req: Request) {
     return fail(500, "Laporan belum dapat disimpan. Silakan coba lagi.");
   }
 }
-

@@ -44,4 +44,3 @@ export default function MapKey({ basemap, reports, hotspots, days }: Props) {
     </div>
   );
 }
-

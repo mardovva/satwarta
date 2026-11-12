@@ -10,4 +10,3 @@ export function handlerLabel(report: StoredReport): string {
   const h = getHandler(report);
   return h ? `${h.name} (${h.agency})` : `Menunggu petugas wilayah ${report.location.province}`;
 }
-

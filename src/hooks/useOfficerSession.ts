@@ -48,4 +48,3 @@ export function useOfficerSession(): SessionState {
 
   return state;
 }
-

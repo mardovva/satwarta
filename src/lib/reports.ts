@@ -104,4 +104,3 @@ export async function deleteReport(id: string): Promise<boolean> {
   window.dispatchEvent(new Event(REPORTS_UPDATED_EVENT));
   return true;
 }
-

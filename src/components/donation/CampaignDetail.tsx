@@ -191,4 +191,3 @@ export default function CampaignDetail({ campaign: c, pledges, onClose }: Props)
     document.body
   );
 }
-

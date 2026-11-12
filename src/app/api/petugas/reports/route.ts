@@ -17,4 +17,3 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Laporan belum dapat dimuat." }, { status: 502, headers: NO_STORE });
   }
 }
-

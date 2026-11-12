@@ -27,4 +27,3 @@ export default function OfficerHeader({ onLogout, links = [] }: { onLogout: () =
     </div>
   );
 }
-

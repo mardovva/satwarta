@@ -37,4 +37,3 @@ export async function POST(req: Request) {
     return json({ error: "Akun belum dapat dibuat. Silakan coba lagi." }, 500);
   }
 }
-

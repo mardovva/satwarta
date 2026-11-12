@@ -57,4 +57,3 @@ export default function TrackingResult({ lookup, onClose }: { lookup: TrackingLo
         </article>
   );
 }
-

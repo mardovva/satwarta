@@ -42,4 +42,3 @@ export const provinces: Record<string, string[]> = {
 };
 
 export const provinceNames = Object.keys(provinces);
-

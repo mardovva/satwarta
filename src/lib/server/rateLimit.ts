@@ -52,4 +52,3 @@ export async function allowDaily(name: string, cap: number): Promise<boolean> {
   if (cap <= 0) return true;
   return allowShared(`${name}:${jakartaDay()}`, cap, 86_400_000);
 }
-

@@ -49,4 +49,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Foto belum dapat dianalisis saat ini." }, { status: 502 });
   }
 }
-

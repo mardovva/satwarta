@@ -27,4 +27,3 @@ export default function OfficerStats({ reports, filter, onFilter }: Props) {
     </div>
   );
 }
-

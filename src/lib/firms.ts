@@ -55,4 +55,3 @@ export function parseFirmsCsv(csv: string): FeatureCollection<Point, HotspotProp
   }
   return { type: "FeatureCollection", features };
 }
-

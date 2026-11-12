@@ -91,4 +91,3 @@ export default function OfficerDashboard() {
   if (state.status === "anon") return <OfficerLoginScreen notice={state.notice} />;
   return <DashboardContent officer={state.officer} onLogout={() => { void signOut().then(() => router.push("/")); }} />;
 }
-

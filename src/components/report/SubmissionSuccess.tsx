@@ -75,4 +75,3 @@ export default function SubmissionSuccess({ report, persisted, onClose }: Props)
     document.body
   );
 }
-

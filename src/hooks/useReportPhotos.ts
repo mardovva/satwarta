@@ -40,4 +40,3 @@ export function useReportPhotos(report: StoredReport): { history: StatusHistoryE
   );
   return { history, reporterPhotos: reporter };
 }
-

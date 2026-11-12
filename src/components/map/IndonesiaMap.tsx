@@ -296,4 +296,3 @@ export default function IndonesiaMap({ mode = "monitoring", fullscreen = false, 
     </div>
   );
 }
-

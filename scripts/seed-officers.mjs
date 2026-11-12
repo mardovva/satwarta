@@ -151,4 +151,3 @@ if (rows.length) {
 console.log(`\nSelesai. Dibuat: ${created}, sudah ada (tidak diubah): ${kept}, kata sandi direset: ${reset}, gagal: ${failed}.`);
 if (rows.length) console.log(`Daftar email dan kata sandi ada di ${CSV} (hanya di komputer ini; jangan dibagikan atau di-commit).`);
 process.exit(failed ? 1 : 0);
-

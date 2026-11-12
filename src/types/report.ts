@@ -70,4 +70,3 @@ export interface ReportFormValues {
 export type ReportFormErrors = Partial<Record<keyof ReportFormValues, string>>;
 
 export interface PhotoItem { id: string; file: File; url: string }
-

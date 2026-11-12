@@ -7,4 +7,3 @@ next-env.d.ts
 
 # kata sandi akun petugas (dibuat scripts/seed-officers.mjs): JANGAN di-commit
 officer-accounts.csv
-

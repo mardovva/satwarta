@@ -69,4 +69,3 @@ function Detail({ report, session, onChanged }: { report: StoredReport; session:
     </section>
   );
 }
-

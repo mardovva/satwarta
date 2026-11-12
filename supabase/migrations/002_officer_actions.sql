@@ -45,4 +45,3 @@ $$;
 
 revoke all on function public.apply_officer_action(text, uuid, text, text, text) from public, anon, authenticated;
 grant execute on function public.apply_officer_action(text, uuid, text, text, text) to service_role;
-

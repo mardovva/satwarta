@@ -4,4 +4,3 @@ export const animalConditions = ["Terluka", "Terjebak", "Ditemukan mati", "Mengu
 
 /** Pilihan untuk menulis kondisi sendiri */
 export const CONDITION_OTHER = "Lainnya (tulis sendiri)";
-

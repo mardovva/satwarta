@@ -60,4 +60,3 @@ export async function submitReport(v: ReportFormValues, photos: PhotoItem[], cap
     return { ok: false, message: "Tidak dapat terhubung ke server. Periksa koneksi internet Anda lalu coba lagi." };
   }
 }
-

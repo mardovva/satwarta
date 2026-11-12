@@ -74,4 +74,3 @@ export async function deletePhotosByReport(reportId: string): Promise<boolean> {
     return false;
   }
 }
-

@@ -13,4 +13,3 @@ export async function askFirstAid(messages: ChatMessage[], ctx: ReportContext | 
   });
   return { ...r, text: cleanReply(r.text) };
 }
-

@@ -6,4 +6,3 @@ export function cleanReply(text: string): string {
     .replace(/[ \t]{2,}/g, " ")
     .trim();
 }
-

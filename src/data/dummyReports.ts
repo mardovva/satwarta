@@ -11,4 +11,3 @@ export const dummyReports: WildlifeReport[] = [
   { id: "r5", animal: "Burung Rangkong", emoji: "🦅", reportType: "Satwa terdampak", location: "Kalimantan Barat", lng: 110.4, lat: 0.0, date: "16 Okt 2026", status: "Terverifikasi", description: "Rangkong terlihat kehilangan sarang akibat kebakaran." },
   { id: "r6", animal: "Tapir", emoji: "🐗", reportType: "Satwa terselamatkan", location: "Jambi", lng: 103.6, lat: -1.6, date: "11 Okt 2026", status: "Selesai", description: "Tapir diselamatkan warga dan diserahkan ke petugas." },
 ];
-

@@ -79,4 +79,3 @@ export async function DELETE(req: Request, ctx: { params: Promise<{ id: string }
     return json({ error: "Akun belum dapat dihapus. Silakan coba lagi." }, 500);
   }
 }
-

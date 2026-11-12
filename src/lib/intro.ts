@@ -53,4 +53,3 @@ export function trackSeenDepth() {
  * false = langsung tampil tanpa animasi dan tanpa menunggu; true = tetap beranimasi, tetapi langsung mulai (tanpa jeda).
  */
 export const REVISIT_ANIMATE = false;
-

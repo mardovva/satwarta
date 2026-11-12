@@ -19,4 +19,3 @@ export function useAllReports(): StoredReport[] {
   }, []);
   return reports;
 }
-

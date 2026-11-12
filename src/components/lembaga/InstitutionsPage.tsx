@@ -83,4 +83,3 @@ function Contacts({ list }: { list: Contact[] }) {
     </ul>
   );
 }
-

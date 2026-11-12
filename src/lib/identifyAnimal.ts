@@ -51,4 +51,3 @@ export async function shrinkImage(file: File, max = 1024): Promise<{ data: strin
   const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
   return { data: dataUrl.split(",")[1] ?? "", mimeType: "image/jpeg" };
 }
-

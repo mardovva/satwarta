@@ -97,4 +97,3 @@ export default function TrackingTimeline({ history, reporterPhotos, split = fals
     </>
   );
 }
-

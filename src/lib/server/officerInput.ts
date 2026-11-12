@@ -77,4 +77,3 @@ export function parsePatch(raw: unknown): Parsed<OfficerPatch> {
   if (Object.keys(errors).length) return { ok: false, errors };
   return { ok: true, value: v };
 }
-

@@ -24,4 +24,3 @@ export interface AuditItem {
 }
 
 export const roleLabel: Record<OfficerRole, string> = { officer: "Regional", national: "Nasional", admin: "Admin" };
-

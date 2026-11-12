@@ -110,4 +110,3 @@ export function campaignStory(c: Campaign, date: string): string[] {
     `Donasi direncanakan untuk: ${c.plan.map((p) => p.label.toLowerCase()).join(", ")}.`,
   ];
 }
-

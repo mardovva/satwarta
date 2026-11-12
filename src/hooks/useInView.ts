@@ -19,4 +19,3 @@ export function useInView<T extends Element>(threshold = 0.4) {
 
   return { ref, inView };
 }
-
