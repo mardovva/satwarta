@@ -29,15 +29,15 @@ body.map-fullscreen .site-header { display: none !important; }
 
 .reveal {
   opacity: 0;
-  transform: translate3d(0, 2.25rem, 0) scale(0.96);
-  transition: opacity 0.35s ease-out, transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: translate3d(0, 2.25rem, 0);
+  transition-property: opacity, transform;
+  transition-duration: 0.35s, 0.55s;
+  transition-timing-function: ease-out, cubic-bezier(0.22, 1, 0.36, 1);
   transition-delay: var(--d, 0s);
   will-change: opacity, transform;
 }
-.reveal[data-variant="left"] { transform: translate3d(-3rem, 0, 0) scale(0.96); }
-.reveal[data-variant="right"] { transform: translate3d(3rem, 0, 0) scale(0.96); }
-.reveal[data-variant="zoom"] { transform: scale(0.9); }
-.reveal[data-variant="stick"] { transform: scale(1.22); transform-origin: 50% 35%; transition-timing-function: ease-out, cubic-bezier(0.22, 1, 0.36, 1); } 
+.reveal[data-variant="left"] { transform: translate3d(-3rem, 0, 0); }
+.reveal[data-variant="right"] { transform: translate3d(3rem, 0, 0); }
 .reveal[data-in="true"] { opacity: 1; transform: none; will-change: auto; }
 .reveal[data-instant="true"] { transition: none !important; }
 @media (prefers-reduced-motion: reduce) {

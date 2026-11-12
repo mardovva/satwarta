@@ -16,7 +16,7 @@ interface RevealProps {
   children: ReactNode;
   /** Jeda (detik) sebelum animasi mulai, untuk efek bertahap */
   delay?: number;
-  variant?: "up" | "left" | "right" | "zoom" | "stick";
+  variant?: "up" | "left" | "right";
   className?: string;
   /** Jeda (detik) hanya untuk kemunculan pertama, mis. untuk urutan animasi saat halaman dibuka */
   initialDelay?: number;
