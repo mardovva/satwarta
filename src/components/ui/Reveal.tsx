@@ -3,6 +3,9 @@ import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type 
 import { usePathname } from "next/navigation";
 import { REVISIT_ANIMATE, markPathVisited, pathVisited, seenDepthY, trackSeenDepth } from "@/lib/intro";
 
+/** Pengali jeda bertahap saat scroll (lebih kecil = muncul lebih cepat). initialDelay tidak terpengaruh. */
+const SCROLL_DELAY_SCALE = 0.5;
+
 const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 interface RevealProps {
@@ -49,7 +52,8 @@ export default function Reveal({ children, delay = 0, variant = "up", className 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setInView(true); return; }
     const io = new IntersectionObserver(
       ([e]) => { if (e.isIntersecting) { setInView(true); io.disconnect(); } },
-      { threshold: edge ? 0 : 0.05, rootMargin: edge ? "0px" : "0px 0px -4% 0px" }
+      // Margin bawah positif: animasi mulai sesaat sebelum elemen masuk layar, sehingga terasa langsung muncul
+      { threshold: edge ? 0 : 0.01, rootMargin: edge ? "0px" : "0px 0px 8% 0px" }
     );
     io.observe(el);
     return () => io.disconnect();
@@ -61,7 +65,7 @@ export default function Reveal({ children, delay = 0, variant = "up", className 
     const t = window.setTimeout(() => setShownOnce(true), 100);
     return () => window.clearTimeout(t);
   }, [inView]);
-  const d = skipped ? 0 : !shownOnce && initialDelay !== undefined ? initialDelay : delay;
+  const d = skipped ? 0 : !shownOnce && initialDelay !== undefined ? initialDelay : delay * SCROLL_DELAY_SCALE;
 
   return (
     <div ref={ref} data-in={inView} data-variant={variant} data-instant={skipped && !REVISIT_ANIMATE ? "true" : undefined} className={`reveal ${className}`} style={{ "--d": `${d}s` } as CSSProperties}>
