@@ -1,10 +1,14 @@
 "use client";
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { REVISIT_ANIMATE, markPathVisited, pathVisited, seenDepthY, trackSeenDepth } from "@/lib/intro";
 
 /** Pengali jeda bertahap saat scroll (lebih kecil = muncul lebih cepat). initialDelay tidak terpengaruh. */
 const SCROLL_DELAY_SCALE = 0.5;
+
+/** true begitu animasi muncul Reveal terdekat benar-benar mulai (setelah jedanya). Di luar Reveal selalu true. */
+const RevealStartedContext = createContext(true);
+export const useRevealStarted = () => useContext(RevealStartedContext);
 
 const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
@@ -67,9 +71,19 @@ export default function Reveal({ children, delay = 0, variant = "up", className 
   }, [inView]);
   const d = skipped ? 0 : !shownOnce && initialDelay !== undefined ? initialDelay : delay * SCROLL_DELAY_SCALE;
 
+  // Tandai saat animasi mulai terlihat (inView + jeda), agar isi seperti CountUp bisa mulai bersamaan
+  const [started, setStarted] = useState(false);
+  const dRef = useRef(d);
+  dRef.current = d;
+  useEffect(() => {
+    if (!inView || started) return;
+    const t = window.setTimeout(() => setStarted(true), dRef.current * 1000);
+    return () => window.clearTimeout(t);
+  }, [inView, started]);
+
   return (
     <div ref={ref} data-in={inView} data-variant={variant} data-instant={skipped && !REVISIT_ANIMATE ? "true" : undefined} className={`reveal ${className}`} style={{ "--d": `${d}s` } as CSSProperties}>
-      {children}
+      <RevealStartedContext.Provider value={started}>{children}</RevealStartedContext.Provider>
     </div>
   );
 }

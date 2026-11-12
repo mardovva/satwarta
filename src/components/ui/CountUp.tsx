@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { REVISIT_ANIMATE, pathVisited } from "@/lib/intro";
+import { useRevealStarted } from "@/components/ui/Reveal";
 
 const ease = (t: number) => 1 - Math.pow(1 - t, 3);
 
@@ -11,7 +12,7 @@ interface Props {
   format?: (n: number) => string;
   /** Lama hitungan pertama (ms) */
   duration?: number;
-  /** Jeda (ms) sebelum hitungan pertama, setelah elemen terlihat */
+  /** Jeda tambahan (ms) sebelum hitungan pertama. Bawaan 0: mulai begitu Reveal pembungkusnya mulai muncul */
   delay?: number;
 }
 
@@ -24,7 +25,9 @@ export default function CountUp({ value, format = (n) => String(Math.round(n)), 
   const pathname = usePathname();
   const [skip] = useState(() => (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) || (!REVISIT_ANIMATE && pathVisited(pathname)));
   const [shown, setShown] = useState(value);
-  const [armed, setArmed] = useState(false); // sudah terlihat (atau animasi dilewati)
+  const [visible, setVisible] = useState(false); // sudah terlihat (atau animasi dilewati)
+  const revealStarted = useRevealStarted();
+  const armed = visible && (skip || revealStarted);
   const ref = useRef<HTMLSpanElement>(null);
   const current = useRef(value);
   const raf = useRef(0);
@@ -51,11 +54,11 @@ export default function CountUp({ value, format = (n) => String(Math.round(n)), 
 
   // Mulai dari 0 (di balik elemen yang masih tersembunyi oleh Reveal), lalu tunggu sampai terlihat
   useEffect(() => {
-    if (skip) { setArmed(true); return; }
+    if (skip) { setVisible(true); return; }
     current.current = 0; setShown(0);
     const el = ref.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setArmed(true); io.disconnect(); } }, { threshold: 0.2 });
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVisible(true); io.disconnect(); } }, { threshold: 0 });
     io.observe(el);
     return () => io.disconnect();
   }, [skip]);

@@ -91,7 +91,7 @@ export default function DonationPage() {
               { label: "Penggalangan aktif", value: stats.active, format: (n: number) => String(Math.round(n)) },
             ].map((s, i) => (
               <Reveal key={s.label} initialDelay={0.4 + i * 0.12} className="rounded-2xl border border-white/50 bg-white/25 px-5 py-4 text-white backdrop-blur-xl backdrop-saturate-150">
-                <dd className="text-2xl font-bold tabular-nums text-primary"><CountUp value={s.value} format={s.format} duration={1600} delay={Math.round((0.45 + i * 0.12) * 1000)} /></dd>
+                <dd className="text-2xl font-bold tabular-nums text-primary"><CountUp value={s.value} format={s.format} duration={1600} /></dd>
                 <dt className="text-sm font-semibold text-primary">{s.label}</dt>
               </Reveal>
             ))}
@@ -131,7 +131,7 @@ export default function DonationPage() {
 
         {/* semua kartu */}
         <Reveal initialDelay={0.95} className="mt-6">
-          <p className="text-sm font-semibold text-ink/70" aria-live="polite"><CountUp value={visible.length} duration={900} delay={1000} /> penggalangan ditampilkan</p>
+          <p className="text-sm font-semibold text-ink/70" aria-live="polite"><CountUp value={visible.length} duration={900} /> penggalangan ditampilkan</p>
         </Reveal>
         <ul className="mt-3 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {visible.map((c, i) => (

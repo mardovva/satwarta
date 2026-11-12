@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { dummyStats } from "@/data/dummyReports";
-import Reveal from "@/components/ui/Reveal";
+import Reveal, { useRevealStarted } from "@/components/ui/Reveal";
 import { INTRO, introPlayed } from "@/lib/intro";
 import { useInView } from "@/hooks/useInView";
 import { useCountUp } from "@/hooks/useCountUp";
@@ -10,16 +10,21 @@ import { computeStats, type ReportStats } from "@/lib/stats";
 
 interface StatProps { value: number; label: string; color?: string; active: boolean; index: number }
 
-function Stat({ value, label, active, index }: StatProps) {
-  // Angka muncul bersama judul, lalu menghitung setelah terlihat
+/** Angka mulai menghitung tepat saat Reveal pembungkusnya mulai muncul, jadi tidak lama tertahan di 0 */
+function StatNumber({ value, active }: { value: number; active: boolean }) {
   const [instant] = useState(() => introPlayed());
-  const display = useCountUp(value, active, INTRO.countDurationMs, INTRO.countDelayMs + index * INTRO.countStaggerMs, instant);
+  const started = useRevealStarted();
+  const display = useCountUp(value, active && started, INTRO.countDurationMs, 0, instant);
+  return <span className="absolute inset-0 text-right">{display}</span>;
+}
+
+function Stat({ value, label, active, index }: StatProps) {
   return (
     <Reveal initialDelay={INTRO.titleDelay} delay={index * 0.1}>
       <div className="flex shrink-0 items-center text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.12)]" role="group" aria-label={`${value} ${label}`}>
         <span className="relative inline-block text-2xl font-bold tabular-nums sm:text-3xl" aria-hidden>
           <span className="invisible">{value}</span>
-          <span className="absolute inset-0 text-right">{display}</span>
+          <StatNumber value={value} active={active} />
         </span>
         <span aria-hidden className="ml-3 whitespace-nowrap text-base font-semibold text-white">{label}</span>
       </div>
