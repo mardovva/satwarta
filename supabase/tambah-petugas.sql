@@ -4,3 +4,4 @@ from auth.users
 where email = 'petugas@domain-nyata.com'
 on conflict (id) do update
   set full_name = excluded.full_name, agency = excluded.agency, role = excluded.role, regions = excluded.regions;
+

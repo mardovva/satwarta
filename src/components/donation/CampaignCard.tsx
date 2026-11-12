@@ -66,3 +66,4 @@ export default function CampaignCard({ campaign: c, onOpen }: Props) {
     </article>
   );
 }
+

@@ -42,3 +42,4 @@ export default function PhotoLightbox({ photos, index, onClose }: Props) {
     document.body
   );
 }
+

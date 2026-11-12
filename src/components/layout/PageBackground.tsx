@@ -32,3 +32,4 @@ export default function PageBackground({ children, morph = false, burnt: staticB
     </div>
   );
 }
+

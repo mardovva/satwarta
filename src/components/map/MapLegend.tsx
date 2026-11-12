@@ -13,3 +13,4 @@ export default function MapLegend({ basemap, onBasemap }: MapLegendProps) {
     </div>
   );
 }
+

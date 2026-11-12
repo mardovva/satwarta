@@ -17,3 +17,4 @@ export default function ProgressFill({ pct, className = "", delay = 0 }: { pct: 
 
   return <div ref={ref} className={`${className} transition-[width] duration-1000 ease-out motion-reduce:transition-none`} style={{ width: `${on ? pct : 0}%`, transitionDelay: on ? `${delay}ms` : "0ms" }} />;
 }
+

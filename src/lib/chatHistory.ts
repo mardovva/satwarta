@@ -53,3 +53,4 @@ export function clearChat(store: Store | null = browserStore()): void {
 
 /** Pesan terakhir dari pengguna tanpa jawaban (mis. pindah halaman saat AI sedang menjawab): perlu diminta ulang. */
 export const needsReply = (messages: StoredMessage[]): boolean => messages.length > 0 && messages[messages.length - 1].role === "user";
+

@@ -45,3 +45,4 @@ export default function DeleteReportDialog({ reportId, onClose, onDeleted }: Pro
     document.body
   );
 }
+

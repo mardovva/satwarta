@@ -25,3 +25,4 @@ export function getMyReports(limit = 5): StoredReport[] {
   const all = getAllReports();
   return getMyReportIds().map((id) => all.find((r) => r.id === id)).filter((r): r is StoredReport => !!r).slice(0, limit);
 }
+

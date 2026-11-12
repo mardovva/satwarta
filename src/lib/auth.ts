@@ -40,3 +40,4 @@ export async function officerFetch(path: string, init: RequestInit = {}): Promis
   if (res.status === 401) await signOut();
   return res;
 }
+

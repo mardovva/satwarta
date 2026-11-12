@@ -17,3 +17,4 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     return NextResponse.json({ error: "Laporan belum dapat dimuat." }, { status: 502 });
   }
 }
+

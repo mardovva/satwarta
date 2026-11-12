@@ -48,3 +48,4 @@ export default function ReportQueue({ reports, selectedId, query, onQuery, onSel
     </section>
   );
 }
+

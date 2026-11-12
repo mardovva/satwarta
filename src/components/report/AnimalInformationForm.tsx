@@ -61,3 +61,4 @@ export default function AnimalInformationForm({ values, errors, onChange, disabl
     </div>
   );
 }
+

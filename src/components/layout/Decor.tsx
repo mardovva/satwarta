@@ -30,3 +30,4 @@ export default function Decor({ src, width, height, className = "", sway, flip }
   if (!flip) return img;
   return <div aria-hidden className={`pointer-events-none absolute z-30 -scale-x-100 ${className}`}>{img}</div>;
 }
+

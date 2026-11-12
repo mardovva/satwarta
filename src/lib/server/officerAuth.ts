@@ -37,3 +37,4 @@ export async function authenticateAdmin(req: Request): Promise<AuthResult> {
   if (auth.officer.role !== "admin") return { status: 403, error: "Halaman ini khusus admin." };
   return auth;
 }
+

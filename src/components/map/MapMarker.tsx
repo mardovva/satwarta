@@ -36,3 +36,4 @@ export function setMarkerPhoto(wrapper: HTMLElement, url: string) {
   };
   probe.src = url;
 }
+
