@@ -11,11 +11,9 @@ export default function OfficerLoginScreen({ notice }: { notice?: string }) {
         <Link href="/" aria-label="Satwarta, ke beranda" className="mb-5 flex justify-center">
           <Image src="/images/logo-dark.svg" alt="Logo Satwarta" width={714} height={160} priority unoptimized className="h-9 w-auto" />
         </Link>
-        <h1 className="text-center text-2xl font-bold tracking-tight text-primary">Masuk Petugas</h1>
-        <p className="mb-6 mt-1 text-center text-sm text-ink/65">Khusus petugas penanganan satwa. Akun dibuat oleh admin; tidak ada pendaftaran mandiri.</p>
+        <h1 className="mb-6 text-center text-2xl font-bold tracking-tight text-primary">Masuk Petugas</h1>
         {notice && <p role="alert" className="mb-4 rounded-xl bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-800">{notice}</p>}
         <OfficerLoginForm />
-        <p className="mt-6 text-center text-sm text-ink/60">Pelapor tidak perlu masuk. <Link href="/#lapor" className="font-semibold text-primary hover:underline">Kirim laporan</Link></p>
       </div>
     </div>
   );
