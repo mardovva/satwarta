@@ -12,3 +12,4 @@ export async function GET(req: Request) {
   try { return NextResponse.json({ entries: await listAudit(30) }, { headers: NO_STORE }); }
   catch (e) { console.error("[audit]", e instanceof Error ? e.message : e); return NextResponse.json({ error: "Log belum dapat dimuat." }, { status: 502, headers: NO_STORE }); }
 }
+

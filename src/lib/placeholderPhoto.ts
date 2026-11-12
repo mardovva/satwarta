@@ -17,3 +17,4 @@ export function handleImgError(e: { currentTarget: HTMLImageElement }) {
   img.dataset.fallback = "1";
   img.src = fallbackPhoto();
 }
+

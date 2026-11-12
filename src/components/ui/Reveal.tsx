@@ -87,3 +87,4 @@ export default function Reveal({ children, delay = 0, variant = "up", className 
     </div>
   );
 }
+

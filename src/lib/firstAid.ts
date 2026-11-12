@@ -141,3 +141,4 @@ export function fallbackGuidance(ctx: ReportContext | null, question = ""): stri
     "Ceritakan jenis satwa dan kondisinya, atau pilih salah satu laporan Anda agar saya bisa memberi panduan yang lebih sesuai.",
   ].join("\n");
 }
+

@@ -53,3 +53,4 @@ export default function TurnstileWidget({ onToken, onError }: { onToken: (token:
 
   return <div ref={box} className="min-h-0" />;
 }
+

@@ -77,3 +77,4 @@ export function createHotspotPopupContent(p: Record<string, unknown>): HTMLEleme
   );
   return root;
 }
+

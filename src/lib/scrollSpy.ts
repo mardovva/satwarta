@@ -14,3 +14,4 @@ export function pickActive(ids: string[], tops: (number | null)[], line: number,
   ids.forEach((id, i) => { const top = tops[i]; if (top !== null && top <= line) current = id; });
   return current;
 }
+

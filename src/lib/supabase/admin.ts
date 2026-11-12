@@ -21,3 +21,4 @@ export function supabaseAdmin(): SupabaseClient {
   });
   return client;
 }
+

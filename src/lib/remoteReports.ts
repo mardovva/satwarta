@@ -40,3 +40,4 @@ export async function fetchRemoteReport(id: string): Promise<StoredReport | null
     return report;
   } catch { return null; }
 }
+

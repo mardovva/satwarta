@@ -95,3 +95,4 @@ export function needFor(report: StoredReport): DonationNeed {
   else if (seeded) collected = Math.round((target * (15 + (hash(report.id) % 60))) / 100 / 10_000) * 10_000;
   return { id: "total", label: "Target donasi", target, collected };
 }
+

@@ -10,3 +10,4 @@ export async function GET(req: Request) {
   if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: auth.status, headers: NO_STORE });
   return NextResponse.json({ officer: auth.officer }, { headers: NO_STORE });
 }
+

@@ -8,3 +8,4 @@ export const provinceGroups: { label: string; provinces: string[] }[] = [
   { label: "Maluku", provinces: ["Maluku", "Maluku Utara"] },
   { label: "Papua", provinces: ["Papua", "Papua Barat", "Papua Barat Daya", "Papua Selatan", "Papua Tengah", "Papua Pegunungan"] },
 ];
+

@@ -236,3 +236,4 @@ export default function AdminOfficers() {
   }
   return <AdminContent selfId={state.officer.username} onLogout={() => { void signOut().then(() => router.push("/")); }} />;
 }
+

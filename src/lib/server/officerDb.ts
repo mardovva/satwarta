@@ -51,3 +51,4 @@ export async function removeFiles(paths: string[]): Promise<void> {
   if (!paths.length) return;
   try { await supabaseAdmin().storage.from(PHOTO_BUCKET).remove(paths); } catch { /* abaikan */ }
 }
+

@@ -21,3 +21,4 @@ export function validateReportForm(v: ReportFormValues): ReportFormErrors {
   if (!v.consent) e.consent = "Centang persetujuan untuk melanjutkan.";
   return e;
 }
+

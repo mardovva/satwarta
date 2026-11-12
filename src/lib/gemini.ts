@@ -104,3 +104,4 @@ export async function geminiGenerateDetailed({ system, contents, json = false, m
 export async function geminiGenerate(opts: GeminiOptions): Promise<string> {
   return (await geminiGenerateDetailed(opts)).text;
 }
+

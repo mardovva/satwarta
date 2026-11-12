@@ -21,3 +21,4 @@ export function computeStats(): ReportStats {
   }
   return stats;
 }
+

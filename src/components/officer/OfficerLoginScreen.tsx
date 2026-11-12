@@ -18,3 +18,4 @@ export default function OfficerLoginScreen({ notice }: { notice?: string }) {
     </div>
   );
 }
+

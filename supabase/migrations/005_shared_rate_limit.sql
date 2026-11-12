@@ -38,3 +38,4 @@ revoke all on function public.rate_limit_hit(text, integer, integer) from public
 grant execute on function public.rate_limit_hit(text, integer, integer) to service_role;
 
 
+

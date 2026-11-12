@@ -49,3 +49,4 @@ export function goToTracking(id: string) {
   document.getElementById("track")?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
   window.dispatchEvent(new CustomEvent(TRACK_EVENT, { detail: id }));
 }
+

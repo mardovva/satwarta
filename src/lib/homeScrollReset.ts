@@ -17,3 +17,4 @@ if(location.hash)history.replaceState(history.state,"",location.pathname+locatio
 window.scrollTo(0,0);
 window.addEventListener("load",function(){window.scrollTo(0,0);setTimeout(function(){history.scrollRestoration="auto"},0)});
 }catch(e){}})();`;
+

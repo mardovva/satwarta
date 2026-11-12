@@ -12,3 +12,4 @@ export const statusMeta: Record<TrackingStatus, StatusMeta> = {
   Resolved: { status: "Resolved", label: "Selesai", description: "Penanganan selesai. Satwa sudah ditangani atau diselamatkan.", bg: "#CFE8D7", fg: "#1E4D31", dot: "#345542" },
   Rejected: { status: "Rejected", label: "Ditolak", description: "Laporan tidak dapat diverifikasi. Anda dapat membuat laporan baru dengan data lebih lengkap.", bg: "#FADADA", fg: "#9B2226", dot: "#D64545" },
 };
+

@@ -37,3 +37,4 @@ revoke all on function public.anonymize_report(text) from public, anon, authenti
 revoke all on function public.anonymize_old_reports(integer) from public, anon, authenticated;
 grant execute on function public.anonymize_report(text) to service_role;
 grant execute on function public.anonymize_old_reports(integer) to service_role;
+

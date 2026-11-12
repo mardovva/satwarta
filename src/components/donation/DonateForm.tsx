@@ -151,3 +151,4 @@ export default function DonateForm({ campaign: c, onShare }: Props) {
     </form>
   );
 }
+
