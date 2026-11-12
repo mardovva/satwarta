@@ -64,15 +64,15 @@ export default function CampaignDetail({ campaign: c, pledges, onClose }: Props)
           <button type="button" onClick={onClose} aria-label="Tutup" className="flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow hover:bg-white"><X size={18} /></button>
         </div>
 
-        <div className="grid gap-6 p-4 sm:p-6 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-6 p-4 sm:p-6 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
           {/* galeri, judul, progres */}
-          <div className="md:col-start-1">
+          <div className="min-w-0 md:col-start-1">
             <div className="overflow-hidden rounded-2xl bg-mist">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={images[Math.min(shot, images.length - 1)].url} alt={images[Math.min(shot, images.length - 1)].caption} onError={handleImgError} className="h-64 w-full object-cover sm:h-80" />
             </div>
             {images.length > 1 && (
-              <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+              <div className="mt-2 flex max-w-full gap-2 overflow-x-auto pb-1">
                 {images.slice(0, 8).map((im, i) => (
                   <button key={i} type="button" onClick={() => setShot(i)} aria-label={`Foto ${i + 1}`} aria-pressed={i === shot} className={`h-14 w-20 flex-none overflow-hidden rounded-lg ring-2 ${i === shot ? "ring-primary" : "ring-transparent opacity-70 hover:opacity-100"}`}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -101,12 +101,12 @@ export default function CampaignDetail({ campaign: c, pledges, onClose }: Props)
           </div>
 
           {/* panel donasi */}
-          <aside className="md:col-start-2 md:row-span-2 md:row-start-1 md:self-start md:sticky md:top-4">
+          <aside className="min-w-0 md:col-start-2 md:row-span-2 md:row-start-1 md:self-start md:sticky md:top-4">
             <DonateForm campaign={c} onShare={share} />
           </aside>
 
           {/* tab */}
-          <div className="md:col-start-1">
+          <div className="min-w-0 md:col-start-1">
             <div role="tablist" aria-label="Rincian penggalangan" className="flex gap-1 overflow-x-auto border-b border-black/10">
               {tabs.map((t) => (
                 <button key={t.id} role="tab" type="button" aria-selected={tab === t.id} onClick={() => setTab(t.id)}
