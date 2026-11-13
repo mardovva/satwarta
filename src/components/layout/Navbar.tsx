@@ -81,7 +81,7 @@ export default function Navbar() {
       <header
         className={`pointer-events-auto mx-auto border transition-all duration-500 ease-out ${
           floating
-            ? `max-w-[75rem] border-white/40 shadow-nav backdrop-blur-xl backdrop-saturate-150 ${menuOpen ? "rounded-3xl bg-white/95" : "rounded-full bg-white/25"}`
+            ? `max-w-[75rem] border-white/40 shadow-nav backdrop-blur-xl backdrop-saturate-150 rounded-[1.75rem] sm:rounded-[2rem] ${menuOpen ? "bg-white/95" : "bg-white/25"}`
             : "max-w-[120rem] rounded-none border-transparent bg-transparent shadow-none"
         }`}
       >
@@ -113,21 +113,28 @@ export default function Navbar() {
           </button>
         </nav>
 
-        {menuOpen && (
-          <div className="border-t border-black/5 px-2 pb-4 pt-3 lg:hidden">
-            <ul className="space-y-1 text-lg">
-              {links.map((l) => (
-                <li key={l.id}>
-                  <Anchor href={hashHref(l.id)} onClick={() => { pick(l.id); setMenuOpen(false); }} className={`block rounded-xl px-3 py-2 ${linkCls(l.id)}`}>{l.label}</Anchor>
-                </li>
-              ))}
-              <li><Link href="/chat" onClick={() => setMenuOpen(false)} className={`block rounded-xl px-3 py-2 ${chatCls}`}>AI Chat</Link></li>
-              <li><Link href="/donasi" onClick={() => setMenuOpen(false)} className={`block rounded-xl px-3 py-2 ${donasiCls}`}>Donasi</Link></li>
-              <li><Link href="/lembaga" onClick={() => setMenuOpen(false)} className={`block rounded-xl px-3 py-2 ${lembagaCls}`}>Lembaga</Link></li>
-            </ul>
-            <button onClick={openLogin} className="mt-3 w-full rounded-full bg-primary py-2.5 font-semibold text-white hover:bg-primary-dark">Masuk</button>
+        {/* Tetap terpasang agar bisa dianimasikan: tinggi 0fr -> 1fr dan memudar, searah dengan transisi header. inert = tidak bisa difokus saat tertutup */}
+        <div
+          inert={!menuOpen}
+          aria-hidden={!menuOpen}
+          className={`grid transition-[grid-template-rows,opacity] duration-500 ease-out motion-reduce:transition-none lg:hidden ${menuOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
+        >
+          <div className="overflow-hidden">
+            <div className="border-t border-black/5 px-2 pb-4 pt-3">
+              <ul className="space-y-1 text-lg">
+                {links.map((l) => (
+                  <li key={l.id}>
+                    <Anchor href={hashHref(l.id)} onClick={() => { pick(l.id); setMenuOpen(false); }} className={`block rounded-xl px-3 py-2 ${linkCls(l.id)}`}>{l.label}</Anchor>
+                  </li>
+                ))}
+                <li><Link href="/chat" onClick={() => setMenuOpen(false)} className={`block rounded-xl px-3 py-2 ${chatCls}`}>AI Chat</Link></li>
+                <li><Link href="/donasi" onClick={() => setMenuOpen(false)} className={`block rounded-xl px-3 py-2 ${donasiCls}`}>Donasi</Link></li>
+                <li><Link href="/lembaga" onClick={() => setMenuOpen(false)} className={`block rounded-xl px-3 py-2 ${lembagaCls}`}>Lembaga</Link></li>
+              </ul>
+              <button onClick={openLogin} className="mt-3 w-full rounded-full bg-primary py-2.5 font-semibold text-white hover:bg-primary-dark">Masuk</button>
+            </div>
           </div>
-        )}
+        </div>
       </header>
       </div>
       <LoginModal open={loginOpen} onClose={() => setLoginOpen(false)} />
