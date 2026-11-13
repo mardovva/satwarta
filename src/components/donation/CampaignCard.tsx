@@ -47,7 +47,7 @@ export default function CampaignCard({ campaign: c, onOpen }: Props) {
             <span className="font-bold text-primary">{formatRupiah(c.collected)}</span>
             <span className="text-ink/60"> terkumpul</span>
           </p>
-          <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-mist" role="progressbar" aria-valuenow={c.pct} aria-valuemin={0} aria-valuemax={100} aria-label={`Progres donasi ${c.title}`}>
+          <div className="mt-1.5 h-2 isolate overflow-hidden rounded-full bg-mist" role="progressbar" aria-valuenow={c.pct} aria-valuemin={0} aria-valuemax={100} aria-label={`Progres donasi ${c.title}`}>
             <ProgressFill pct={c.pct} className="h-full rounded-full bg-accent" delay={150} />
           </div>
           <div className="mt-1.5 flex items-center justify-between text-xs text-ink/60">

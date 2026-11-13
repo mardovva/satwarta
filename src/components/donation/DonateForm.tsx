@@ -14,7 +14,11 @@ const METHODS = [
 
 interface Props { campaign: Campaign; onShare: () => void }
 
-/** Panel donasi: nominal, data donatur, doa, dan metode pembayaran. */
+/**
+ * Panel donasi: nominal, data donatur, doa, dan metode pembayaran.
+ * Di desktop panel mengisi tinggi jendela: isian bisa digulir di dalam, sedangkan total dan tombol "Donasi sekarang" tetap di bawah.
+ * Di layar kecil, bagian bawah itu menempel di dasar layar selama formulir terlihat.
+ */
 export default function DonateForm({ campaign: c, onShare }: Props) {
   const [raw, setRaw] = useState("");
   const [name, setName] = useState("");
@@ -58,7 +62,7 @@ export default function DonateForm({ campaign: c, onShare }: Props) {
 
   if (c.done) {
     return (
-      <div className="rounded-2xl bg-cream p-5 text-center ring-1 ring-black/5">
+      <div className="rounded-2xl bg-cream p-5 text-center ring-1 ring-black/5 md:h-full md:overflow-y-auto">
         <p className="font-bold text-primary">Penanganan sudah selesai</p>
         <p className="mt-1 text-sm text-ink/70">Terima kasih kepada semua donatur. Lihat tab Kabar Terbaru untuk perkembangan penanganan.</p>
       </div>
@@ -67,7 +71,7 @@ export default function DonateForm({ campaign: c, onShare }: Props) {
 
   if (phase === "processing") {
     return (
-      <div className="flex flex-col items-center gap-4 rounded-2xl bg-cream px-6 py-14 text-center ring-1 ring-black/5">
+      <div className="flex flex-col items-center justify-center gap-4 rounded-2xl bg-cream px-6 py-14 text-center ring-1 ring-black/5 md:h-full md:py-0">
         <Loader2 size={44} className="animate-spin text-primary" />
         <p className="font-semibold text-primary">Memproses pembayaran…</p>
       </div>
@@ -76,7 +80,7 @@ export default function DonateForm({ campaign: c, onShare }: Props) {
 
   if (phase === "done" && receipt) {
     return (
-      <div className="space-y-4 rounded-2xl bg-cream px-5 py-8 text-center ring-1 ring-black/5">
+      <div className="space-y-4 rounded-2xl bg-cream px-5 py-8 text-center ring-1 ring-black/5 md:h-full md:overflow-y-auto">
         <div className="relative mx-auto h-20 w-20">
           <span aria-hidden className="pay-ring absolute inset-0 rounded-full bg-primary/30" />
           <svg viewBox="0 0 52 52" className="pay-pop relative h-20 w-20" aria-hidden>
@@ -98,75 +102,80 @@ export default function DonateForm({ campaign: c, onShare }: Props) {
     );
   }
 
-  const field = "w-full rounded-xl bg-white px-3.5 py-2.5 text-[0.9375rem] shadow-sm outline-none ring-1 ring-black/10 placeholder:text-ink/40 focus:ring-2 focus:ring-primary";
+  const field = "w-full rounded-xl bg-white px-3.5 py-2 text-[0.9375rem] shadow-sm outline-none ring-1 ring-black/10 placeholder:text-ink/40 focus:ring-2 focus:ring-primary";
 
   return (
-    <form onSubmit={submit} noValidate className="space-y-4 rounded-2xl bg-cream p-4 ring-1 ring-black/5 sm:p-5">
-      <h3 className="text-lg font-bold text-primary">Donasi untuk {c.title}</h3>
+    <form onSubmit={submit} noValidate className="flex flex-col rounded-2xl bg-cream ring-1 ring-black/5 md:h-full md:min-h-0">
+      {/* isian: digulir di dalam pada desktop */}
+      <div className="space-y-3.5 p-4 md:min-h-0 md:flex-1 md:overflow-y-auto md:overscroll-contain md:pr-3">
+        <h3 className="pr-10 text-base font-bold text-primary sm:text-lg">Donasi untuk {c.title}</h3>
 
-      <fieldset>
-        <legend className="mb-2 text-sm font-semibold">Pilih nominal</legend>
-        <div className="grid grid-cols-3 gap-2">
-          {PRESET_AMOUNTS.map((a) => (
-            <button
-              key={a} type="button" aria-pressed={amount === a} onClick={() => { setRaw(String(a)); setError(""); }}
-              className={`rounded-xl px-2 py-2 text-sm font-semibold ring-1 transition ${amount === a ? "bg-primary text-white ring-primary" : "bg-white text-ink ring-black/10 hover:ring-primary/50"}`}
-            >
-              {new Intl.NumberFormat("id-ID").format(a)}
-            </button>
-          ))}
-        </div>
-        <label htmlFor="donate-amount" className="sr-only">Nominal lain</label>
-        <div className="relative mt-2">
-          <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-ink/60">Rp</span>
-          <input
-            id="donate-amount" inputMode="numeric" autoComplete="off" placeholder="Nominal lain" value={raw ? new Intl.NumberFormat("id-ID").format(amount) : ""}
-            onChange={(e) => { setRaw(e.target.value.replace(/\D/g, "").slice(0, 9)); setError(""); }}
-            aria-invalid={!!error} className={`${field} pl-10`}
-          />
-        </div>
-        {error && <p role="alert" className="mt-1 text-xs font-medium text-red-600">{error}</p>}
-      </fieldset>
+        <fieldset>
+          <legend className="mb-1.5 text-sm font-semibold">Pilih nominal</legend>
+          <div className="grid grid-cols-3 gap-2">
+            {PRESET_AMOUNTS.map((a) => (
+              <button
+                key={a} type="button" aria-pressed={amount === a} onClick={() => { setRaw(String(a)); setError(""); }}
+                className={`rounded-xl px-2 py-1.5 text-sm font-semibold ring-1 transition ${amount === a ? "bg-primary text-white ring-primary" : "bg-white text-ink ring-black/10 hover:ring-primary/50"}`}
+              >
+                {new Intl.NumberFormat("id-ID").format(a)}
+              </button>
+            ))}
+          </div>
+          <label htmlFor="donate-amount" className="sr-only">Nominal lain</label>
+          <div className="relative mt-2">
+            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-ink/60">Rp</span>
+            <input
+              id="donate-amount" inputMode="numeric" autoComplete="off" placeholder="Nominal lain" value={raw ? new Intl.NumberFormat("id-ID").format(amount) : ""}
+              onChange={(e) => { setRaw(e.target.value.replace(/\D/g, "").slice(0, 9)); setError(""); }}
+              aria-invalid={!!error} className={`${field} pl-10`}
+            />
+          </div>
+          {error && <p role="alert" className="mt-1 text-xs font-medium text-red-600">{error}</p>}
+        </fieldset>
 
-      <div>
-        <label htmlFor="donate-name" className="mb-1 block text-sm font-semibold">Nama <span className="font-normal text-ink/50">(opsional)</span></label>
-        <input id="donate-name" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} autoComplete="name" disabled={anonymous} placeholder={anonymous ? "Donatur anonim" : "Nama Anda"} className={`${field} disabled:bg-ink/5`} />
-        <label className="mt-2 flex cursor-pointer items-center gap-2 text-sm text-ink/80">
-          <input type="checkbox" checked={anonymous} onChange={(e) => setAnonymous(e.target.checked)} className="h-4 w-4 accent-[#345542]" />
-          Sembunyikan nama saya (donasi anonim)
-        </label>
+        <div>
+          <label htmlFor="donate-name" className="mb-1 block text-sm font-semibold">Nama</label>
+          <input id="donate-name" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} autoComplete="name" disabled={anonymous} placeholder={anonymous ? "Donatur anonim" : "Nama Anda"} className={`${field} disabled:bg-ink/5`} />
+          <label className="mt-1.5 flex cursor-pointer items-center gap-2 text-sm text-ink/80">
+            <input type="checkbox" checked={anonymous} onChange={(e) => setAnonymous(e.target.checked)} className="h-4 w-4 accent-[#345542]" />
+            Sembunyikan nama saya (donasi anonim)
+          </label>
+        </div>
+
+        <div>
+          <div className="mb-1 flex items-baseline justify-between gap-2">
+            <label htmlFor="donate-message" className="text-sm font-semibold">Doa atau dukungan</label>
+            <span className="text-xs text-ink/45">{message.length}/200</span>
+          </div>
+          <textarea id="donate-message" value={message} onChange={(e) => setMessage(e.target.value)} maxLength={200} rows={2} placeholder="Semoga cepat pulih dan kembali ke habitatnya" className={`${field} resize-none`} />
+        </div>
+
+        <fieldset>
+          <legend className="mb-1.5 text-sm font-semibold">Metode pembayaran</legend>
+          <div className="space-y-1.5">
+            {METHODS.map((m) => (
+              <label key={m.id} className={`flex cursor-pointer items-start gap-3 rounded-xl bg-white px-3.5 py-2 ring-1 transition ${method === m.id ? "ring-2 ring-primary" : "ring-black/10 hover:ring-primary/40"}`}>
+                <input type="radio" name="donate-method" checked={method === m.id} onChange={() => setMethod(m.id)} className="mt-1 accent-[#345542]" />
+                <span><span className="block text-sm font-semibold">{m.label}</span><span className="block text-xs text-ink/60">{m.hint}</span></span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
       </div>
 
-      <div>
-        <label htmlFor="donate-message" className="mb-1 block text-sm font-semibold">Doa atau dukungan <span className="font-normal text-ink/50">(opsional)</span></label>
-        <textarea id="donate-message" value={message} onChange={(e) => setMessage(e.target.value)} maxLength={200} rows={2} placeholder="Semoga cepat pulih dan kembali ke habitatnya" className={`${field} resize-none`} />
-        <p className="mt-0.5 text-right text-xs text-ink/45">{message.length}/200</p>
-      </div>
-
-      <fieldset>
-        <legend className="mb-2 text-sm font-semibold">Metode pembayaran</legend>
-        <div className="space-y-2">
-          {METHODS.map((m) => (
-            <label key={m.id} className={`flex cursor-pointer items-start gap-3 rounded-xl bg-white px-3.5 py-2.5 ring-1 transition ${method === m.id ? "ring-2 ring-primary" : "ring-black/10 hover:ring-primary/40"}`}>
-              <input type="radio" name="donate-method" checked={method === m.id} onChange={() => setMethod(m.id)} className="mt-1 accent-[#345542]" />
-              <span><span className="block text-sm font-semibold">{m.label}</span><span className="block text-xs text-ink/60">{m.hint}</span></span>
-            </label>
-          ))}
+      {/* total dan tombol: tetap di bawah (desktop: di luar area gulir; layar kecil: menempel di dasar layar) */}
+      <div className="sticky bottom-0 z-10 flex-none space-y-2.5 rounded-b-2xl border-t border-black/10 bg-cream p-4 shadow-[0_-10px_16px_-12px_rgba(20,40,30,0.25)] md:static md:shadow-none">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-ink/70">Total donasi</span>
+          <span className="text-lg font-bold text-primary">{formatRupiah(amount)}</span>
         </div>
-      </fieldset>
-
-      <div className="flex items-center justify-between border-t border-black/10 pt-3 text-sm">
-        <span className="text-ink/70">Total donasi</span>
-        <span className="text-lg font-bold text-primary">{formatRupiah(amount)}</span>
+        {TURNSTILE_SITE_KEY && <TurnstileWidget key={captchaNonce} onToken={(t) => { setCaptchaToken(t); if (t) setCaptchaFailed(false); }} onError={() => setCaptchaFailed(true)} />}
+        {submitError && <p role="alert" className="text-center text-sm font-medium text-red-600">{submitError}</p>}
+        <button type="submit" className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 font-semibold text-white shadow-md transition hover:bg-primary-dark">
+          <Check size={18} /> Donasi sekarang
+        </button>
       </div>
-
-      {TURNSTILE_SITE_KEY && <TurnstileWidget key={captchaNonce} onToken={(t) => { setCaptchaToken(t); if (t) setCaptchaFailed(false); }} onError={() => setCaptchaFailed(true)} />}
-      {submitError && <p role="alert" className="text-center text-sm font-medium text-red-600">{submitError}</p>}
-
-      <button type="submit" className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 font-semibold text-white shadow-md transition hover:bg-primary-dark">
-        <Check size={18} /> Donasi sekarang
-      </button>
     </form>
   );
 }
-
