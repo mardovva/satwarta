@@ -2,7 +2,10 @@ import type { StoredReport } from "@/types/report";
 
 export interface DonationNeed { id: string; label: string; target: number; collected: number }
 export interface Pledge {
-  code: string; reportId: string; needId: string; amount: number; name: string; contact: string; at: string;
+  /** Kode donasi dari database, mis. DNS-3F9A21BC */
+  code: string; reportId: string; amount: number; name: string; at: string;
+  /** Rincian kebutuhan (hanya untuk perhitungan per kebutuhan; donasi saat ini ke "total") */
+  needId?: string;
   /** Donasi anonim: nama tidak ditampilkan */
   anonymous?: boolean;
   /** Doa atau pesan dukungan dari donatur */
@@ -11,31 +14,10 @@ export interface Pledge {
   method?: string;
 }
 
-const KEY = "satwarta:pledges:v1";
+/** Dikirim ke window setiap daftar donasi berubah (lihat remotePledges.ts). */
 export const PLEDGES_EVENT = "satwarta:pledges-updated";
 
 export const formatRupiah = (n: number) => `Rp ${new Intl.NumberFormat("id-ID").format(n)}`;
-
-export function getPledges(): Pledge[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const v = JSON.parse(window.localStorage.getItem(KEY) ?? "[]");
-    return Array.isArray(v) ? v : [];
-  } catch {
-    return [];
-  }
-}
-
-/** Mencatat donasi (kode DNS-0001, dst). Hanya panggil dari client. */
-export function savePledge(input: Omit<Pledge, "code" | "at">): Pledge {
-  const all = getPledges();
-  const pledge: Pledge = { ...input, code: `DNS-${String(all.length + 1).padStart(4, "0")}`, at: new Date().toISOString() };
-  try {
-    window.localStorage.setItem(KEY, JSON.stringify([...all, pledge]));
-    window.dispatchEvent(new Event(PLEDGES_EVENT));
-  } catch { /* abaikan */ }
-  return pledge;
-}
 
 interface Template { id: string; label: string; unit: number }
 

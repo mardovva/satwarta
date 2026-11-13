@@ -1,20 +1,17 @@
 "use client";
 import { useEffect, useState } from "react";
-import { PLEDGES_EVENT, getPledges, type Pledge } from "@/lib/donations";
+import { PLEDGES_EVENT, type Pledge } from "@/lib/donations";
+import { ensureRemotePledges, getRemotePledges } from "@/lib/remotePledges";
 
-/** Donasi yang tercatat di browser ini (simulasi); diperbarui otomatis saat ada donasi baru. */
+/** Donasi dari database (dibagi ke semua perangkat); diperbarui otomatis saat ada donasi baru, dari perangkat ini maupun lain. */
 export function usePledges(): Pledge[] {
   const [pledges, setPledges] = useState<Pledge[]>([]);
   useEffect(() => {
-    const load = () => setPledges(getPledges());
-    load();
+    const load = () => setPledges(getRemotePledges());
     window.addEventListener(PLEDGES_EVENT, load);
-    window.addEventListener("storage", load);
-    return () => {
-      window.removeEventListener(PLEDGES_EVENT, load);
-      window.removeEventListener("storage", load);
-    };
+    ensureRemotePledges();
+    load();
+    return () => window.removeEventListener(PLEDGES_EVENT, load);
   }, []);
   return pledges;
 }
-

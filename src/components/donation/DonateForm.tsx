@@ -2,7 +2,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, Loader2, Share2 } from "lucide-react";
 import { MIN_DONATION, PRESET_AMOUNTS, type Campaign } from "@/lib/campaigns";
-import { formatRupiah, savePledge, type Pledge } from "@/lib/donations";
+import { formatRupiah, type Pledge } from "@/lib/donations";
+import { submitPledge } from "@/lib/remotePledges";
+import TurnstileWidget, { TURNSTILE_SITE_KEY } from "@/components/report/TurnstileWidget";
 
 const METHODS = [
   { id: "QRIS", label: "QRIS", hint: "Semua aplikasi dompet digital dan m-banking" },
@@ -20,6 +22,10 @@ export default function DonateForm({ campaign: c, onShare }: Props) {
   const [message, setMessage] = useState("");
   const [method, setMethod] = useState(METHODS[0].id);
   const [error, setError] = useState("");
+  const [submitError, setSubmitError] = useState("");
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaNonce, setCaptchaNonce] = useState(0); // mengganti key widget = meminta token baru (token hanya sekali pakai)
+  const [captchaFailed, setCaptchaFailed] = useState(false);
   const [phase, setPhase] = useState<"form" | "processing" | "done">("form");
   const [receipt, setReceipt] = useState<Pledge | null>(null);
   const timer = useRef<number | undefined>(undefined);
@@ -27,16 +33,25 @@ export default function DonateForm({ campaign: c, onShare }: Props) {
 
   useEffect(() => () => window.clearTimeout(timer.current), []);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (amount < MIN_DONATION) { setError(`Nominal donasi minimal ${formatRupiah(MIN_DONATION)}.`); return; }
-    setError("");
+    if (TURNSTILE_SITE_KEY && !captchaToken) {
+      setSubmitError(captchaFailed ? "Verifikasi keamanan tidak dapat dimuat. Nonaktifkan pemblokir iklan untuk situs ini atau muat ulang halaman, lalu coba lagi." : "Verifikasi keamanan sedang berjalan. Tunggu beberapa detik lalu tekan Donasi sekarang lagi.");
+      return;
+    }
+    setError(""); setSubmitError("");
     setPhase("processing");
-    timer.current = window.setTimeout(() => {
-      const saved = savePledge({ reportId: c.id, needId: "total", amount, name: anonymous ? "" : name.trim(), contact: "", anonymous, message: message.trim(), method });
-      setReceipt(saved);
-      setPhase("done");
-    }, 1500);
+    // Animasi "memproses pembayaran" minimal 1,5 dtk (pembayaran masih simulasi); donasi dikirim ke server selama itu
+    const pause = new Promise<void>((resolve) => { timer.current = window.setTimeout(resolve, 1500); });
+    const [res] = await Promise.all([
+      submitPledge({ reportId: c.id, amount, name: anonymous ? "" : name.trim(), anonymous, message: message.trim(), method }, captchaToken),
+      pause,
+    ]);
+    setCaptchaToken(null); setCaptchaNonce((n) => n + 1); // token sudah terpakai
+    if (!res.ok) { setSubmitError(res.message); setPhase("form"); return; }
+    setReceipt(res.pledge);
+    setPhase("done");
   };
 
   const again = () => { setRaw(""); setMessage(""); setReceipt(null); setPhase("form"); };
@@ -144,6 +159,9 @@ export default function DonateForm({ campaign: c, onShare }: Props) {
         <span className="text-ink/70">Total donasi</span>
         <span className="text-lg font-bold text-primary">{formatRupiah(amount)}</span>
       </div>
+
+      {TURNSTILE_SITE_KEY && <TurnstileWidget key={captchaNonce} onToken={(t) => { setCaptchaToken(t); if (t) setCaptchaFailed(false); }} onError={() => setCaptchaFailed(true)} />}
+      {submitError && <p role="alert" className="text-center text-sm font-medium text-red-600">{submitError}</p>}
 
       <button type="submit" className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 font-semibold text-white shadow-md transition hover:bg-primary-dark">
         <Check size={18} /> Donasi sekarang
