@@ -34,8 +34,11 @@ function Stat({ value, label, active, index }: StatProps) {
 
 export default function StatisticsSection() {
   const { ref, inView } = useInView<HTMLElement>();
-  // Nilai awal = angka dasar (sama di server dan client), lalu ditambah laporan baru
-  const [stats, setStats] = useState<ReportStats>({ ...dummyStats });
+  // Nilai awal = angka dasar (sama di server dan client), lalu ditambah laporan baru. Bila Beranda dibuka lagi di sesi ini
+  // (mis. kembali dari AI Chat atau Donasi), langsung mulai dari angka sebenarnya: kalau tidak, angka tampil sebagai angka dasar dulu
+  // lalu "naik" ke angka sebenarnya, dan itu terlihat seperti animasi hitung yang diulang. (Ini hanya terjadi pada navigasi di
+  // dalam aplikasi, tidak pada pemuatan halaman pertama, jadi tidak memicu hydration mismatch.)
+  const [stats, setStats] = useState<ReportStats>(() => (introPlayed() ? computeStats() : { ...dummyStats }));
 
   useEffect(() => {
     const load = () => setStats(computeStats());
