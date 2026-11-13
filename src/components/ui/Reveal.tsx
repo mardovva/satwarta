@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { REVISIT_ANIMATE, markPathVisited, pathVisited, seenDepthY, trackSeenDepth } from "@/lib/intro";
 
 /** Pengali jeda bertahap saat scroll (lebih kecil = muncul lebih cepat). initialDelay tidak terpengaruh. */
-const SCROLL_DELAY_SCALE = 0.5;
+const SCROLL_DELAY_SCALE = 0.7;
 
 /** true begitu animasi muncul Reveal terdekat benar-benar mulai (setelah jedanya). Di luar Reveal selalu true. */
 const RevealStartedContext = createContext(true);

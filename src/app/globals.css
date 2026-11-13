@@ -31,7 +31,7 @@ body.map-fullscreen .site-header { display: none !important; }
   opacity: 0;
   transform: translate3d(0, 2.25rem, 0);
   transition-property: opacity, transform;
-  transition-duration: 0.35s, 0.55s;
+  transition-duration: 0.5s, 0.8s;
   transition-timing-function: ease-out, cubic-bezier(0.22, 1, 0.36, 1);
   transition-delay: var(--d, 0s);
   will-change: opacity, transform;

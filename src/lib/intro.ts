@@ -15,7 +15,7 @@ export const INTRO = {
   /** dua tombol CTA dan peta muncul bersamaan begitu angka berhenti berubah (~2,3 dtk) */
   nextDelay: TITLE_DELAY + (COUNT_DURATION_MS * COUNT_VISIBLE_END) / 1000,
   /** lama animasi muncul peta (sama dengan tombol CTA; lihat transisi .reveal di globals.css) */
-  mapDurationMs: 550,
+  mapDurationMs: 800,
 } as const;
 
 /** Latar berganti ke hero-2 setelah animasi peta selesai (ms sejak halaman dibuka) */
